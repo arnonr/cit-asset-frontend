@@ -4,7 +4,7 @@
       :class="`footer__area ${style_2 ? 'footer__style-3' : ''}`"
       :data-bg-color="`footer-bg-${style_2 ? 'grey-4' : 'black'}`"
     >
-      <div class="footer__top footer__top-5">
+      <!-- <div class="footer__top footer__top-5">
         <div class="container">
           <div class="row">
             <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6">
@@ -106,7 +106,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="footer__bottom-5">
         <div class="container">
           <div class="row align-items-center">
@@ -114,8 +114,7 @@
               <div class="footer__copyright-5">
                 <p>
                   © {{ new Date().getFullYear() + 543 }}
-                  ศูนย์เครื่องมือวิทยาศาสตร์และคอมพิวเตอร์สมรรถนะสูง
-                  คณะวิทยาศาสตร์ประยุกต์
+                  ระบบบริหารจัดการครุภัณฑ์ วิทยาลัยเทคโนโลยีอุตสาหกรรม
                 </p>
               </div>
             </div>
@@ -145,7 +144,8 @@ export default {
   padding-top: 27px;
   padding-bottom: 20px;
   border-top: 1px solid #e1e1ec;
-  background-color: var(--tp-theme-1);
+  background-color: #002a54;
+  /* background-color: var(--tp-theme-1); */
 }
 
 .footer__style-3 .footer__copyright-5 p {

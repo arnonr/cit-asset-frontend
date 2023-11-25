@@ -9,9 +9,10 @@
               <div class="logo text-start">
                 <NuxtLink to="/">
                   <img
-                    src="~/assets/img/iconwebtechnopark/logo-sicc.png"
+                    src="~/assets/img/logo/logo_cit.png"
                     class="img-header-logo"
                     alt=""
+                    style="width: 100px; margin-bottom: 0px"
                   />
 
                   <!-- <img
@@ -23,12 +24,10 @@
                 </NuxtLink>
 
                 <h5 class="d-none d-xl-block d-lg-block text-color-secondary">
-                  ศูนย์เครื่องมือวิทยาศาสตร์และคอมพิวเตอร์สมรรถนะสูง
-                  คณะวิทยาศาสตร์ประยุกต์
+                  ระบบบริหารจัดการครุภัณฑ์ วิทยาลัยเทคโนโลยีอุตสาหกรรม
                 </h5>
                 <h6 class="d-none d-xl-block d-lg-block text-color-secondary">
-                  Scientific Instrument and High Performance Computing Center :
-                  SICC, Faculty of Applied Science
+                  Asset Management System, College of Industrial Technology
                 </h6>
               </div>
             </div>
@@ -39,7 +38,7 @@
                 class="header__top-right-4 d-none d-lg-flex justify-content-center"
               >
                 <img
-                  src="~/assets/img/iconwebtechnopark/logo-sci.jpeg"
+                  src="~/assets/img/logo/logo_kmutnb.png"
                   class="img-header-logo-sci"
                   alt=""
                   style="margin-top: 0px"
@@ -154,6 +153,7 @@
                     </svg>
                     <span class="d-none d-lg-inline">{{ $t("Sign In") }}</span>
                   </button>
+
                   <div class="dropdown mr-0-5 fw-bold" v-if="authenticated">
                     <button
                       class="btn btn-light btn-custom-light dropdown-toggle"
@@ -225,8 +225,8 @@
                   <!-- </slot>
                   </ClientOnly> -->
 
-                  <span class="mr-0-5 fw-bold"> | </span>
-                  <span class="mr-0-5"><language /></span>
+                  <!-- <span class="mr-0-5 fw-bold"> | </span> -->
+                  <!-- <span class="mr-0-5"><language /></span> -->
 
                   <!-- memu mobile -->
                   <div class="header__hamburger d-lg-none float-end">
@@ -259,8 +259,8 @@
                 <div class="logo">
                   <NuxtLink to="/">
                     <img
-                      src="~/assets/img/iconwebtechnopark/logo-sicc.png"
-                      style="width: 70%"
+                      src="~/assets/img/logo/logo_cit.png"
+                      style="width: 50%"
                       alt=""
                     />
                   </NuxtLink>
@@ -380,7 +380,7 @@ export default {
 </script>
 <style scoped>
 .header__bottom-4 {
-  background-color: #ffcb05;
+  background-color: #002a54;
   line-height: 2.5em;
   border-top: 4px solid #000;
 }

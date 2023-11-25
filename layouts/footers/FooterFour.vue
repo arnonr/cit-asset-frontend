@@ -149,7 +149,7 @@ export default {
   padding-top: 27px;
   padding-bottom: 20px;
   border-top: 1px solid #e1e1ec;
-  background-color: #ff6600;
+  background-color: #002a54;
 }
 
 .footer__style-3 .footer__copyright-5 p {

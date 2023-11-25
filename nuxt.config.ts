@@ -4,9 +4,19 @@ import { fileURLToPath } from "url";
 import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 
 export default defineNuxtConfig({
-  ssr: true,
+  ssr: false,
   routeRules: {
     "/": { prerender: true },
+    "/asset/**": { ssr: false },
+    // '/products/**': { swr: true },
+    // // Blog post generated on-demand once until next deploy
+    // '/blog/**': { isr: true },
+    // // Admin dashboard renders only on client-side
+    // '/admin/**': { ssr: false },
+    // // Add cors headers on API routes
+    // '/api/**': { cors: true },
+    // // Redirects legacy urls
+    // '/old-page': { redirect: '/new-page' }
     // "/": { prerender: true },
   },
   runtimeConfig: {
@@ -98,7 +108,7 @@ export default defineNuxtConfig({
   plugins: [{ src: "~/plugins/froala-editor.client.js", mode: "client" }],
   app: {
     head: {
-      title: "SICC",
+      title: "CIT-ASSET",
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
       script: [
         {

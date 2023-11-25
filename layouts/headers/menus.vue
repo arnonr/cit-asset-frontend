@@ -47,7 +47,7 @@ export default {
 
 <style scoped>
 .main-menu-4 ul li a {
-  color: var(--tp-common-black);
+  color: var(--tp-common-white);
   margin-right: 2em;
 }
 .main-menu-4 ul li:hover > a {

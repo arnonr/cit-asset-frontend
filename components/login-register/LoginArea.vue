@@ -7,7 +7,7 @@
           <div class="col-xl-6 col-lg-8 col-md-10">
             <div class="login__wrapper">
               <div class="login__top mb-30 text-center">
-                <h3 class="login__title">SICC</h3>
+                <h3 class="login__title">CIT-ASSET</h3>
                 <p>Enter your email account.</p>
               </div>
               <div class="login__form">
@@ -60,7 +60,7 @@
                   <h3 class="login__social-header">Or Sign in with</h3>
                   <login-with-social />
                 </div> -->
-                <div class="login__register-now">
+                <!-- <div class="login__register-now">
                   <p>
                     Don’t have an account?
                     <nuxt-link href="/register">Register Now</nuxt-link>
@@ -70,7 +70,7 @@
                     Resend Confirm
                     <nuxt-link href="/resend-confirm-email">Email</nuxt-link>
                   </p>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

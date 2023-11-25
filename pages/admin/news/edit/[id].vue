@@ -382,6 +382,9 @@ const { data: res } = await useFetch(
 );
 
 
+item.value.cover_photo_old = res.value.data.cover_photo;
+item.value.cover_photo = null;
+
 item.value = res.value.data;
 item.value.news_file_old = res.value.data.news_file;
 item.value.news_file = null;

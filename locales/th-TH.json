@@ -36,5 +36,11 @@
     "Bath": "บาท",
     "Total Price": "ราคารวม",
     "Booking List": "รายการจอง",
-    "Department Facility": "Department Facility"
+    "Department Facility": "Department Facility",
+    "Asset": "รายการครุภัณฑ์",
+    "Report": "รายงาน",
+    "Manage": "จัดการข้อมูล",
+    "Asset Type": "ประเภทครุภัณฑ์",
+    "Budget": "งบประมาณ",
+    "Department": "ภาควิชา"
 }

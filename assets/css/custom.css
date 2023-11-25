@@ -91,6 +91,8 @@ textarea {
     height: 0px;
 }
 
+
+
 .postbox__details-content-wrapper {
     font-size: 1.2em;
     letter-spacing: 0.5px;
@@ -167,6 +169,38 @@ h6 {
 
 .uppy-Dashboard-inner {
     width: 100% !important
+}
+
+.hr-separator {
+    color: #ccc
+}
+
+
+.printable {
+    display: none;
+}
+
+
+@media print {
+
+    /* body *:not(.printable *) {
+        display: none;
+    } */
+    header {
+        display: none;
+    }
+
+    footer {
+        display: none;
+    }
+
+    .printable {
+        display: inline;
+    }
+
+    .d-print-none {
+        display: none;
+    }
 }
 
 /* skin-dark */

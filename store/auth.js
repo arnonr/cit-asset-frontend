@@ -30,10 +30,13 @@ export const useAuthStore = defineStore("auth", {
 
         user.value = {
           id: data?.value?.id,
-          email: data?.value?.email,
-          firstname: data?.value?.profile.firstname,
-          surname: data?.value?.profile.surname,
-          group_id: data?.value?.profile.group_id,
+          username: data?.value?.username,
+          firstname: data?.value?.name,
+          surname: "", //data?.value?.profile.surname,
+          //   group_id: data?.value?.profile.group_id,
+          department_id: data?.value?.department_id,
+          level: data?.value?.level,
+          token: token,
         };
 
         this.authenticated = true; // set authenticated  state value to true
