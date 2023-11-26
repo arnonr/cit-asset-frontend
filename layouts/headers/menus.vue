@@ -7,7 +7,13 @@
         menu.megaMenu ? 'has-dropdown has-mega-menu' : ''
       }`"
     >
-      <NuxtLink :to="menu.link">
+      <NuxtLink
+        :to="menu.link"
+        v-if="
+          menu.title != 'Manage' ||
+          (menu.title == 'Manage' && useCookie('user').value.level == 1)
+        "
+      >
         {{ $t(menu.title) }}
       </NuxtLink>
       <ul v-if="menu.hasDropdown" class="submenu">
@@ -41,7 +47,6 @@ import menuData from "~~/mixins/menuData";
 
 export default {
   mixins: [menuData],
-
 };
 </script>
 

@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth", {
           method: "post",
           headers: { "Content-Type": "application/json" },
           body: {
-            email,
+            username: email,
             password,
           },
         }

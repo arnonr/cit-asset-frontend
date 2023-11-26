@@ -6,6 +6,10 @@
           <button
             type="button"
             class="btn btn-warning"
+            v-if="
+              useCookie('user').value.level == 1 ||
+              useCookie('user').value.level == 3
+            "
             @click="
               () => {
                 location_item = {};
@@ -29,7 +33,12 @@
                     <th class="text-center">สถานะ</th>
                     <th class="text-center">วันที่ขอย้าย</th>
                     <th class="text-center">วันที่อนุมัติ</th>
-                    <th class="text-center">จัดการ</th>
+                    <th
+                      class="text-center"
+                      v-if="useCookie('user').value.level == 1"
+                    >
+                      จัดการ
+                    </th>
                   </tr>
                 </thead>
                 <tbody v-if="items.length != 0">
@@ -66,7 +75,10 @@
                       }}
                     </td>
 
-                    <td class="text-center">
+                    <td
+                      class="text-center"
+                      v-if="useCookie('user').value.level == 1"
+                    >
                       <button class="btn btn-info">
                         <i
                           class="fa fa-edit"
@@ -130,7 +142,10 @@
                   placeholder="สถานที่ตั้ง"
                 />
               </div>
-              <div class="col-12 mt-4">
+              <div
+                class="col-12 mt-4"
+                v-if="useCookie('user').value.level == 1"
+              >
                 <label for="recipient-name" class="col-form-label"
                   ><span class="text-danger">*</span>สถานะ :</label
                 >
@@ -300,7 +315,7 @@ const onSubmit = async () => {
           await $fetch(
             runtimeConfig.public.apiBase + "/asset/" + route.params.id,
             {
-              method: 'post',
+              method: "post",
               body: {
                 location: location_item.value.location,
               },

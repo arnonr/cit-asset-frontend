@@ -127,6 +127,7 @@
       <div class="mb-30">
         <button
           type="button"
+          v-if="useCookie('user').value.level == 1"
           class="btn btn-warning"
           @click="
             () => {
@@ -146,6 +147,7 @@
 
         <button
           type="button"
+          v-if="useCookie('user').value.level == 1"
           class="btn btn-primary ms-2"
           @click="
             () => {
@@ -159,6 +161,10 @@
 
         <button
           type="button"
+          v-if="
+            useCookie('user').value.level == 1 ||
+            useCookie('user').value.level == 2
+          "
           class="btn btn-info ms-2"
           @click="onGenerateQR('ALL')"
         >
@@ -228,7 +234,14 @@
                     >
                       <i class="fa-regular fa-edit"></i>
                     </NuxtLink>
-                    <button class="btn btn-info ms-2" @click="onGenerateQR(it)">
+                    <button
+                      class="btn btn-info ms-2"
+                      @click="onGenerateQR(it)"
+                      v-if="
+                        useCookie('user').value.level == 1 ||
+                        useCookie('user').value.level == 2
+                      "
+                    >
                       <i class="fa fa-qrcode"></i>
                     </button>
                   </td>
@@ -463,6 +476,10 @@ const fetchItems = async () => {
     order: "desc",
   };
 
+  if (useCookie("user").value.level == 3) {
+    params["department_id"] = useCookie("user").value.department_id;
+  }
+
   let data = await $fetch(`${runtimeConfig.public.apiBase}/asset`, {
     params: params,
   }).catch((error) => error.data);
@@ -502,6 +519,10 @@ const fetchItemsExport = async () => {
     orderBy: "created_at",
     order: "desc",
   };
+
+  if (useCookie("user").value.level == 3) {
+    params["department_id"] = useCookie("user").value.department_id;
+  }
 
   let data = await $fetch(`${runtimeConfig.public.apiBase}/asset`, {
     params: params,
@@ -568,7 +589,6 @@ const onImportSubmit = async () => {
         });
       }
     });
-
 
     let type_object = {
       text_success: "นำเข้าข้อมูลเสร็จสิ้น",

@@ -13,6 +13,10 @@
                 modalForm.show();
               }
             "
+            v-if="
+              useCookie('user').value.level == 1 ||
+              useCookie('user').value.level == 3
+            "
           >
             <i class="fa-regular fa-plus"></i>
             คำขอแจ้งซ่อมครุภัณฑ์
@@ -31,7 +35,12 @@
                     <th class="text-center">วันที่อนุมัติ</th>
                     <th class="text-center">สถานะ</th>
                     <th class="text-center">หมายเหตุ</th>
-                    <th class="text-center">จัดการ</th>
+                    <th
+                      class="text-center"
+                      v-if="useCookie('user').value.level == 1"
+                    >
+                      จัดการ
+                    </th>
                   </tr>
                 </thead>
                 <tbody v-if="items.length != 0">
@@ -69,7 +78,10 @@
                     </td>
 
                     <td>{{ it.reject_comment }}</td>
-                    <td class="text-center">
+                    <td
+                      class="text-center"
+                      v-if="useCookie('user').value.level == 1"
+                    >
                       <button class="btn btn-info">
                         <i
                           class="fa fa-edit"
@@ -129,7 +141,7 @@
                 <textarea
                   class="form-control"
                   rows="5"
-                  style="min-height:100px;"
+                  style="min-height: 100px"
                   id="txt-fix-description"
                   v-model="fix_item.description"
                   placeholder="รายละเอียด"
@@ -146,7 +158,10 @@
                   placeholder="ราคา"
                 />
               </div>
-              <div class="col-12 mt-2">
+              <div
+                class="col-12 mt-2"
+                v-if="useCookie('user').value.level == 1"
+              >
                 <label for="recipient-name" class="col-form-label"
                   ><span class="text-danger">*</span>สถานะ :</label
                 >
@@ -161,22 +176,20 @@
                   :clearable="true"
                 ></v-select>
               </div>
-              <div class="col-12">
+              <div class="col-12" v-if="useCookie('user').value.level == 1">
                 <label for="fix-reject_comment" class="col-form-label"
                   >หมายเหตุ :</label
                 >
                 <textarea
                   class="form-control"
                   rows="5"
-                  style="min-height:100px;"
+                  style="min-height: 100px"
                   id="txt-fix-reject_comment"
                   v-model="fix_item.reject_comment"
                   placeholder="หมายเหตุ"
                 >
                 </textarea>
               </div>
-
-              
             </div>
           </form>
         </div>

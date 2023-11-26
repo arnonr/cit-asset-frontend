@@ -41,7 +41,7 @@
                 >ข้อมูลครุภัณฑ์</a
               >
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="useCookie('user').value.level == 1">
               <a
                 class="nav-link"
                 id="nav-warranty-tab"
@@ -54,7 +54,7 @@
                 >การรับประกัน</a
               >
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="useCookie('user').value.level == 1">
               <a
                 class="nav-link"
                 id="nav-cancel-tab"
@@ -80,60 +80,62 @@
             >
               <div class="card" style="border: none">
                 <div class="card-body">
-                  <div
-                    class="form-group row mt-10"
-                    v-for="(at, idx) in attributes"
-                    :key="idx"
-                  >
-                    <label :for="at.name" class="col-sm-3 col-form-label"
-                      ><span class="text-danger" v-if="at.required == true"
-                        >*</span
-                      >{{ at.show_name }} :
-                    </label>
-                    <div class="col-sm-9">
-                      <input
-                        v-if="at.input_type == 'text'"
-                        type="text"
-                        class="form-control form-control-plaintext"
-                        :id="'txt-' + at.name"
-                        v-model="item[at.name]"
-                        :disabled="at.disabled == true ? true : false"
-                      />
+                  <div v-if="useCookie('user').value.level == 1">
+                    <div
+                      class="form-group row mt-10"
+                      v-for="(at, idx) in attributes"
+                      :key="idx"
+                    >
+                      <label :for="at.name" class="col-sm-3 col-form-label"
+                        ><span class="text-danger" v-if="at.required == true"
+                          >*</span
+                        >{{ at.show_name }} :
+                      </label>
+                      <div class="col-sm-9">
+                        <input
+                          v-if="at.input_type == 'text'"
+                          type="text"
+                          class="form-control form-control-plaintext"
+                          :id="'txt-' + at.name"
+                          v-model="item[at.name]"
+                          :disabled="at.disabled == true ? true : false"
+                        />
 
-                      <input
-                        v-if="at.input_type == 'number'"
-                        type="number"
-                        class="form-control form-control-plaintext"
-                        :id="'txt-' + at.name"
-                        v-model="item[at.name]"
-                      />
+                        <input
+                          v-if="at.input_type == 'number'"
+                          type="number"
+                          class="form-control form-control-plaintext"
+                          :id="'txt-' + at.name"
+                          v-model="item[at.name]"
+                        />
 
-                      <v-select
-                        v-if="at.input_type == 'select'"
-                        :label="at.label"
-                        :placeholder="at.show_name"
-                        :options="selectOptions[at.options]"
-                        :id="'slt-' + at.name"
-                        v-model="item[at.name]"
-                        class="form-control v-select-no-border"
-                        :clearable="true"
-                      ></v-select>
+                        <v-select
+                          v-if="at.input_type == 'select'"
+                          :label="at.label"
+                          :placeholder="at.show_name"
+                          :options="selectOptions[at.options]"
+                          :id="'slt-' + at.name"
+                          v-model="item[at.name]"
+                          class="form-control v-select-no-border"
+                          :clearable="true"
+                        ></v-select>
 
-                      <VueDatePicker
-                        v-if="at.input_type == 'datepicker'"
-                        v-model="item[at.name]"
-                        :enable-time-picker="false"
-                        locale="th"
-                        auto-apply
-                        :format="format"
-                      >
-                        <template #year-overlay-value="{ text }">
-                          {{ parseInt(text) + 543 }}
-                        </template>
-                        <template #year="{ value }">
-                          {{ value + 543 }}
-                        </template>
-                      </VueDatePicker>
+                        <VueDatePicker
+                          v-if="at.input_type == 'datepicker'"
+                          v-model="item[at.name]"
+                          :enable-time-picker="false"
+                          locale="th"
+                          auto-apply
+                          :format="format"
+                        >
+                          <template #year-overlay-value="{ text }">
+                            {{ parseInt(text) + 543 }}
+                          </template>
+                          <template #year="{ value }">
+                            {{ value + 543 }}
+                          </template>
+                        </VueDatePicker>
+                      </div>
                     </div>
                   </div>
 
