@@ -569,7 +569,6 @@ const onImportSubmit = async () => {
       }
     });
 
-    console.log(data);
 
     let type_object = {
       text_success: "นำเข้าข้อมูลเสร็จสิ้น",
@@ -579,7 +578,7 @@ const onImportSubmit = async () => {
 
     await $fetch(type_object.url, {
       method: type_object.method,
-      body: form_data,
+      body: data,
     })
       .then((res) => {
         if (res.msg == "success") {

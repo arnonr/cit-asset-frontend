@@ -8,7 +8,7 @@
             class="btn btn-warning"
             @click="
               () => {
-                location_item = {}
+                location_item = {};
                 type_submit = 'add';
                 modalForm.show();
               }
@@ -195,6 +195,7 @@ const items = ref([]);
 const location_item = ref({});
 const totalPage = ref(1);
 const totalItems = ref(0);
+const update_location = ref(false);
 let modalForm;
 const selectOptions = ref({
   perPage: [
@@ -262,6 +263,7 @@ const onSubmit = async () => {
       if (location_item.value.status != 0) {
         approved_date = dayjs().format("YYYY-MM-DD");
         approved_by = useCookie("user").value.firstname;
+        update_location.value = true;
       } else {
         approved_date = null;
       }
@@ -273,6 +275,7 @@ const onSubmit = async () => {
       if (location_item.value.status.id != 0) {
         approved_date = dayjs().format("YYYY-MM-DD");
         approved_by = useCookie("user").value.firstname;
+        update_location.value = true;
       }
     }
   }
@@ -289,12 +292,26 @@ const onSubmit = async () => {
       approved_by: approved_by,
     },
   })
-    .then((res) => {
+    .then(async (res) => {
       if (res.msg == "success") {
         useToast(type_object.text_success, "success");
+
+        if (update_location.value == true) {
+          await $fetch(
+            runtimeConfig.public.apiBase + "/asset/" + route.params.id,
+            {
+              method: 'post',
+              body: {
+                location: location_item.value.location,
+              },
+            }
+          );
+        }
         modalForm.hide();
         fetchItems();
+
         location_item.value = {};
+        update_location.value = false;
       } else {
         throw new Error("ERROR");
       }
