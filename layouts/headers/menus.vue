@@ -10,8 +10,8 @@
       <NuxtLink
         :to="menu.link"
         v-if="
-          menu.title != 'Manage' ||
-          (menu.title == 'Manage' && useCookie('user').value.level == 1)
+          is_user_type == 'admin' ||
+          (is_user_type == 'staff' && menu.title != 'Manage')
         "
       >
         {{ $t(menu.title) }}
@@ -47,8 +47,31 @@ import menuData from "~~/mixins/menuData";
 
 export default {
   mixins: [menuData],
+  setup() {
+    const is_user_type = ref("guest");
+    if (useCookie("user").value != undefined) {
+      if (useCookie("user").value.level == 1) {
+        is_user_type.value = "admin";
+      } else if (useCookie("user").value.level == 2) {
+        is_user_type.value = "staff";
+      } else if (useCookie("user").value.level == 3) {
+        is_user_type.value = "dep";
+      } else {
+        is_user_type.value = "guest";
+      }
+    } else {
+      is_user_type.value = "guest";
+    }
+    return {
+      is_user_type,
+    };
+  },
 };
 </script>
+
+<!-- <script setup> -->
+
+<!-- </script> -->
 
 <style scoped>
 .main-menu-4 ul li a {

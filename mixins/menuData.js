@@ -4,15 +4,15 @@ export default {
       menuData: [
         {
           id: 1,
+          title: "Home",
           hasDropdown: false,
-          title: 'Asset',
-          link: "/asset",
+          link: "/",
         },
         {
           id: 2,
-          title: "Report",
           hasDropdown: false,
-          link: "/news",
+          title: 'Asset',
+          link: "/asset",
         },
         // {
         //   id: 3,

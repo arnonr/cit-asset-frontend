@@ -197,7 +197,7 @@
                       class="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                      <li>
+                      <!-- <li>
                         <a
                           class="dropdown-item item-link"
                           @click="this.$router.push({ path: '/booking' })"
@@ -214,7 +214,7 @@
                           "
                           >ข้อมูลส่วนตัว</a
                         >
-                      </li>
+                      </li> -->
                       <li>
                         <a class="dropdown-item item-link" @click="logout"
                           >ออกจากระบบ</a
@@ -369,7 +369,7 @@ export default {
     logout() {
       logUserOut();
       useToast("ออกจากระบบเสร็จสิ้น", "success");
-      this.$router.push("/");
+      this.$router.push("/login");
       this.authenticated = authenticated.value;
     },
   },

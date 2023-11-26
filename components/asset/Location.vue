@@ -7,8 +7,10 @@
             type="button"
             class="btn btn-warning"
             v-if="
-              useCookie('user').value.level == 1 ||
-              useCookie('user').value.level == 3
+              (useCookie('user').value != undefined &&
+                useCookie('user').value.level == 1) ||
+              (useCookie('user').value != undefined &&
+                useCookie('user').value.level == 3)
             "
             @click="
               () => {
@@ -35,7 +37,10 @@
                     <th class="text-center">วันที่อนุมัติ</th>
                     <th
                       class="text-center"
-                      v-if="useCookie('user').value.level == 1"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 1
+                      "
                     >
                       จัดการ
                     </th>
@@ -77,7 +82,10 @@
 
                     <td
                       class="text-center"
-                      v-if="useCookie('user').value.level == 1"
+                      v-if="
+                        (useCookie('user').value != undefined &&
+                          useCookie('user').value.level) == 1
+                      "
                     >
                       <button class="btn btn-info">
                         <i
@@ -144,13 +152,19 @@
               </div>
               <div
                 class="col-12 mt-4"
-                v-if="useCookie('user').value.level == 1"
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
               >
                 <label for="recipient-name" class="col-form-label"
                   ><span class="text-danger">*</span>สถานะ :</label
                 >
                 <v-select
-                  v-if="useCookie('user').value.level == 1"
+                  v-if="
+                    useCookie('user').value != undefined &&
+                    useCookie('user').value.level == 1
+                  "
                   label="name"
                   placeholder="สถานะการอนุมัติ"
                   :options="selectOptions.location_statuses"

@@ -820,4 +820,8 @@ onMounted(() => {
   fetchItem();
   fetchGallery();
 });
+
+definePageMeta({
+  middleware: "auth",
+});
 </script>

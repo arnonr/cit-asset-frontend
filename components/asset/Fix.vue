@@ -14,8 +14,10 @@
               }
             "
             v-if="
-              useCookie('user').value.level == 1 ||
-              useCookie('user').value.level == 3
+              (useCookie('user').value != undefined &&
+                useCookie('user').value.level == 1) ||
+              (useCookie('user').value != undefined &&
+                useCookie('user').value.level == 3)
             "
           >
             <i class="fa-regular fa-plus"></i>
@@ -37,7 +39,10 @@
                     <th class="text-center">หมายเหตุ</th>
                     <th
                       class="text-center"
-                      v-if="useCookie('user').value.level == 1"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 1
+                      "
                     >
                       จัดการ
                     </th>
@@ -80,7 +85,10 @@
                     <td>{{ it.reject_comment }}</td>
                     <td
                       class="text-center"
-                      v-if="useCookie('user').value.level == 1"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 1
+                      "
                     >
                       <button class="btn btn-info">
                         <i
@@ -160,13 +168,19 @@
               </div>
               <div
                 class="col-12 mt-2"
-                v-if="useCookie('user').value.level == 1"
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
               >
                 <label for="recipient-name" class="col-form-label"
                   ><span class="text-danger">*</span>สถานะ :</label
                 >
                 <v-select
-                  v-if="useCookie('user').value.level == 1"
+                  v-if="
+                    useCookie('user').value != undefined &&
+                    useCookie('user').value.level == 1
+                  "
                   label="name"
                   placeholder="สถานะการอนุมัติ"
                   :options="selectOptions.fix_statuses"
@@ -176,7 +190,13 @@
                   :clearable="true"
                 ></v-select>
               </div>
-              <div class="col-12" v-if="useCookie('user').value.level == 1">
+              <div
+                class="col-12"
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
+              >
                 <label for="fix-reject_comment" class="col-form-label"
                   >หมายเหตุ :</label
                 >

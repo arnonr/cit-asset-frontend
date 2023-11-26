@@ -1,7 +1,8 @@
 <template>
-  <HomeBanner />
+  <div>Dashboard</div>
+  <!-- <HomeBanner />
   <HomeProject />
-  <HomeNews />
+  <HomeNews /> -->
 </template>
 
 <script setup>

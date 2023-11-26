@@ -32,6 +32,10 @@
                     <div class="postbox__details-content-wrapper">
                       <div class="text-end">
                         <NuxtLink
+                          v-if="
+                            useCookie('user').value != undefined &&
+                            useCookie('user').value.level == 1
+                          "
                           :to="{
                             name: 'asset-edit-id',
                             params: { id: item.id },
@@ -41,6 +45,10 @@
                         >
 
                         <button
+                          v-if="
+                            useCookie('user').value != undefined &&
+                            useCookie('user').value.level == 1
+                          "
                           class="btn btn-danger ml-5"
                           @click="onConfirmDelete(item.id)"
                         >
@@ -189,7 +197,7 @@
                         >
                           <AssetHolder :item="item" v-if="item"></AssetHolder>
                         </div>
-
+                        
                         <div
                           class="tab-pane fade"
                           id="nav-fix"

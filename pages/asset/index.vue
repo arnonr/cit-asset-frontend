@@ -692,9 +692,9 @@ useHead({
   title: "รายการครุภัณฑ์",
 });
 
-// definePageMeta({
-//   middleware: "auth",
-// });
+definePageMeta({
+  middleware: "auth",
+});
 </script>
 
 <style scoped>
@@ -718,4 +718,6 @@ useHead({
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+
 </style>
