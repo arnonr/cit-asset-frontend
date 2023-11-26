@@ -97,6 +97,7 @@
                         class="form-control form-control-plaintext"
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
+                        :disabled="at.disabled == true ? true : false"
                       />
 
                       <input
@@ -133,14 +134,6 @@
                           {{ value + 543 }}
                         </template>
                       </VueDatePicker>
-                      <!-- <client-only v-if="at.input_type == 'file'">
-                      <input
-                        ref="file"
-                        class="form-control"
-                        type="file"
-                        id="formFile"
-                      />
-                    </client-only> -->
                     </div>
                   </div>
 
@@ -444,6 +437,7 @@ const attributes = [
     name: "location",
     show_name: "สถานที่ตั้ง",
     input_type: "text",
+    disabled: true,
   },
   {
     name: "department_id",
@@ -461,6 +455,7 @@ const attributes = [
     name: "holder_name",
     show_name: "ผู้ใช้งาน",
     input_type: "text",
+    disabled: true,
   },
   {
     name: "is_transfer",

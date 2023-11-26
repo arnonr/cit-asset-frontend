@@ -146,6 +146,19 @@
 
         <button
           type="button"
+          class="btn btn-primary ms-2"
+          @click="
+            () => {
+              modalForm.show();
+            }
+          "
+        >
+          <i class="fa-regular fa-file-text"></i>
+          Import Asset
+        </button>
+
+        <button
+          type="button"
           class="btn btn-info ms-2"
           @click="onGenerateQR('ALL')"
         >
@@ -238,6 +251,103 @@
     </div>
   </section>
 
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="modal-form"
+    tabindex="-1"
+    aria-labelledby="modal-form"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modal-form-label">
+            แบบฟอร์มนำเข้าข้อมูล
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="form-group row mt-10">
+                <label for="gallery" class="col-sm-12 col-form-label"
+                  >อัพโหลดไฟล์ Excel (.xls, .xlsx) :
+                </label>
+
+                <div class="col-sm-12">
+                  <input
+                    ref="file"
+                    class="form-control"
+                    type="file"
+                    id="formFile"
+                  />
+                </div>
+              </div>
+
+              <div class="table-responsive mt-4">
+                <h5>ผลลัพธ์การนำเข้าข้อมูล</h5>
+                <table class="table table-bordered table-striped table-admin">
+                  <thead>
+                    <tr>
+                      <th class="text-center">รหัสครุภัณฑ์</th>
+                      <th class="text-center">ผล</th>
+                      <th class="text-center">หมายเหตุ</th>
+                      <th class="text-center">สถานะ</th>
+                      <th class="text-center">จัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="items.length != 0">
+                    <tr v-for="(it, idx) in import_result" :key="idx">
+                      <td>{{ it.asset_code }}</td>
+                      <td
+                        :class="
+                          it.message == 'success' ? 'text-green' : 'text-red'
+                        "
+                      >
+                        {{ it.status }}
+                      </td>
+                      <td>
+                        <span
+                          :class="
+                            it.message == 'success' ? 'text-green' : 'text-red'
+                          "
+                          >{{ it.message }}</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            @click="onImportSubmit()"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Qr -->
   <ClientOnly>
     <div class="printable" v-for="(it, idx) in qr_items" :key="idx">
       <figure class="qrcode">
@@ -291,7 +401,6 @@ const totalPage = ref(1);
 const totalItems = ref(0);
 const search = ref({});
 const json_data = ref([]);
-
 const selectOptions = ref({
   perPage: [
     { title: "20", value: 20 },
@@ -302,8 +411,10 @@ const selectOptions = ref({
   asset_types: [],
   departments: [],
 });
-
 const qr_items = ref([]);
+const import_result = ref([]);
+const file = ref(null);
+let modalForm;
 
 // Function Fetch
 const fetchAssetTypes = async () => {
@@ -422,7 +533,7 @@ watchEffect(() => {
 });
 
 // Event
-const readFileAsync = (file) => {
+const readFileAsync = (importFile) => {
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
 
@@ -438,104 +549,110 @@ const readFileAsync = (file) => {
 
     reader.onerror = reject;
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(importFile);
   });
 };
 
-const onImportSubmit = () => {
-  //   validate
-  //   refImportSupervision.value?.validate().then(async ({ valid }) => {
-  //     if (valid) {
-  //       let importFile = null;
-  //       if (importData.value.supervisor_file.length !== 0) {
-  //         importFile = importData.value.supervisor_file[0];
-  //         let result = await readFileAsync(importFile);
-  //         result.shift();
-  //         let data = [];
-  //         result.forEach((el) => {
-  //           // let s_name_prefix = "";
-  //           if (el.length != 0) {
-  //             let s_firstname = "";
-  //             let s_surname = "";
-  //             if (el[12] != "" && el[12] != null) {
-  //               let arr_prefix = el[12].split(".");
-  //               // for (let i = 0; i < arr_prefix.length - 1; i++) {
-  //               //   s_name_prefix = s_name_prefix + arr_prefix[i] + ".";
-  //               // }
-  //               let fullname = arr_prefix[arr_prefix.length - 1];
-  //               let arr_name = fullname.split(" ");
-  //               s_firstname = arr_name[0];
-  //               for (let i = 0; i < arr_name.length; i++) {
-  //                 if (i != 0) {
-  //                   s_surname = s_surname + arr_name[i] + " ";
-  //                 }
-  //               }
-  //               s_surname = s_surname.trim();
-  //             }
-  //             data.push({
-  //               level: el[0],
-  //               student_code: el[1].replace("'", ""),
-  //               student_fullname: el[2],
-  //               supervision_fullname: el[12],
-  //               firstname: s_firstname,
-  //               surname: s_surname,
-  //             });
-  //           }
-  //         });
-  //         studentListStore
-  //           .importSupervision({
-  //             semester_id: importData.value.semester_id,
-  //             data: data,
-  //           })
-  //           .then((response) => {
-  //             if (response.status === 200) {
-  //               data = data.map((e) => {
-  //                 let check = response.data.data.find((x) => {
-  //                   return x.student_code == e.student_code;
-  //                 });
-  //                 if (check) {
-  //                   e["status"] = check.status;
-  //                   e["message"] = check.message;
-  //                 }
-  //                 return e;
-  //               });
-  //               console.log(data);
-  //               importResult.value = [...data];
-  //               // response.data.data.map((x) => {
-  //               //   return {
-  //               //     student_code: x.student_code,
-  //               //     // student_name: x.student_name,
-  //               //     // teacher_name:
-  //               //     status: x.status,
-  //               //     message: x.message,
-  //               //   };
-  //               // });
-  //               fetchItems();
-  //               // isDialogVisible.value = false;
-  //               // isOverlay.value = false;
-  //               // snackbarText.value = "สำเร็จ";
-  //               // snackbarColor.value = "success";
-  //               // isSnackbarVisible.value = true;
-  //             } else {
-  //               console.log("error");
-  //             }
-  //           })
-  //           .catch((error) => {
-  //             console.error(error);
-  //             isOverlay.value = false;
-  //           });
-  //       }
-  //     }
-  //     isOverlay.value = false;
-  //   });
-  //
+const onImportSubmit = async () => {
+  import_result.value = [];
+  let importFile = null;
+  if (file.value.files != null) {
+    importFile = file.value.files[0];
+    let result = await readFileAsync(importFile);
+    result.shift();
+    let data = [];
+    result.forEach((el) => {
+      if (el.length != 0) {
+        data.push({
+          asset_code: el[0],
+        });
+      }
+    });
+
+    console.log(data);
+
+    let type_object = {
+      text_success: "นำเข้าข้อมูลเสร็จสิ้น",
+      method: "post",
+      url: runtimeConfig.public.apiBase + "/asset/import",
+    };
+
+    await $fetch(type_object.url, {
+      method: type_object.method,
+      body: form_data,
+    })
+      .then((res) => {
+        if (res.msg == "success") {
+          useToast(type_object.text_success, "success");
+          data = data.map((e) => {
+            let check = response.data.data.find((x) => {
+              return x.asset_code == e.asset_code;
+            });
+            if (check) {
+              e["status"] = check.status;
+              e["message"] = check.message;
+            }
+            return e;
+          });
+          console.log(data);
+          import_result.value = [...data];
+          fetchItems();
+        } else {
+          throw new Error("ERROR");
+        }
+      })
+      .catch((error) => error.data);
+
+    // studentListStore
+    //   .importSupervision({
+    //     semester_id: importData.value.semester_id,
+    //     data: data,
+    //   })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       data = data.map((e) => {
+    //         let check = response.data.data.find((x) => {
+    //           return x.student_code == e.student_code;
+    //         });
+    //         if (check) {
+    //           e["status"] = check.status;
+    //           e["message"] = check.message;
+    //         }
+    //         return e;
+    //       });
+    //       console.log(data);
+    //       importResult.value = [...data];
+    //       // response.data.data.map((x) => {
+    //       //   return {
+    //       //     student_code: x.student_code,
+    //       //     // student_name: x.student_name,
+    //       //     // teacher_name:
+    //       //     status: x.status,
+    //       //     message: x.message,
+    //       //   };
+    //       // });
+    //       fetchItems();
+    //       // isDialogVisible.value = false;
+    //       // isOverlay.value = false;
+    //       // snackbarText.value = "สำเร็จ";
+    //       // snackbarColor.value = "success";
+    //       // isSnackbarVisible.value = true;
+    //     } else {
+    //       console.log("error");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     isOverlay.value = false;
+    //   });
+  }
 };
 
 const onGenerateQR = (it) => {
   qr_items.value = [];
 
   if (it == "ALL") {
-    qr_items.value = [...items.value]
+    qr_items.value = [...items.value];
   } else {
     qr_items.value.push(it);
   }
@@ -549,7 +666,7 @@ onMounted(() => {
   fetchAssetTypes();
   fetchDepartments();
   fetchItems();
-  onImportSubmit();
+  modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
 });
 
 useHead({
