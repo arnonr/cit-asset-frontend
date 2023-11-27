@@ -7,7 +7,7 @@
             <div class="breadcrumb__list">
               <span> ผู้ดูแลระบบ </span>
               <span class="dvdr"><i class="fa-solid fa-circle-small"></i></span>
-              <span> รายการคำขอย้ายสถานที่ติดตั้ง </span>
+              <span> รายการคำขอเปลี่ยนผู้ใช้งาน </span>
             </div>
           </div>
         </div>
@@ -138,8 +138,8 @@
         <div class="col-12 col-lg-4">
           <v-select
             label="name"
-            placeholder="สถานะคำขอย้าย"
-            :options="selectOptions.location_statuses"
+            placeholder="สถานะคำขอเปลี่ยน"
+            :options="selectOptions.holder_statuses"
             v-model="search.status"
             class="form-control v-select-no-border"
             :clearable="true"
@@ -178,7 +178,7 @@
       <div class="mt-10 mb-30 pl-10 pt-15 pb-10 bg-grey">
         <h4>
           <i class="fa-regular fa-list"></i>
-          <span class="ml-10">รายการคำขอย้ายสถานที่ติดตั้ง</span>
+          <span class="ml-10">รายการคำขอเปลี่ยนผู้ใช้งาน</span>
         </h4>
       </div>
 
@@ -190,9 +190,9 @@
                 <tr>
                   <th class="text-center">รหัสครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ติดตั้ง</th>
-                  <th class="text-center">สถานะคำขอย้าย</th>
-                  <th class="text-center">วันที่ขอย้าย</th>
+                  <th class="text-center">ผู้ใช้งาน</th>
+                  <th class="text-center">สถานะคำขอเปลี่ยน</th>
+                  <th class="text-center">วันที่ขอเปลี่ยน</th>
                   <th class="text-center">วันที่อนุมัติ</th>
                   <th
                     class="text-center"
@@ -209,16 +209,16 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td>{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
-                  <td>{{ it.location }}</td>
+                  <td>{{ it.holder_name }}</td>
                   <td class="text-center">
                     <span
                       v-if="it.status != null"
                       :class="
                         'badge rounded-pill bg-' +
-                        selectOptions.location_statuses[it.status].color
+                        selectOptions.holder_statuses[it.status].color
                       "
                       >{{
-                        selectOptions.location_statuses[it.status].name
+                        selectOptions.holder_statuses[it.status].name
                       }}</span
                     >
                   </td>
@@ -254,7 +254,7 @@
                         @click="
                           () => {
                             item = { ...it };
-                            item.status = selectOptions.location_statuses.find(
+                            item.status = selectOptions.holder_statuses.find(
                               (x) => {
                                 return x.id == it.status;
                               }
@@ -297,7 +297,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มคำขอย้ายสถานที่ติดตั้ง
+            แบบฟอร์มคำขอเปลี่ยนผู้ใช้งาน
           </h1>
           <button
             type="button"
@@ -310,15 +310,15 @@
           <form>
             <div class="row">
               <div class="col-12">
-                <label for="recipient-name" class="col-form-label"
-                  ><span class="text-danger">*</span>สถานที่ตั้ง(ใหม่) :</label
+                <label for="holder-name" class="col-form-label"
+                  ><span class="text-danger">*</span>ผู้ใช้งาน(ใหม่) :</label
                 >
                 <input
                   type="text"
                   class="form-control form-control-plaintext"
-                  id="txt-location"
-                  v-model="item.location"
-                  placeholder="สถานที่ตั้ง"
+                  id="txt-holder-name"
+                  v-model="item.holder_name"
+                  placeholder="ผู้ใช้งาน"
                 />
               </div>
               <div
@@ -338,7 +338,7 @@
                   "
                   label="name"
                   placeholder="สถานะการอนุมัติ"
-                  :options="selectOptions.location_statuses"
+                  :options="selectOptions.holder_statuses"
                   id="slt-status"
                   v-model="item.status"
                   class="form-control v-select-no-border"
@@ -404,7 +404,7 @@ const selectOptions = ref({
     { title: "40", value: 40 },
     { title: "60", value: 60 },
   ],
-  location_statuses: asset_data.data().location_statuses,
+  holder_statuses: asset_data.data().holder_statuses,
   asset_types: [],
   budget_types: [],
   departments: [],
@@ -476,12 +476,9 @@ const fetchItems = async () => {
     params["department_id"] = useCookie("user").value.department_id;
   }
 
-  let data = await $fetch(
-    `${runtimeConfig.public.apiBase}/asset-location-history`,
-    {
-      params: params,
-    }
-  ).catch((error) => error.data);
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/holder-history`, {
+    params: params,
+  }).catch((error) => error.data);
 
   items.value = data.data;
   totalPage.value = data.totalPage;
@@ -589,7 +586,7 @@ const onDelete = async (id) => {
 };
 
 const onSubmit = async () => {
-  if (item.value.location == null || item.value.location == "") {
+  if (item.value.holder_name == null || item.value.holder_name == "") {
     useToast("โปรดระบุข้อมูลให้ครบถ้วน", "error");
     return;
   }
@@ -597,7 +594,7 @@ const onSubmit = async () => {
   let type_object = {
     text_success: "เพิ่มคำขอเสร็จสิ้น",
     method: "post",
-    url: runtimeConfig.public.apiBase + "/asset-location-history",
+    url: runtimeConfig.public.apiBase + "/holder-history",
   };
 
   let approved_date = undefined;
@@ -653,7 +650,7 @@ const onSubmit = async () => {
             {
               method: "post",
               body: {
-                location: item.value.location,
+                holder_name: item.value.holder_name,
               },
             }
           );
@@ -672,7 +669,7 @@ const onSubmit = async () => {
 };
 
 useHead({
-  title: "รายการคำขอย้ายสถานที่ติดตั้ง",
+  title: "รายการคำขอเปลี่ยนผู้ใช้งาน",
 });
 
 // definePageMeta({

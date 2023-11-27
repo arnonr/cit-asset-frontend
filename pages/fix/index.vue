@@ -7,7 +7,7 @@
             <div class="breadcrumb__list">
               <span> ผู้ดูแลระบบ </span>
               <span class="dvdr"><i class="fa-solid fa-circle-small"></i></span>
-              <span> รายการคำขอย้ายสถานที่ติดตั้ง </span>
+              <span> รายการคำขอแจ้งซ่อม </span>
             </div>
           </div>
         </div>
@@ -138,8 +138,8 @@
         <div class="col-12 col-lg-4">
           <v-select
             label="name"
-            placeholder="สถานะคำขอย้าย"
-            :options="selectOptions.location_statuses"
+            placeholder="สถานะคำขอแจ้งซ่อม"
+            :options="selectOptions.fix_statuses"
             v-model="search.status"
             class="form-control v-select-no-border"
             :clearable="true"
@@ -178,7 +178,7 @@
       <div class="mt-10 mb-30 pl-10 pt-15 pb-10 bg-grey">
         <h4>
           <i class="fa-regular fa-list"></i>
-          <span class="ml-10">รายการคำขอย้ายสถานที่ติดตั้ง</span>
+          <span class="ml-10">รายการคำขอแจ้งซ่อม</span>
         </h4>
       </div>
 
@@ -190,10 +190,12 @@
                 <tr>
                   <th class="text-center">รหัสครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ติดตั้ง</th>
-                  <th class="text-center">สถานะคำขอย้าย</th>
-                  <th class="text-center">วันที่ขอย้าย</th>
+                  <th class="text-center">รายละเอียด</th>
+                  <th class="text-center">ราคา</th>
+                  <th class="text-center">วันที่แจ้งซ่อม</th>
                   <th class="text-center">วันที่อนุมัติ</th>
+                  <th class="text-center">สถานะคำขอแจ้งซ่อม</th>
+                  <th class="text-center">หมายเหตุ</th>
                   <th
                     class="text-center"
                     v-if="
@@ -209,19 +211,8 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td>{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
-                  <td>{{ it.location }}</td>
-                  <td class="text-center">
-                    <span
-                      v-if="it.status != null"
-                      :class="
-                        'badge rounded-pill bg-' +
-                        selectOptions.location_statuses[it.status].color
-                      "
-                      >{{
-                        selectOptions.location_statuses[it.status].name
-                      }}</span
-                    >
-                  </td>
+                  <td>{{ it.description }}</td>
+                  <td>{{ it.price }}</td>
                   <td class="text-center">
                     {{
                       it.created_at != null
@@ -240,6 +231,19 @@
                         : "-"
                     }}
                   </td>
+                  <td class="text-center">
+                    <span
+                      v-if="it.status != null"
+                      :class="
+                        'badge rounded-pill bg-' +
+                        selectOptions.fix_statuses[it.status].color
+                      "
+                      >{{ selectOptions.fix_statuses[it.status].name }}</span
+                    >
+                  </td>
+                  <td class="text-center">
+                    {{ it.reject_comment }}
+                  </td>
 
                   <td
                     class="text-center"
@@ -254,7 +258,7 @@
                         @click="
                           () => {
                             item = { ...it };
-                            item.status = selectOptions.location_statuses.find(
+                            item.status = selectOptions.fix_statuses.find(
                               (x) => {
                                 return x.id == it.status;
                               }
@@ -297,7 +301,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มคำขอย้ายสถานที่ติดตั้ง
+            แบบฟอร์มคำขอเปลี่ยนผู้ใช้งาน
           </h1>
           <button
             type="button"
@@ -310,15 +314,27 @@
           <form>
             <div class="row">
               <div class="col-12">
-                <label for="recipient-name" class="col-form-label"
-                  ><span class="text-danger">*</span>สถานที่ตั้ง(ใหม่) :</label
+                <label for="fix-description" class="col-form-label"
+                  ><span class="text-danger">*</span>รายละเอียด :</label
                 >
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  style="min-height: 100px"
+                  id="txt-fix-description"
+                  v-model="item.description"
+                  placeholder="รายละเอียด"
+                >
+                </textarea>
+              </div>
+              <div class="col-12">
+                <label for="fix-price" class="col-form-label">ราคา :</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control form-control-plaintext"
-                  id="txt-location"
-                  v-model="item.location"
-                  placeholder="สถานที่ตั้ง"
+                  id="txt-fix-price"
+                  v-model="item.price"
+                  placeholder="ราคา"
                 />
               </div>
               <div
@@ -338,12 +354,32 @@
                   "
                   label="name"
                   placeholder="สถานะการอนุมัติ"
-                  :options="selectOptions.location_statuses"
+                  :options="selectOptions.fix_statuses"
                   id="slt-status"
                   v-model="item.status"
                   class="form-control v-select-no-border"
                   :clearable="true"
                 ></v-select>
+              </div>
+              <div
+                class="col-12"
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
+              >
+                <label for="fix-reject_comment" class="col-form-label"
+                  >หมายเหตุ :</label
+                >
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  style="min-height: 100px"
+                  id="txt-fix-reject_comment"
+                  v-model="item.reject_comment"
+                  placeholder="หมายเหตุ"
+                >
+                </textarea>
               </div>
             </div>
           </form>
@@ -404,7 +440,7 @@ const selectOptions = ref({
     { title: "40", value: 40 },
     { title: "60", value: 60 },
   ],
-  location_statuses: asset_data.data().location_statuses,
+  fix_statuses: asset_data.data().fix_statuses,
   asset_types: [],
   budget_types: [],
   departments: [],
@@ -476,12 +512,9 @@ const fetchItems = async () => {
     params["department_id"] = useCookie("user").value.department_id;
   }
 
-  let data = await $fetch(
-    `${runtimeConfig.public.apiBase}/asset-location-history`,
-    {
-      params: params,
-    }
-  ).catch((error) => error.data);
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/repair-history`, {
+    params: params,
+  }).catch((error) => error.data);
 
   items.value = data.data;
   totalPage.value = data.totalPage;
@@ -589,7 +622,7 @@ const onDelete = async (id) => {
 };
 
 const onSubmit = async () => {
-  if (item.value.location == null || item.value.location == "") {
+  if (item.value.description == null || item.value.description == "") {
     useToast("โปรดระบุข้อมูลให้ครบถ้วน", "error");
     return;
   }
@@ -597,7 +630,7 @@ const onSubmit = async () => {
   let type_object = {
     text_success: "เพิ่มคำขอเสร็จสิ้น",
     method: "post",
-    url: runtimeConfig.public.apiBase + "/asset-location-history",
+    url: runtimeConfig.public.apiBase + "/repair-history",
   };
 
   let approved_date = undefined;
@@ -647,17 +680,6 @@ const onSubmit = async () => {
     .then(async (res) => {
       if (res.msg == "success") {
         useToast(type_object.text_success, "success");
-        if (update_location.value == true) {
-          await $fetch(
-            runtimeConfig.public.apiBase + "/asset/" + item.value.asset_id,
-            {
-              method: "post",
-              body: {
-                location: item.value.location,
-              },
-            }
-          );
-        }
 
         modalForm.hide();
         fetchItems();
@@ -672,7 +694,7 @@ const onSubmit = async () => {
 };
 
 useHead({
-  title: "รายการคำขอย้ายสถานที่ติดตั้ง",
+  title: "รายการคำขอแจ้งซ่อม",
 });
 
 // definePageMeta({

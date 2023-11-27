@@ -11,15 +11,20 @@ export default {
         {
           id: 2,
           hasDropdown: false,
-          title: 'Asset',
+          title: "Asset",
           link: "/asset",
         },
-        // {
-        //   id: 3,
-        //   title: "News & Annoucements",
-        //   hasDropdown: false,
-        //   link: "/news",
-        // },
+        {
+          id: 3,
+          title: "Request",
+          hasDropdown: true,
+          link: "#",
+          submenus: [
+            { title: "Location", link: "/location" },
+            { title: "Holder", link: "/holder" },
+            { title: "Fix", link: "/fix" },
+          ],
+        },
         {
           id: 4,
           title: "Manage",
