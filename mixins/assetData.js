@@ -45,6 +45,26 @@ export default {
           color: "success",
         },
       ],
+      level_statuses: [
+        {
+          id: 1,
+          value: 1,
+          name: "แอดมิน",
+          color: "warning",
+        },
+        {
+          id: 2,
+          value: 2,
+          name: "เจ้าหน้าที่พัสดุ",
+          color: "success",
+        },
+        {
+          id: 3,
+          value: 3,
+          name: "เลขาภาควิชา",
+          color: "success",
+        },
+      ],
       user_statuses: [
         {
           id: 0,
@@ -126,6 +146,20 @@ export default {
           value: 2,
           name: "ไม่อนุมัติ",
           color: "danger",
+        },
+      ],
+      actives: [
+        {
+          id: 0,
+          value: 0,
+          name: "none",
+          color: "warning",
+        },
+        {
+          id: 1,
+          value: 1,
+          name: "active",
+          color: "success",
         },
       ],
     };

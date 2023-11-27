@@ -29,6 +29,7 @@ export default {
             { title: "Asset Type", link: "/asset-type" },
             { title: "Budget", link: "/budget-type" },
             { title: "Department", link: "/department" },
+            { title: "User", link: "/user" },
           ],
         },
         // {

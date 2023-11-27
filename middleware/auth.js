@@ -24,7 +24,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     (!token.value && to?.name === "asset-edit-id") ||
     (!token.value && to?.name === "asset-type") ||
     (!token.value && to?.name === "budget-type") ||
-    (!token.value && to?.name === "department-type")
+    (!token.value && to?.name === "department-type") ||
+    (!token.value && to?.name === "user")
     // ||
     // (!token.value && to?.name === "dashboard")
   ) {
