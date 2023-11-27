@@ -201,6 +201,14 @@ h6 {
     .d-print-none {
         display: none;
     }
+
+    .pagebreak {
+        clear: both;
+        page-break-before: always;
+    }
+
+    /* page-break-after works, as well */
+
 }
 
 /* skin-dark */

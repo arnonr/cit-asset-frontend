@@ -59,7 +59,7 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">ปี : </span>
+        <span class="fw-bold">ปีที่รับเข้าคลัง (ค.ศ.) : </span>
         <span class="fw-bold text-primary">{{ item.input_year }}</span>
         <hr class="hr-separator" />
       </div>
@@ -72,14 +72,14 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">วันที่...... : </span>
+        <span class="fw-bold">วันที่คณะกรรมการเห็นถูกต้องครบถ้วน : </span>
         <span class="fw-bold text-primary">{{
           dayjs(item.approved_date).locale("th").format("DD MMM BBBB")
         }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">ผู้ขาย : </span>
+        <span class="fw-bold">ผู้จัดจำหน่าย : </span>
         <span class="fw-bold text-primary">{{ item.vendor }}</span>
         <hr class="hr-separator" />
       </div>
@@ -99,17 +99,17 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12">
-        <span class="fw-bold">เลขซีเรียล : </span>
+        <span class="fw-bold">หมายเลขประจำเครื่อง : </span>
         <span class="fw-bold text-primary">{{ item.serial_number }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">ราคา : </span>
+        <span class="fw-bold">มูลค่าการได้มา : </span>
         <span class="fw-bold text-primary">{{ item.price }}.00 บาท</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">แหล่งงบประมาณ : </span>
+        <span class="fw-bold">แหล่งเงิน : </span>
         <span class="fw-bold text-primary">{{ item.budget_type?.name }}</span>
         <hr class="hr-separator" />
       </div>
@@ -128,7 +128,7 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12">
-        <span class="fw-bold">สถานที่ตั้ง : </span>
+        <span class="fw-bold">สถานที่ติดตั้ง : </span>
         <span class="fw-bold text-primary">{{ item.location }}</span>
         <hr class="hr-separator" />
       </div>

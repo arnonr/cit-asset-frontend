@@ -375,7 +375,7 @@ const attributes = [
   },
   {
     name: "input_year",
-    show_name: "ปีงบประมาณ (ค.ศ.)",
+    show_name: "ปีที่รับเข้าคลัง (ค.ศ.)",
     input_type: "text",
     required: true,
   },
@@ -386,7 +386,7 @@ const attributes = [
   },
   {
     name: "approved_date",
-    show_name: "วันที่อนุมัติ",
+    show_name: "วันที่คณะกรรมการเห็นถูกต้องครบถ้วน",
     input_type: "datepicker",
   },
   {
@@ -406,17 +406,17 @@ const attributes = [
   },
   {
     name: "serial_number",
-    show_name: "ซีเรียลนัมเบอร์",
+    show_name: "หมายเลขประจำเครื่อง",
     input_type: "text",
   },
   {
     name: "price",
-    show_name: "ราคา",
+    show_name: "มูลค่าการได้มา",
     input_type: "number",
   },
   {
     name: "budget_type_id",
-    show_name: "งบประมาณ",
+    show_name: "แหล่งเงิน",
     input_type: "select",
     label: "title",
     options: "budget_types",
@@ -431,7 +431,7 @@ const attributes = [
   },
   {
     name: "location",
-    show_name: "สถานที่ตั้ง",
+    show_name: "สถานที่ติดตั้ง",
     input_type: "text",
   },
   {

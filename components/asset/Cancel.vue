@@ -49,11 +49,6 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import "dayjs/locale/th";
-import buddhistEra from "dayjs/plugin/buddhistEra";
-dayjs.extend(buddhistEra);
-
 export default {
   props: {
     item: {},
@@ -63,4 +58,11 @@ export default {
     },
   },
 };
+</script>
+
+<script setup>
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+dayjs.extend(buddhistEra);
 </script>

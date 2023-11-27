@@ -47,6 +47,19 @@
             :clearable="true"
           ></v-select>
         </div>
+        <div
+          class="col-12 col-lg-4"
+          v-if="selectOptions.budget_types.length != 0"
+        >
+          <v-select
+            label="title"
+            placeholder="แหล่งเงิน"
+            :options="selectOptions.budget_types"
+            v-model="search.budget_type_id"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
+        </div>
 
         <div class="col-12 col-lg-4">
           <input
@@ -54,7 +67,7 @@
             v-model="search.input_year"
             name="title"
             type="text"
-            placeholder="ปีงบประมาณ"
+            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี คศ.)"
           />
         </div>
 
@@ -94,7 +107,7 @@
         >
           <v-select
             label="title"
-            placeholder="หน่วยงาน"
+            placeholder="หน่วยงานที่รับผิดชอบ"
             :options="selectOptions.departments"
             v-model="search.department_id"
             class="form-control v-select-no-border"
@@ -103,14 +116,58 @@
         </div>
 
         <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
+            v-model="search.drawer_name"
+            name="drawer_name"
+            type="text"
+            placeholder="ชื่อผู้เบิก"
+          />
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
+            v-model="search.holder_name"
+            name="holder_name"
+            type="text"
+            placeholder="ชื่อผู้ใช้งาน"
+          />
+        </div>
+
+        <div class="col-12 col-lg-4">
           <v-select
             label="name"
-            placeholder="สถานะ"
+            placeholder="สถานะครุภัณฑ์"
             :options="selectOptions.asset_statuses"
             v-model="search.asset_status"
             class="form-control v-select-no-border"
             :clearable="true"
           ></v-select>
+        </div>
+
+        <!-- Date -->
+        <div class="col-12 col-lg-4">
+          <!-- <v-select
+            label="name"
+            placeholder="อายุการใช้งาน"
+            :options="selectOptions.warranty_day"
+            v-model="search.asset_status"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select> -->
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <!-- น้อยกว่า 1 ปี, น้อยกว่า 2 ปี, น้อยกว่า 6 เดือน, น้อยกว่า 3 เดือน -->
+          <!-- <v-select
+            label="name"
+            placeholder="การรับประกันที่เหลือ"
+            :options="selectOptions.warranty_days"
+            v-model="search.warranty_day"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select> -->
         </div>
       </div>
     </div>
@@ -181,13 +238,13 @@
                 <tr>
                   <th class="text-center"></th>
                   <th class="text-center">รหัส</th>
-                  <th class="text-center">ชื่อ</th>
+                  <th class="text-center">ชื่อครุภัณฑ์</th>
                   <th class="text-center">ยี่ห้อ</th>
                   <th class="text-center">รุ่น</th>
                   <th class="text-center">ประเภทครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ตั้ง</th>
-                  <th class="text-center">หน่วยงาน</th>
-                  <th class="text-center">สถานะ</th>
+                  <th class="text-center">สถานที่ติดตั้ง</th>
+                  <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
+                  <th class="text-center">สถานะครุภัณฑ์</th>
                   <th class="text-center">จัดการ</th>
                 </tr>
               </thead>
@@ -362,7 +419,7 @@
 
   <!-- Qr -->
   <ClientOnly>
-    <div class="printable" v-for="(it, idx) in qr_items" :key="idx">
+    <div class="printable pagebreak" v-for="(it, idx) in qr_items" :key="idx">
       <figure class="qrcode">
         <vue-qrcode
           :value="'http://localhost:3009/asset/' + it.id"
@@ -375,7 +432,10 @@
         ></vue-qrcode>
         <img src="~/assets/img/logo/logo_cit.png" class="qrcode__image" />
       </figure>
-      <div class="text-center" style="width: 200px; top: -20px !important">
+      <div
+        class="text-center pagebreak"
+        style="width: 200px; top: -20px !important"
+      >
         {{ it.asset_code }}
         <hr />
       </div>
@@ -422,6 +482,7 @@ const selectOptions = ref({
   ],
   asset_statuses: asset_data.data().asset_statuses,
   asset_types: [],
+  budget_types: [],
   departments: [],
 });
 const qr_items = ref([]);
@@ -441,7 +502,17 @@ const fetchAssetTypes = async () => {
     return { title: e.name, value: e.id };
   });
 };
+const fetchBudgetTypes = async () => {
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/budget-type`, {
+    params: {
+      is_active: 1,
+    },
+  }).catch((error) => error.data);
 
+  selectOptions.value.budget_types = data.data.map((e) => {
+    return { title: e.name, value: e.id };
+  });
+};
 const fetchDepartments = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/department`, {
     params: {
@@ -461,6 +532,10 @@ const fetchItems = async () => {
       search.value.asset_type_id == null
         ? undefined
         : search.value.asset_type_id.value,
+    budget_type_id:
+      search.value.budget_type_id == null
+        ? undefined
+        : search.value.budget_type_id.value,
     asset_status:
       search.value.asset_status == null
         ? undefined
@@ -509,6 +584,10 @@ const fetchItemsExport = async () => {
       search.value.asset_status == null
         ? undefined
         : search.value.asset_status.value,
+    budget_type_id:
+      search.value.budget_type_id == null
+        ? undefined
+        : search.value.budget_type_id.value,
     department_id:
       search.value.department_id == null
         ? undefined
@@ -683,6 +762,7 @@ const onGenerateQR = (it) => {
 
 onMounted(() => {
   fetchAssetTypes();
+  fetchBudgetTypes();
   fetchDepartments();
   fetchItems();
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
@@ -718,6 +798,4 @@ definePageMeta({
   top: 50%;
   transform: translate(-50%, -50%);
 }
-
-
 </style>
