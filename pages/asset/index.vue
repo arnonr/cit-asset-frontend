@@ -369,7 +369,9 @@
                       <th class="text-center">ผล</th>
                       <th class="text-center">หมายเหตุ</th>
                       <th class="text-center">สถานะ</th>
-                      <th class="text-center">จัดการ</th>
+                      <th class="text-center" style="min-width: 150px">
+                        จัดการ
+                      </th>
                     </tr>
                   </thead>
                   <tbody v-if="items.length != 0">
