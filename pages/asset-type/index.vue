@@ -31,7 +31,7 @@
             v-model="search.code"
             name="title"
             type="text"
-            placeholder="รหัสครุภัณฑ์"
+            placeholder="หมายเลขครุภัณฑ์"
           />
         </div>
         <div class="col-12 col-lg-4">

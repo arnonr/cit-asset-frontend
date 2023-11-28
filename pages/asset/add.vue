@@ -363,7 +363,7 @@ const attributes = [
   },
   {
     name: "asset_code",
-    show_name: "รหัสครุภัณฑ์",
+    show_name: "หมายเลขครุภัณฑ์",
     input_type: "text",
     required: true,
   },
@@ -375,7 +375,7 @@ const attributes = [
   },
   {
     name: "input_year",
-    show_name: "ปีที่รับเข้าคลัง (ค.ศ.)",
+    show_name: "ปีที่รับเข้าคลัง (พ.ศ.)",
     input_type: "text",
     required: true,
   },
@@ -671,6 +671,10 @@ const onSubmit = async () => {
     ...item.value,
     secret_key: r,
     cover_photo: file.value.files != null ? file.value.files[0] : null,
+    input_year:
+      item.value.input_year != ""
+        ? Number(item.value.input_year) - 543
+        : undefined,
     asset_type_id:
       item.value.asset_type_id == null
         ? undefined

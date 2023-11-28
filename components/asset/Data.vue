@@ -1,7 +1,7 @@
 <template>
   <div class="postbox__details-content-wrapper mt-40">
     <div class="row" v-if="item">
-        <div class="col-12 text-center">
+      <div class="col-12 text-center">
         <!-- <img :src="item.cover_photo" alt="" style="max-width: 80%" /> -->
         <div class="mx-auto">
           <ClientOnly>
@@ -54,13 +54,13 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">รหัสครุภัณฑ์ : </span>
+        <span class="fw-bold">หมายเลขครุภัณฑ์ : </span>
         <span class="fw-bold text-primary">{{ item.asset_code }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
-        <span class="fw-bold">ปีที่รับเข้าคลัง (ค.ศ.) : </span>
-        <span class="fw-bold text-primary">{{ item.input_year }}</span>
+        <span class="fw-bold">ปีที่รับเข้าคลัง (พ.ศ.) : </span>
+        <span class="fw-bold text-primary">{{ item.input_year + 543 }}</span>
         <hr class="hr-separator" />
       </div>
 

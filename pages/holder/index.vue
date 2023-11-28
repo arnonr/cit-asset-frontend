@@ -196,7 +196,7 @@
             <table class="table table-bordered table-striped table-admin">
               <thead>
                 <tr>
-                  <th class="text-center">รหัสครุภัณฑ์</th>
+                  <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
                   <th class="text-center">ผู้ใช้งาน</th>
                   <th class="text-center">สถานะคำขอเปลี่ยน</th>
@@ -489,7 +489,7 @@ const fetchItems = async () => {
   json_data.value = [];
   items.value = data.data.map((e) => {
     json_data.value.push({
-      รหัสครุภัณฑ์: e.asset.asset_code,
+      หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
       ผู้ใช้งาน: e.holder_name,
       สถานะคำขอเปลี่ยนผู้ใช้งาน:
@@ -546,7 +546,7 @@ const fetchItemsExport = async () => {
   json_data.value = [];
   json_data.value = data.data.map((e) => {
     return {
-      รหัสครุภัณฑ์: e.asset.asset_code,
+      หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
       ผู้ใช้งาน: e.holder_name,
       สถานะคำขอเปลี่ยนผู้ใช้งาน:

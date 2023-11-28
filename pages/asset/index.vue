@@ -365,7 +365,7 @@
                 <table class="table table-bordered table-striped table-admin">
                   <thead>
                     <tr>
-                      <th class="text-center">รหัสครุภัณฑ์</th>
+                      <th class="text-center">หมายเลขครุภัณฑ์</th>
                       <th class="text-center">ผล</th>
                       <th class="text-center">หมายเหตุ</th>
                       <th class="text-center">สถานะ</th>
