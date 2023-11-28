@@ -17,7 +17,16 @@
           v-if="menu.hasDropdown && !menu.megaMenu && !menu.pages"
           class="has-dropdown"
         >
-          <nuxt-link :href="menu.link">{{ $t(menu.title) }}</nuxt-link>
+          <nuxt-link
+            :href="menu.link"
+            v-if="
+              is_user_type == 'admin' ||
+              (is_user_type == 'staff' &&
+                menu.title != 'Manage' &&
+                menu.title != 'Request')
+            "
+            >{{ $t(menu.title) }}</nuxt-link
+          >
           <ul
             class="submenu"
             :style="{ display: navTitle === menu.title ? 'block' : 'none' }"
@@ -152,7 +161,23 @@ export default {
       subMenu.value = subMenu.value === s_menu ? "" : s_menu;
     };
 
+    const is_user_type = ref("guest");
+    if (useCookie("user").value != undefined) {
+      if (useCookie("user").value.level == 1) {
+        is_user_type.value = "admin";
+      } else if (useCookie("user").value.level == 2) {
+        is_user_type.value = "staff";
+      } else if (useCookie("user").value.level == 3) {
+        is_user_type.value = "dep";
+      } else {
+        is_user_type.value = "guest";
+      }
+    } else {
+      is_user_type.value = "guest";
+    }
+
     return {
+      is_user_type,
       navTitle,
       subMenu,
       openMobileMenu,

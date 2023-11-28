@@ -41,7 +41,7 @@
           <div class="offcanvas__logo logo">
             <nuxt-link href="/">
               <img
-                src="~/assets/img/iconwebtechnopark/logo-sicc.png"
+                src="~/assets/img/logo/logo_cit.png"
                 style="width: 20%"
                 alt="logo"
               />
@@ -59,9 +59,7 @@
         >
           <div class="mean-bar">
             <!-- MobileMenus start -->
-            <mobile-menus
-              @close:Offcanvas="isOffCanvasOpen = $event"
-            />
+            <mobile-menus @close:Offcanvas="isOffCanvasOpen = $event" />
             <!-- MobileMenus end -->
           </div>
         </div>
