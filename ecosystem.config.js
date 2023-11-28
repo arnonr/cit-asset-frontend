@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: 'SICC',
+        name: 'CIT-ASSET',
         port: '4000',
         exec_mode: 'cluster',
         instances: 'max',
