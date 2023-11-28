@@ -182,6 +182,14 @@
         </h4>
       </div>
 
+      <div class="mb-30">
+        <json-excel :data="json_data" class="d-inline ms-2">
+          <button type="button" class="btn btn-success">
+            <i class="fa-regular fa-file"></i> Export Excel
+          </button>
+        </json-excel>
+      </div>
+
       <div class="row gx-2 grid">
         <div class="col-12">
           <div class="table-responsive">
@@ -217,9 +225,7 @@
                         'badge rounded-pill bg-' +
                         selectOptions.holder_statuses[it.status].color
                       "
-                      >{{
-                        selectOptions.holder_statuses[it.status].name
-                      }}</span
+                      >{{ selectOptions.holder_statuses[it.status].name }}</span
                     >
                   </td>
                   <td class="text-center">
@@ -480,9 +486,30 @@ const fetchItems = async () => {
     params: params,
   }).catch((error) => error.data);
 
-  items.value = data.data;
+  json_data.value = [];
+  items.value = data.data.map((e) => {
+    json_data.value.push({
+      รหัสครุภัณฑ์: e.asset.asset_code,
+      ชื่อครุภัณฑ์: e.asset.asset_name,
+      ผู้ใช้งาน: e.holder_name,
+      สถานะคำขอเปลี่ยนผู้ใช้งาน:
+        selectOptions.value.holder_statuses[e.status].name,
+      วันที่ขอเปลี่ยน:
+        e.created_at != null
+          ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
+          : "-",
+      วันที่อนุมัติ:
+        e.approved_at != null
+          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
+          : "-",
+    });
+    return e;
+  });
+
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
+
+  fetchItemsExport();
 };
 
 const fetchItemsExport = async () => {
@@ -492,10 +519,6 @@ const fetchItemsExport = async () => {
       search.value.asset_type_id == null
         ? undefined
         : search.value.asset_type_id.value,
-    asset_status:
-      search.value.asset_status == null
-        ? undefined
-        : search.value.asset_status.value,
     budget_type_id:
       search.value.budget_type_id == null
         ? undefined
@@ -504,6 +527,7 @@ const fetchItemsExport = async () => {
       search.value.department_id == null
         ? undefined
         : search.value.department_id.value,
+    status: search.value.status != null ? search.value.status.id : undefined,
     perPage: 100000,
     currentPage: currentPage.value,
     lang: "th",
@@ -515,18 +539,26 @@ const fetchItemsExport = async () => {
     params["department_id"] = useCookie("user").value.department_id;
   }
 
-  let data = await $fetch(`${runtimeConfig.public.apiBase}/asset`, {
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/holder-history`, {
     params: params,
   }).catch((error) => error.data);
 
   json_data.value = [];
   json_data.value = data.data.map((e) => {
-    // json_data.value.push({
-    //   รหัส: e.asset_code,
-    // });
-
     return {
-      รหัส: e.asset_code,
+      รหัสครุภัณฑ์: e.asset.asset_code,
+      ชื่อครุภัณฑ์: e.asset.asset_name,
+      ผู้ใช้งาน: e.holder_name,
+      สถานะคำขอเปลี่ยนผู้ใช้งาน:
+        selectOptions.value.holder_statuses[e.status].name,
+      วันที่ขอเปลี่ยน:
+        e.created_at != null
+          ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
+          : "-",
+      วันที่อนุมัติ:
+        e.approved_at != null
+          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
+          : "-",
     };
   });
 };
