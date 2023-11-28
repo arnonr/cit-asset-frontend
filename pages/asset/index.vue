@@ -160,14 +160,14 @@
 
         <div class="col-12 col-lg-4">
           <!-- น้อยกว่า 1 ปี, น้อยกว่า 2 ปี, น้อยกว่า 6 เดือน, น้อยกว่า 3 เดือน -->
-          <!-- <v-select
+          <v-select
             label="name"
             placeholder="การรับประกันที่เหลือ"
-            :options="selectOptions.warranty_days"
-            v-model="search.warranty_day"
+            :options="selectOptions.expire_days"
+            v-model="search.expire_day"
             class="form-control v-select-no-border"
             :clearable="true"
-          ></v-select> -->
+          ></v-select>
         </div>
       </div>
     </div>
@@ -245,7 +245,7 @@
                   <th class="text-center">สถานที่ติดตั้ง</th>
                   <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
                   <th class="text-center">สถานะครุภัณฑ์</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width: 150px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -486,6 +486,7 @@ const selectOptions = ref({
   asset_types: [],
   budget_types: [],
   departments: [],
+  expire_days: asset_data.data().expire_days,
 });
 const qr_items = ref([]);
 const import_result = ref([]);
@@ -546,6 +547,10 @@ const fetchItems = async () => {
       search.value.department_id == null
         ? undefined
         : search.value.department_id.value,
+    expire_day:
+      search.value.expire_day == null
+        ? undefined
+        : search.value.expire_day.id,
     perPage: perPage.value,
     currentPage: currentPage.value,
     lang: "th",
@@ -599,6 +604,10 @@ const fetchItemsExport = async () => {
       search.value.department_id == null
         ? undefined
         : search.value.department_id.value,
+    expire_day:
+      search.value.expire_day == null
+        ? undefined
+        : search.value.expire_day.id,
     perPage: 100000,
     currentPage: currentPage.value,
     lang: "th",

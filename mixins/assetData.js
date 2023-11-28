@@ -162,6 +162,28 @@ export default {
           color: "success",
         },
       ],
+      expire_days: [
+        {
+          id: 30,
+          value: 30,
+          name: "1 เดือน",
+        },
+        {
+          id: 90,
+          value: 90,
+          name: "3 เดือน",
+        },
+        {
+          id: 180,
+          value: 180,
+          name: "6 เดือน",
+        },
+        {
+          id: 360,
+          value: 360,
+          name: "1 ปี",
+        }
+      ],
     };
   },
 };
