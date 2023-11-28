@@ -562,7 +562,12 @@ const fetchItems = async () => {
   json_data.value = [];
   items.value = data.data.map((e) => {
     json_data.value.push({
-      รหัส: e.asset_code,
+      หมายเลขครุภัณฑ์: e.asset_code,
+      ชื่อครุภัณฑ์: e.asset_name,
+      หมายเลขประจำเครื่อง: e.serial_number,
+      ผู้เบิก: e.drawer_name,
+      ผู้ใช้งาน: e.holder_name,
+      มูลค่าการได้มา: e.price,
     });
 
     return e;
@@ -609,12 +614,13 @@ const fetchItemsExport = async () => {
 
   json_data.value = [];
   json_data.value = data.data.map((e) => {
-    // json_data.value.push({
-    //   รหัส: e.asset_code,
-    // });
-
     return {
-      รหัส: e.asset_code,
+      หมายเลขครุภัณฑ์: e.asset_code,
+      ชื่อครุภัณฑ์: e.asset_name,
+      หมายเลขประจำเครื่อง: e.serial_number,
+      ผู้เบิก: e.drawer_name,
+      ผู้ใช้งาน: e.holder_name,
+      มูลค่าการได้มา: e.price,
     };
   });
 };
@@ -664,15 +670,22 @@ const onImportSubmit = async () => {
     result.forEach((el) => {
       if (el.length != 0) {
         data.push({
-          asset_code: el[0],
+          asset_code: el[1],
+          input_year: el[2],
+          asset_name: el[3],
+          serial_number: el[4],
+          drawer_name: el[8],
+          price: el[9],
         });
       }
     });
 
+    console.log(data);
+
     let type_object = {
       text_success: "นำเข้าข้อมูลเสร็จสิ้น",
       method: "post",
-      url: runtimeConfig.public.apiBase + "/asset/import",
+      url: runtimeConfig.public.apiBase + "/asset/import-asset",
     };
 
     await $fetch(type_object.url, {
@@ -701,48 +714,6 @@ const onImportSubmit = async () => {
       })
       .catch((error) => error.data);
 
-    // studentListStore
-    //   .importSupervision({
-    //     semester_id: importData.value.semester_id,
-    //     data: data,
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       data = data.map((e) => {
-    //         let check = response.data.data.find((x) => {
-    //           return x.student_code == e.student_code;
-    //         });
-    //         if (check) {
-    //           e["status"] = check.status;
-    //           e["message"] = check.message;
-    //         }
-    //         return e;
-    //       });
-    //       console.log(data);
-    //       importResult.value = [...data];
-    //       // response.data.data.map((x) => {
-    //       //   return {
-    //       //     student_code: x.student_code,
-    //       //     // student_name: x.student_name,
-    //       //     // teacher_name:
-    //       //     status: x.status,
-    //       //     message: x.message,
-    //       //   };
-    //       // });
-    //       fetchItems();
-    //       // isDialogVisible.value = false;
-    //       // isOverlay.value = false;
-    //       // snackbarText.value = "สำเร็จ";
-    //       // snackbarColor.value = "success";
-    //       // isSnackbarVisible.value = true;
-    //     } else {
-    //       console.log("error");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     isOverlay.value = false;
-    //   });
   }
 };
 
