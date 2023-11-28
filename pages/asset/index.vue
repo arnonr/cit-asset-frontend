@@ -188,7 +188,7 @@
           class="btn btn-warning"
           @click="
             () => {
-              this.$router.push({ path: '/asset/add' });
+              router.push({ path: '/asset/add' });
             }
           "
         >
@@ -465,7 +465,7 @@ import XLSX from "xlsx";
 
 dayjs.extend(buddhistEra);
 // const route = useRoute();
-// const router = useRouter();
+const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const items = ref([]);
 const perPage = ref(20);
@@ -713,7 +713,6 @@ const onImportSubmit = async () => {
         }
       })
       .catch((error) => error.data);
-
   }
 };
 
