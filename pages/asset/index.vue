@@ -424,7 +424,7 @@
     <div class="printable pagebreak" v-for="(it, idx) in qr_items" :key="idx">
       <figure class="qrcode">
         <vue-qrcode
-          :value="'http://localhost:3009/asset/' + it.id"
+          :value="'http://172.16.214.67:4000/asset/' + it.id"
           tag="img"
           :options="{
             errorCorrectionLevel: 'Q',
