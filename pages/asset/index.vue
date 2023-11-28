@@ -229,6 +229,28 @@
           QR CODE
         </button>
       </div>
+      <div class="row row-justify-end mb-20">
+        <div class="col-lg-3">
+          <v-select
+            label="name"
+            placeholder="เรียงลำดับ"
+            :options="selectOptions.order_by"
+            v-model="search.orderBy"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
+        </div>
+        <div class="col-lg-3">
+          <v-select
+            label="name"
+            placeholder="ลำดับ"
+            :options="selectOptions.order"
+            v-model="search.order"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
+        </div>
+      </div>
 
       <div class="row gx-2 grid">
         <div class="col-12">
@@ -237,7 +259,7 @@
               <thead>
                 <tr>
                   <th class="text-center"></th>
-                  <th class="text-center">รหัส</th>
+                  <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
                   <th class="text-center">ยี่ห้อ</th>
                   <th class="text-center">รุ่น</th>
@@ -487,6 +509,45 @@ const selectOptions = ref({
   budget_types: [],
   departments: [],
   expire_days: asset_data.data().expire_days,
+  order: [
+    {
+      id: 1,
+      value: "desc",
+      name: "มาก > น้อย",
+    },
+    {
+      id: 2,
+      value: "asc",
+      name: "น้อย > มาก",
+    },
+  ],
+  order_by: [
+    {
+      id: 1,
+      value: "created_at",
+      name: "วันที่เพิ่มข้อมูลล่าสุด",
+    },
+    {
+      id: 2,
+      value: "asset_code",
+      name: "หมายเลขครุภัณฑ์",
+    },
+    {
+      id: 3,
+      value: "asset_name",
+      name: "ชื่อครุภัณฑ์",
+    },
+    {
+      id: 4,
+      value: "location",
+      name: "สถานที่ติดตั้ง",
+    },
+    {
+      id: 5,
+      value: "department_id",
+      name: "หน่วยงานที่รับผิดชอบ",
+    },
+  ],
 });
 const qr_items = ref([]);
 const import_result = ref([]);
@@ -548,14 +609,12 @@ const fetchItems = async () => {
         ? undefined
         : search.value.department_id.value,
     expire_day:
-      search.value.expire_day == null
-        ? undefined
-        : search.value.expire_day.id,
+      search.value.expire_day == null ? undefined : search.value.expire_day.id,
     perPage: perPage.value,
     currentPage: currentPage.value,
     lang: "th",
-    orderBy: "created_at",
-    order: "desc",
+    orderBy: search.value.orderBy ? search.value.orderBy.value : "created_at",
+    order: search.value.order ? search.value.order.value : "desc",
   };
 
   if (useCookie("user").value.level == 3) {
@@ -605,14 +664,12 @@ const fetchItemsExport = async () => {
         ? undefined
         : search.value.department_id.value,
     expire_day:
-      search.value.expire_day == null
-        ? undefined
-        : search.value.expire_day.id,
+      search.value.expire_day == null ? undefined : search.value.expire_day.id,
     perPage: 100000,
     currentPage: currentPage.value,
     lang: "th",
-    orderBy: "created_at",
-    order: "desc",
+    orderBy: search.value.orderBy ? search.value.orderBy.value : "created_at",
+    order: search.value.order ? search.value.order.value : "desc",
   };
 
   if (useCookie("user").value.level == 3) {
