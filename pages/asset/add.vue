@@ -594,7 +594,7 @@ uppy.on("upload-success", (file, response) => {
 uppy.on("file-removed", (file, reason) => {
   if (file.meta.asset_gallery_id != null) {
     $fetch(
-      `${runtimeConfig.public.apiBase}/asset-gallery/${file.meta.asset_gallery_id}`,
+      `${runtimeConfig.public.apiBase}/asset-photo/${file.meta.asset_gallery_id}`,
       {
         method: "DELETE",
       }
