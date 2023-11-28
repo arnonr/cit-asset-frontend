@@ -11,8 +11,7 @@
         :to="menu.link"
         v-if="
           is_user_type == 'admin' ||
-          (is_user_type == 'staff' && menu.title != 'Manage')||
-          (is_user_type == 'staff' && menu.title != 'Request')
+          (is_user_type == 'staff' && menu.title != 'Manage' && menu.title != 'Request')
         "
       >
         {{ $t(menu.title) }}
