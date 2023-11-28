@@ -579,7 +579,7 @@ const r = (Math.random() + 1).toString(36).substring(7);
 
 const uppy = new Uppy({
   meta: {
-    asset_id: null,
+    asset_id: route.params.id,
     secret_key: r,
     asset_gallery_id: null,
     table_name: "asset",
