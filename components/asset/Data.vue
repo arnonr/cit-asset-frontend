@@ -105,7 +105,7 @@
       </div>
       <div class="col-12 col-lg-6">
         <span class="fw-bold">มูลค่าการได้มา : </span>
-        <span class="fw-bold text-primary">{{ item.price }}.00 บาท</span>
+        <span class="fw-bold text-primary">{{ item.price }} บาท</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
