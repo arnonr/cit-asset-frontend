@@ -67,7 +67,7 @@
             v-model="search.input_year"
             name="title"
             type="text"
-            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี คศ.)"
+            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี (ปี พ.ศ.))"
           />
         </div>
 

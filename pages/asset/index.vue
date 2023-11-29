@@ -67,7 +67,7 @@
             v-model="search.input_year"
             name="title"
             type="text"
-            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี คศ.)"
+            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี พ.ศ.)"
           />
         </div>
 
@@ -181,55 +181,55 @@
           <span class="ml-10">รายการครุภัณฑ์</span>
         </h4>
       </div>
-      <div class="mb-30">
-        <button
-          type="button"
-          v-if="useCookie('user').value.level == 1"
-          class="btn btn-warning"
-          @click="
-            () => {
-              router.push({ path: '/asset/add' });
-            }
-          "
-        >
-          <i class="fa-regular fa-plus"></i>
-          ADD
-        </button>
-
-        <json-excel :data="json_data" class="d-inline ms-2">
-          <button type="button" class="btn btn-success">
-            <i class="fa-regular fa-file"></i> Export Excel
+      <div class="row mb-30">
+        <div class="col-lg-6">
+          <button
+            type="button"
+            v-if="useCookie('user').value.level == 1"
+            class="btn btn-warning"
+            @click="
+              () => {
+                router.push({ path: '/asset/add' });
+              }
+            "
+          >
+            <i class="fa-regular fa-plus"></i>
+            ADD
           </button>
-        </json-excel>
 
-        <button
-          type="button"
-          v-if="useCookie('user').value.level == 1"
-          class="btn btn-primary ms-2"
-          @click="
-            () => {
-              modalForm.show();
-            }
-          "
-        >
-          <i class="fa-regular fa-file-text"></i>
-          Import Asset
-        </button>
+          <json-excel :data="json_data" class="d-inline ms-2">
+            <button type="button" class="btn btn-success">
+              <i class="fa-regular fa-file"></i> Export Excel
+            </button>
+          </json-excel>
 
-        <button
-          type="button"
-          v-if="
-            useCookie('user').value.level == 1 ||
-            useCookie('user').value.level == 2
-          "
-          class="btn btn-info ms-2"
-          @click="onGenerateQR('ALL')"
-        >
-          <i class="fa-regular fa-qrcode"></i>
-          QR CODE
-        </button>
-      </div>
-      <div class="row row-justify-end mb-20">
+          <button
+            type="button"
+            v-if="useCookie('user').value.level == 1"
+            class="btn btn-primary ms-2"
+            @click="
+              () => {
+                modalForm.show();
+              }
+            "
+          >
+            <i class="fa-regular fa-file-text"></i>
+            Import Asset
+          </button>
+
+          <button
+            type="button"
+            v-if="
+              useCookie('user').value.level == 1 ||
+              useCookie('user').value.level == 2
+            "
+            class="btn btn-info ms-2"
+            @click="onGenerateQR('ALL')"
+          >
+            <i class="fa-regular fa-qrcode"></i>
+            QR CODE
+          </button>
+        </div>
         <div class="col-lg-3">
           <v-select
             label="name"
@@ -237,7 +237,7 @@
             :options="selectOptions.order_by"
             v-model="search.orderBy"
             class="form-control v-select-no-border"
-            :clearable="true"
+            :clearable="false"
           ></v-select>
         </div>
         <div class="col-lg-3">
@@ -247,7 +247,7 @@
             :options="selectOptions.order"
             v-model="search.order"
             class="form-control v-select-no-border"
-            :clearable="true"
+            :clearable="false"
           ></v-select>
         </div>
       </div>
@@ -267,7 +267,7 @@
                   <th class="text-center">สถานที่ติดตั้ง</th>
                   <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
                   <th class="text-center">สถานะครุภัณฑ์</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -497,7 +497,18 @@ const perPage = ref(20);
 const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
-const search = ref({});
+const search = ref({
+  orderBy: {
+    id: 1,
+    value: "created_at",
+    name: "วันที่เพิ่มข้อมูลล่าสุด",
+  },
+  order: {
+    id: 1,
+    value: "desc",
+    name: "มาก > น้อย",
+  },
+});
 const json_data = ref([]);
 const selectOptions = ref({
   perPage: [
@@ -614,8 +625,8 @@ const fetchItems = async () => {
     perPage: perPage.value,
     currentPage: currentPage.value,
     lang: "th",
-    orderBy: search.value.orderBy ? search.value.orderBy.value : "created_at",
-    order: search.value.order ? search.value.order.value : "desc",
+    orderBy: search.value.orderBy.value,
+    order: search.value.order.value,
   };
 
   if (useCookie("user").value.level == 3) {
