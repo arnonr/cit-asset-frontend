@@ -111,6 +111,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form-1"
     tabindex="-1"
     aria-labelledby="modal-form-1"

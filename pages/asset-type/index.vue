@@ -78,16 +78,16 @@
             <table class="table table-bordered table-striped table-admin">
               <thead>
                 <tr>
-                  <th class="text-center">รหัสประเภทครุภัณฑ์</th>
+                  <th class="text-center" style="max-width:60px">รหัสประเภทครุภัณฑ์</th>
                   <th class="text-center">ชื่อประเภทครุภัณฑ์</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
                 <tr v-for="(it, idx) in items" :key="idx">
-                  <td cla ss="text-center">{{ it.code }}</td>
-                  <td cla ss="text-center">{{ it.name }}</td>
+                  <td class="text-center">{{ it.code }}</td>
+                  <td class="text-center">{{ it.name }}</td>
                   <th class="text-center">
                     <span
                       v-if="it.is_active != null"
@@ -144,6 +144,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form"
     tabindex="-1"
     aria-labelledby="modal-form"
@@ -302,13 +303,13 @@ onMounted(() => {
 
 const onConfirmDelete = async (id) => {
   Swal.fire({
-    title: "Are you sure?",
+    title: "Are you sure?", 
     text: "You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);

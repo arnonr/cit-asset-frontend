@@ -8,7 +8,7 @@
             <div class="login__wrapper">
               <div class="login__top mb-30 text-center">
                 <h3 class="login__title">CIT-ASSET</h3>
-                <p>Enter your email account.</p>
+                <p>Enter your ICIT ACCOUNT</p>
               </div>
               <div class="login__form">
                 <!-- form start -->

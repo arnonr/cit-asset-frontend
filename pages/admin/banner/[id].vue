@@ -184,7 +184,7 @@ const onConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);

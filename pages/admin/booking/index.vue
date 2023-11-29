@@ -99,7 +99,7 @@
                   <th class="text-center">ประเภทข่าว</th>
                   <th class="text-center">วันที่ลงข่าว</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">

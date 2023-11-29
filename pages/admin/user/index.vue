@@ -135,7 +135,7 @@
                   <th class="text-center">ประเภทสมาชิก</th>
                   <th class="text-center">กลุ่มผู้ใช้งาน</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">

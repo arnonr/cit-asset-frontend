@@ -267,7 +267,7 @@
                   <th class="text-center">สถานที่ติดตั้ง</th>
                   <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
                   <th class="text-center">สถานะครุภัณฑ์</th>
-                  <th class="text-center" style="min-width: 150px">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -346,6 +346,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form"
     tabindex="-1"
     aria-labelledby="modal-form"

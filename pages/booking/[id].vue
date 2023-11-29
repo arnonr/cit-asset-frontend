@@ -293,7 +293,7 @@
                                     @click="onConfirmDelete(booking.id)"
                                   >
                                     <i class="fa-regular fa-trash"></i>
-                                    <span class="pl-5">cancle</span>
+                                    <span class="pl-5">cancel</span>
                                   </button>
                                 </div>
                               </div>
@@ -482,7 +482,7 @@ const onConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);

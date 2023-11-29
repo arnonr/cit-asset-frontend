@@ -295,7 +295,7 @@
                               <th class="text-center">หน่วย (EN)</th>
                               <th class="text-center">ราคา</th>
                               <th class="text-center">สถานะ</th>
-                              <th class="text-center">จัดการ</th>
+                              <th class="text-center" style="min-width:110px;">จัดการ</th>
                             </tr>
                           </thead>
                           <tbody v-if="method_items.length != 0">
@@ -380,6 +380,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form"
     tabindex="-1"
     aria-labelledby="modal-form"
@@ -621,7 +622,7 @@ const onConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);
@@ -652,7 +653,7 @@ const onMethodConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onMethodDelete(id);

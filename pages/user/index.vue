@@ -83,7 +83,7 @@
                   <th class="text-center">ภาควิชา</th>
                   <th class="text-center">ประเภทผู้ใช้งาน</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -163,6 +163,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form"
     tabindex="-1"
     aria-labelledby="modal-form"
@@ -368,7 +369,7 @@ const onConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);
@@ -398,7 +399,8 @@ const onSubmit = async () => {
     item.value.is_active.id == null ||
     item.value.level == null ||
     item.value.level.id == null ||
-    item.value.name == ""
+    item.value.name == "" ||
+    item.value.name == null
   ) {
     useToast("โปรดระบุข้อมูลให้ครบถ้วน", "error");
     return;

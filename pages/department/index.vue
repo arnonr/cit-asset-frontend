@@ -69,16 +69,18 @@
             <table class="table table-bordered table-striped table-admin">
               <thead>
                 <tr>
-                  <th class="text-center">รหัสภาควิชา</th>
+                  <th class="text-center" style="max-width: 60px">
+                    รหัสภาควิชา
+                  </th>
                   <th class="text-center">ชื่อภาควิชา</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width:110px;">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
                 <tr v-for="(it, idx) in items" :key="idx">
-                  <td cla ss="text-center">{{ it.code }}</td>
-                  <td cla ss="text-center">{{ it.name }}</td>
+                  <td class="text-center">{{ it.code }}</td>
+                  <td class="text-center">{{ it.name }}</td>
                   <th class="text-center">
                     <span
                       v-if="it.is_active != null"
@@ -98,7 +100,7 @@
                           item = {};
                           let is_active = selectOptions.actives[it.is_active];
                           item = { ...it, is_active: is_active };
-                         
+
                           modalForm.show();
                         }
                       "
@@ -136,6 +138,7 @@
   <!-- Modal -->
   <div
     class="modal fade"
+    data-bs-backdrop="static"
     id="modal-form"
     tabindex="-1"
     aria-labelledby="modal-form"
@@ -299,7 +302,7 @@ const onConfirmDelete = async (id) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Cancle it!",
+    confirmButtonText: "Yes, Cancel it!",
   }).then((result) => {
     if (result.isConfirmed) {
       onDelete(id);
@@ -328,7 +331,9 @@ const onSubmit = async () => {
     item.value.is_active == null ||
     item.value.is_active.id == null ||
     item.value.name == "" ||
-    item.value.name == null
+    item.value.name == null ||
+    item.value.code == "" ||
+    item.value.code == null
   ) {
     useToast("โปรดระบุข้อมูลให้ครบถ้วน", "error");
     return;

@@ -99,7 +99,7 @@
                   <th class="text-center">อีเมล</th>
                   <th class="text-center" style="min-width: 80px">ลำดับ</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">

@@ -81,7 +81,7 @@
                 <tr>
                   <th class="text-center">ชื่อ (TH)</th>
                   <th class="text-center">ชื่อ (EN)</th>
-                  <th class="text-center">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">

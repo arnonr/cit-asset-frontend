@@ -24,7 +24,7 @@
                 </NuxtLink>
 
                 <h5 class="d-none d-xl-block d-lg-block text-color-secondary">
-                  ระบบบริหารจัดการครุภัณฑ์ วิทยาลัยเทคโนโลยีอุตสาหกรรม
+                  ระบบบริหารจัดการครุภัณฑ์ด้วยคิวอาร์โค้ด วิทยาลัยเทคโนโลยีอุตสาหกรรม
                 </h5>
                 <h6 class="d-none d-xl-block d-lg-block text-color-secondary">
                   Asset Management System, College of Industrial Technology
