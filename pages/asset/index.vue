@@ -62,13 +62,14 @@
         </div>
 
         <div class="col-12 col-lg-4">
-          <input
-            class="form-control"
+          <v-select
+            label="name"
+            placeholder="ปีที่เข้าคลัง"
+            :options="selectOptions.input_years"
             v-model="search.input_year"
-            name="title"
-            type="text"
-            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี พ.ศ.)"
-          />
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
         </div>
 
         <div class="col-12 col-lg-4">
@@ -146,6 +147,17 @@
           ></v-select>
         </div>
 
+        <div class="col-12 col-lg-4">
+          <v-select
+            label="name"
+            placeholder="ระยะเวลารับประกันที่เหลือ"
+            :options="selectOptions.expire_days"
+            v-model="search.expire_day"
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
+        </div>
+
         <!-- Date -->
         <div class="col-12 col-lg-4">
           <!-- <v-select
@@ -156,18 +168,6 @@
             class="form-control v-select-no-border"
             :clearable="true"
           ></v-select> -->
-        </div>
-
-        <div class="col-12 col-lg-4">
-          <!-- น้อยกว่า 1 ปี, น้อยกว่า 2 ปี, น้อยกว่า 6 เดือน, น้อยกว่า 3 เดือน -->
-          <v-select
-            label="name"
-            placeholder="การรับประกันที่เหลือ"
-            :options="selectOptions.expire_days"
-            v-model="search.expire_day"
-            class="form-control v-select-no-border"
-            :clearable="true"
-          ></v-select>
         </div>
       </div>
     </div>
@@ -521,6 +521,7 @@ const selectOptions = ref({
   budget_types: [],
   departments: [],
   expire_days: asset_data.data().expire_days,
+  input_years: asset_data.data().input_years(),
   order: [
     {
       id: 1,
@@ -622,6 +623,8 @@ const fetchItems = async () => {
         : search.value.department_id.value,
     expire_day:
       search.value.expire_day == null ? undefined : search.value.expire_day.id,
+    input_year:
+      search.value.input_year == null ? undefined : search.value.input_year.id,
     perPage: perPage.value,
     currentPage: currentPage.value,
     lang: "th",
@@ -677,6 +680,8 @@ const fetchItemsExport = async () => {
         : search.value.department_id.value,
     expire_day:
       search.value.expire_day == null ? undefined : search.value.expire_day.id,
+    input_year:
+      search.value.input_year == null ? undefined : search.value.input_year.id,
     perPage: 100000,
     currentPage: currentPage.value,
     lang: "th",

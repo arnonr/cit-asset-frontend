@@ -62,13 +62,14 @@
         </div>
 
         <div class="col-12 col-lg-4">
-          <input
-            class="form-control"
+          <v-select
+            label="name"
+            placeholder="ปีที่เข้าคลัง"
+            :options="selectOptions.input_years"
             v-model="search.input_year"
-            name="title"
-            type="text"
-            placeholder="ช่วงเวลาที่ขึ้นทะเบียน (ปี พ.ศ.)"
-          />
+            class="form-control v-select-no-border"
+            :clearable="true"
+          ></v-select>
         </div>
 
         <div class="col-12 col-lg-4">
@@ -412,6 +413,7 @@ const selectOptions = ref({
     { title: "60", value: 60 },
   ],
   holder_statuses: asset_data.data().holder_statuses,
+  input_years: asset_data.data().input_years(),
   asset_types: [],
   budget_types: [],
   departments: [],
@@ -472,6 +474,8 @@ const fetchItems = async () => {
       search.value.departmentid != null
         ? search.value.department_id
         : undefined,
+    input_year:
+      search.value.input_year == null ? undefined : search.value.input_year.id,
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: perPage.value,
     currentPage: currentPage.value,
@@ -528,6 +532,8 @@ const fetchItemsExport = async () => {
       search.value.department_id == null
         ? undefined
         : search.value.department_id.value,
+    input_year:
+      search.value.input_year == null ? undefined : search.value.input_year.id,
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: 100000,
     currentPage: currentPage.value,

@@ -166,24 +166,59 @@ export default {
         {
           id: 30,
           value: 30,
-          name: "1 เดือน",
+          name: "น้อยกว่า 1 เดือน",
         },
         {
           id: 90,
           value: 90,
-          name: "3 เดือน",
+          name: "น้อยกว่า 3 เดือน",
         },
         {
           id: 180,
           value: 180,
-          name: "6 เดือน",
+          name: "น้อยกว่า 6 เดือน",
         },
         {
           id: 360,
           value: 360,
-          name: "1 ปี",
-        }
+          name: "น้อยกว่า 1 ปี",
+        },
+        {
+          id: 720,
+          value: 720,
+          name: "น้อยกว่า 2 ปี",
+        },
+        {
+          id: 1080,
+          value: 1080,
+          name: "น้อยกว่า 3 ปี",
+        },
+        {
+          id: 1440,
+          value: 1440,
+          name: "น้อยกว่า 4 ปี",
+        },
+        {
+          id: 1800,
+          value: 1800,
+          name: "น้อยกว่า 5 ปี",
+        },
       ],
+      input_years: () => {
+        let year = new Date().getFullYear();
+
+        let year_data = [];
+
+        for (let i = 0; i < 11; i++) {
+          year_data.push({
+            id: Number(year)-i,
+            value: Number(year)-i,
+            name: (Number(year)-i) + 543,
+          });
+        }
+
+        return year_data;
+      },
     };
   },
 };
