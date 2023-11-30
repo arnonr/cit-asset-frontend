@@ -312,6 +312,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...location_item.value,
       created_by: created_by,
@@ -331,6 +336,11 @@ const onSubmit = async () => {
             runtimeConfig.public.apiBase + "/asset/" + route.params.id,
             {
               method: "post",
+              headers: {
+                Authorization: useCookie("token").value
+                  ? `Bearer ${useCookie("token").value}`
+                  : "",
+              },
               body: {
                 location: location_item.value.location,
               },

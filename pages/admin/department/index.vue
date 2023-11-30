@@ -75,7 +75,7 @@
                   <th class="text-center">ชื่อ (EN)</th>
                   <th class="text-center">ลำดับ</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -287,12 +287,9 @@ const fetchItems = async () => {
     lang: "th",
   };
 
-  let data = await $fetch(
-    `${runtimeConfig.public.apiBase}/department`,
-    {
-      params: params,
-    }
-  ).catch((error) => error.data);
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/department`, {
+    params: params,
+  }).catch((error) => error.data);
 
   items.value = data.data;
   totalPage.value = data.totalPage;
@@ -379,6 +376,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_publish: item.value.is_publish.value,

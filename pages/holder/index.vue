@@ -672,6 +672,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       asset_id: item.value.asset_id,
@@ -688,6 +693,11 @@ const onSubmit = async () => {
             runtimeConfig.public.apiBase + "/asset/" + item.value.asset_id,
             {
               method: "post",
+              headers: {
+                Authorization: useCookie("token").value
+                  ? `Bearer ${useCookie("token").value}`
+                  : "",
+              },
               body: {
                 holder_name: item.value.holder_name,
               },

@@ -20,7 +20,7 @@
                         <input
                           v-model="login.email"
                           type="text"
-                          placeholder="Email or Username"
+                          placeholder="ICIT Account"
                         />
                       </div>
                     </div>

@@ -493,6 +493,11 @@ const onConfirmDelete = async (id) => {
 const onDelete = async (id) => {
   await $fetch(`${runtimeConfig.public.apiBase}/booking/${id}`, {
     method: "put",
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       status_id: 4,
     },

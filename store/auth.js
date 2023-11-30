@@ -14,7 +14,12 @@ export const useAuthStore = defineStore("auth", {
         `${runtimeConfig.public.apiBase}/user/login`,
         {
           method: "post",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: useCookie("token").value
+              ? `Bearer ${useCookie("token").value}`
+              : "",
+          },
           body: {
             username: email,
             password,

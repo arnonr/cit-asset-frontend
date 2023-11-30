@@ -78,10 +78,12 @@
             <table class="table table-bordered table-striped table-admin">
               <thead>
                 <tr>
-                  <th class="text-center" style="max-width:60px">รหัสประเภทครุภัณฑ์</th>
+                  <th class="text-center" style="max-width: 60px">
+                    รหัสประเภทครุภัณฑ์
+                  </th>
                   <th class="text-center">ชื่อประเภทครุภัณฑ์</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -303,7 +305,7 @@ onMounted(() => {
 
 const onConfirmDelete = async (id) => {
   Swal.fire({
-    title: "Are you sure?", 
+    title: "Are you sure?",
     text: "You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
@@ -362,6 +364,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_active: item.value.is_active.value,

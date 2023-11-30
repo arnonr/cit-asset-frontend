@@ -83,7 +83,7 @@
                   <th class="text-center">ภาควิชา</th>
                   <th class="text-center">ประเภทผู้ใช้งาน</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -422,6 +422,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_active: item.value.is_active.value,
@@ -452,6 +457,11 @@ const onLoadAccount = async () => {
     `${runtimeConfig.public.apiBase}/user/search-icit-account`,
     {
       method: "post",
+      headers: {
+        Authorization: useCookie("token").value
+          ? `Bearer ${useCookie("token").value}`
+          : "",
+      },
       body: { username: item.value.username },
     }
   ).catch((error) => {

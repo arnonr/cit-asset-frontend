@@ -75,7 +75,7 @@
                   <th class="text-center">ชื่อ (EN)</th>
                   <th class="text-center">ชื่อย่อ</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -381,6 +381,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_publish: item.value.is_publish.value,

@@ -197,7 +197,7 @@
                         >
                           <AssetHolder :item="item" v-if="item"></AssetHolder>
                         </div>
-                        
+
                         <div
                           class="tab-pane fade"
                           id="nav-fix"
@@ -292,6 +292,11 @@ const onConfirmDelete = async (id) => {
 
 const onDelete = async (id) => {
   await $fetch(`${runtimeConfig.public.apiBase}/asset/${id}`, {
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     method: "delete",
   })
     .then((res) => {

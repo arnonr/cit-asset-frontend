@@ -34,6 +34,7 @@
                     <th class="text-center">รายละเอียด</th>
                     <th class="text-center">ราคา</th>
                     <th class="text-center">วันที่แจ้งซ่อม</th>
+                    <!-- <th class="text-center">วันที่แจ้งซ่อม</th> -->
                     <th class="text-center">วันที่อนุมัติ</th>
                     <th class="text-center">สถานะ</th>
                     <th class="text-center">หมายเหตุ</th>
@@ -51,8 +52,17 @@
                 <tbody v-if="items.length != 0">
                   <tr v-for="(it, idx) in items" :key="idx">
                     <td>{{ it.description }}</td>
-                    <td>{{ it.price }}</td>
+                    <td class="text-center">{{ it.price }}</td>
                     <td class="text-center">
+                      {{
+                        it.repair_date != null
+                          ? dayjs(it.repair_date)
+                              .locale("th")
+                              .format("DD MMM BBBB")
+                          : "-"
+                      }}
+                    </td>
+                    <!-- <td class="text-center">
                       {{
                         it.created_at != null
                           ? dayjs(it.created_at)
@@ -60,7 +70,7 @@
                               .format("DD MMM BBBB")
                           : "-"
                       }}
-                    </td>
+                    </td> -->
                     <td class="text-center">
                       {{
                         it.approved_at != null
@@ -167,6 +177,24 @@
                   placeholder="ราคา"
                 />
               </div>
+
+              <div class="col-12">
+                <label for="fix-price" class="col-form-label">วันที่ :</label>
+                <VueDatePicker
+                  v-model="fix_item.repair_date"
+                  :enable-time-picker="false"
+                  locale="th"
+                  auto-apply
+                  :format="format"
+                >
+                  <template #year-overlay-value="{ text }">
+                    {{ parseInt(text) + 543 }}
+                  </template>
+                  <template #year="{ value }">
+                    {{ value + 543 }}
+                  </template>
+                </VueDatePicker>
+              </div>
               <div
                 class="col-12 mt-2"
                 v-if="
@@ -233,8 +261,8 @@
 
 <script>
 import asset_data from "~~/mixins/assetData";
-import dayjs from "dayjs";
 import vSelect from "vue-select";
+import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 dayjs.extend(buddhistEra);
@@ -253,6 +281,8 @@ export default {
 </script>
 <script setup>
 import asset_data from "~~/mixins/assetData";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 // Variable
 const runtimeConfig = useRuntimeConfig();
@@ -271,6 +301,14 @@ const selectOptions = ref({
   ],
   fix_statuses: asset_data.data().fix_statuses,
 });
+
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = date.getFullYear() + 543;
+
+  return `${day} ${month} ${year}`;
+};
 
 // Function Fetch
 const fetchItems = async () => {
@@ -308,6 +346,8 @@ const onSubmit = async () => {
   let approved_date = undefined;
   let approved_by = undefined;
   let created_by = undefined;
+  let repair_date = undefined;
+
   if (type_submit.value == "edit") {
     type_object = {
       text_success: "แก้ไขรายการเสร็จสิ้น",
@@ -342,12 +382,18 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...fix_item.value,
       created_by: created_by,
       asset_id: Number(route.params.id),
       status: fix_item.value.status != null ? fix_item.value.status.id : "",
       approved_at: approved_date,
+      repair_date: dayjs(fix_item.value.repair_date).format("YYYY-MM-DD"),
       approved_by: approved_by,
     },
   })

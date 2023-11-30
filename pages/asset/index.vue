@@ -186,7 +186,7 @@
           <button
             type="button"
             v-if="useCookie('user').value.level == 1"
-            class="btn btn-warning"
+            class="btn btn-warning me-2 mt-2"
             @click="
               () => {
                 router.push({ path: '/asset/add' });
@@ -197,8 +197,8 @@
             ADD
           </button>
 
-          <json-excel :data="json_data" class="d-inline ms-2">
-            <button type="button" class="btn btn-success">
+          <json-excel :data="json_data" class="d-inline">
+            <button type="button" class="btn btn-success me-2 mt-2">
               <i class="fa-regular fa-file"></i> Export Excel
             </button>
           </json-excel>
@@ -206,7 +206,7 @@
           <button
             type="button"
             v-if="useCookie('user').value.level == 1"
-            class="btn btn-primary ms-2"
+            class="btn btn-primary me-2 mt-2"
             @click="
               () => {
                 modalForm.show();
@@ -223,7 +223,7 @@
               useCookie('user').value.level == 1 ||
               useCookie('user').value.level == 2
             "
-            class="btn btn-info ms-2"
+            class="btn btn-info me-2 mt-2"
             @click="onGenerateQR('ALL')"
           >
             <i class="fa-regular fa-qrcode"></i>
@@ -236,7 +236,7 @@
             placeholder="เรียงลำดับ"
             :options="selectOptions.order_by"
             v-model="search.orderBy"
-            class="form-control v-select-no-border"
+            class="form-control v-select-no-border me-2 mt-2"
             :clearable="false"
           ></v-select>
         </div>
@@ -246,7 +246,7 @@
             placeholder="ลำดับ"
             :options="selectOptions.order"
             v-model="search.order"
-            class="form-control v-select-no-border"
+            class="form-control v-select-no-border me-2 mt-2"
             :clearable="false"
           ></v-select>
         </div>

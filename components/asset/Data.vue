@@ -24,7 +24,7 @@
                 <img
                   :src="ng.asset_photo_file"
                   style="
-                    max-width: 800px;
+                    max-width: 100%;
                     margin-left: auto;
                     margin-right: auto;
                     display: block;

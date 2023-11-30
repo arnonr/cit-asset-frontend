@@ -273,6 +273,11 @@ onMounted(() => {
 const onChangeLevel = async (id, type) => {
   await $fetch(runtimeConfig.public.apiBase + "/team/change-level/" + id, {
     method: "put",
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       type: type,
     },

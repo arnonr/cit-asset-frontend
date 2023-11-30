@@ -74,7 +74,7 @@
                   </th>
                   <th class="text-center">ชื่อภาควิชา</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -355,6 +355,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_active: item.value.is_active.value,

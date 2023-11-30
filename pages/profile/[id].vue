@@ -408,6 +408,11 @@ const onSubmit = async () => {
 
   await $fetch(`${runtimeConfig.public.apiBase}/user/${item.value.user_id}`, {
     method: "put",
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       email: item.value.email,
       //   password: item.value.password

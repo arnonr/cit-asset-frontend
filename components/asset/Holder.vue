@@ -37,7 +37,10 @@
                     <th class="text-center">วันที่อนุมัติ</th>
                     <th
                       class="text-center"
-                      v-if="useCookie('user').value != undefined && useCookie('user').value.level == 1"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 1
+                      "
                     >
                       จัดการ
                     </th>
@@ -79,7 +82,10 @@
 
                     <td
                       class="text-center"
-                      v-if="useCookie('user').value != undefined && useCookie('user').value.level == 1"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 1
+                      "
                     >
                       <button class="btn btn-info">
                         <i
@@ -147,13 +153,19 @@
               </div>
               <div
                 class="col-12 mt-4"
-                v-if="useCookie('user').value != undefined && useCookie('user').value.level == 1"
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
               >
                 <label for="recipient-name" class="col-form-label"
                   ><span class="text-danger">*</span>สถานะ :</label
                 >
                 <v-select
-                  v-if="useCookie('user').value != undefined && useCookie('user').value.level == 1"
+                  v-if="
+                    useCookie('user').value != undefined &&
+                    useCookie('user').value.level == 1
+                  "
                   label="name"
                   placeholder="สถานะการอนุมัติ"
                   :options="selectOptions.holder_statuses"
@@ -297,6 +309,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...holder_item.value,
       created_by: created_by,
@@ -316,6 +333,11 @@ const onSubmit = async () => {
             runtimeConfig.public.apiBase + "/asset/" + route.params.id,
             {
               method: "post",
+              headers: {
+                Authorization: useCookie("token").value
+                  ? `Bearer ${useCookie("token").value}`
+                  : "",
+              },
               body: {
                 holder_name: holder_item.value.holder_name,
               },

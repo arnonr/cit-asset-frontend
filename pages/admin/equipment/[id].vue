@@ -295,7 +295,9 @@
                               <th class="text-center">หน่วย (EN)</th>
                               <th class="text-center">ราคา</th>
                               <th class="text-center">สถานะ</th>
-                              <th class="text-center" style="min-width:110px;">จัดการ</th>
+                              <th class="text-center" style="min-width: 110px">
+                                จัดการ
+                              </th>
                             </tr>
                           </thead>
                           <tbody v-if="method_items.length != 0">
@@ -711,6 +713,11 @@ const onMethodSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...method_item.value,
       equipment_id: route.params.id,

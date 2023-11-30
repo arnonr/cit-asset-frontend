@@ -579,6 +579,9 @@ const uppy = new Uppy({
     allowedFileTypes: ["image/*", "video/*"],
   },
 }).use(XHRUpload, {
+  headers: {
+    Authorization: `Bearer ${useCookie("token").value}`,
+  },
   endpoint: `${runtimeConfig.public.apiBase}/froala/uppy`,
   fieldName: "file",
 });
@@ -704,6 +707,11 @@ const onSubmit = async () => {
   await $fetch(type_object.url, {
     method: type_object.method,
     body: form_data,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
   })
     .then((res) => {
       if (res.msg == "success") {

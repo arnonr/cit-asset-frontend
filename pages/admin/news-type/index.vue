@@ -76,7 +76,7 @@
                   <th class="text-center">ชื่อ (TH)</th>
                   <th class="text-center">ชื่อ (EN)</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -169,7 +169,8 @@
             <div class="row">
               <div class="col-12">
                 <label for="recipient-name" class="col-form-label"
-                  ><span class="text-danger">*</span>ชื่อประเภทข่าว (TH) :</label
+                  ><span class="text-danger">*</span>ชื่อประเภทข่าว (TH)
+                  :</label
                 >
                 <input
                   type="text"
@@ -182,7 +183,8 @@
 
               <div class="col-12 mt-10">
                 <label for="recipient-name" class="col-form-label"
-                  ><span class="text-danger">*</span>ชื่อประเภทข่าว (EN) :</label
+                  ><span class="text-danger">*</span>ชื่อประเภทข่าว (EN)
+                  :</label
                 >
                 <input
                   type="text"
@@ -274,12 +276,9 @@ const fetchItems = async () => {
     lang: "th",
   };
 
-  let data = await $fetch(
-    `${runtimeConfig.public.apiBase}/news-type`,
-    {
-      params: params,
-    }
-  ).catch((error) => error.data);
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/news-type`, {
+    params: params,
+  }).catch((error) => error.data);
 
   items.value = data.data;
   totalPage.value = data.totalPage;
@@ -366,6 +365,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       is_publish: item.value.is_publish.value,

@@ -218,10 +218,10 @@
               </thead>
               <tbody v-if="items.length != 0">
                 <tr v-for="(it, idx) in items" :key="idx">
-                  <td>{{ it.asset.asset_code }}</td>
+                  <td class="text-center">{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
                   <td>{{ it.description }}</td>
-                  <td>{{ it.price }}</td>
+                  <td class="text-center">{{ it.price }}</td>
                   <td class="text-center">
                     {{
                       it.created_at != null
@@ -713,6 +713,11 @@ const onSubmit = async () => {
 
   await $fetch(type_object.url, {
     method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
     body: {
       ...item.value,
       asset_id: item.value.asset_id,
