@@ -734,8 +734,12 @@ const readFileAsync = (importFile) => {
 
       let workbook = XLSX.read(data, { type: "array" });
       let first_worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      let result = XLSX.utils.sheet_to_json(first_worksheet, { header: 1 });
-      resolve(result);
+      let result = XLSX.utils.sheet_to_json(first_worksheet, {
+        header: 1,
+        raw: false,
+      });
+      const header = result.shift();
+      resolve({ result: result, header: header });
     };
 
     reader.onerror = reject;
@@ -750,22 +754,149 @@ const onImportSubmit = async () => {
   if (file.value.files != null) {
     importFile = file.value.files[0];
     let result = await readFileAsync(importFile);
-    result.shift();
+    // result.result.shift();
     let data = [];
-    result.forEach((el) => {
-      if (el.length != 0) {
+
+    let column_index_import = {
+      asset_code: null,
+      asset_name: null,
+      asset_type_id: null,
+      input_year: null,
+      budget_type_id: null,
+      approved_date: null,
+      department_id: null,
+      brand: null,
+      serial_number: null,
+      price: null,
+      drawer_name: null,
+      inspection_date: null,
+      vendor: null,
+    };
+
+    let cl_import_header = [
+      {
+        name: "หมายเลขครุภัณฑ์",
+        name_en: "asset_code",
+      },
+      {
+        name: "ชื่อครุภัณฑ์ [รหัสชุด:ชื่อชุด]",
+        name_en: "asset_name",
+      },
+      {
+        name: "ชื่อหมวดสินทรัพย์",
+        name_en: "asset_type_id",
+      },
+      {
+        name: "ปีงบประมาณ",
+        name_en: "input_year",
+      },
+      {
+        name: "แหล่งเงิน",
+        name_en: "budget_type_id",
+      },
+      {
+        name: "วันที่รับเข้าคลัง",
+        name_en: "approved_date",
+      },
+      {
+        name: "ชื่อภาค/กอง",
+        name_en: "department_id",
+      },
+      {
+        name: "คุณสมบัติ",
+        name_en: "brand",
+      },
+      {
+        name: "รายละเอียด",
+        name_en: "serial_number",
+      },
+      {
+        name: "มูลค่าครุภัณฑ์",
+        name_en: "price",
+      },
+      {
+        name: "ผู้เบิก",
+        name_en: "drawer_name",
+      },
+      {
+        name: "วันที่ตรวจรับ",
+        name_en: "inspection_date",
+      },
+      {
+        name: "ผู้ขาย",
+        name_en: "vendor",
+      },
+    ];
+
+    for (let ci = 0; ci < result.header.length; ci++) {
+      let find_header = cl_import_header.find((x) => {
+        return x.name == result.header[ci];
+      });
+      if (find_header) {
+        column_index_import[find_header.name_en] = ci;
+      }
+    }
+
+    for (var i = 0; i < result.result.length; i++) {
+      if (result.result[i].length != 0) {
+        console.log(result.result[i]);
+
         data.push({
-          asset_code: el[1],
-          input_year: el[2],
-          asset_name: el[3],
-          serial_number: el[4],
-          drawer_name: el[8],
-          price: el[9],
+          asset_code:
+            column_index_import.asset_code != null
+              ? result.result[i][column_index_import.asset_code]
+              : null,
+          asset_name:
+            column_index_import.asset_name != null
+              ? result.result[i][column_index_import.asset_name]
+              : null,
+          asset_type_id:
+            column_index_import.asset_type_id != null
+              ? result.result[i][column_index_import.asset_type_id]
+              : null,
+          input_year:
+            column_index_import.input_year != null
+              ? result.result[i][column_index_import.input_year]
+              : null,
+          budget_type_id:
+            column_index_import.budget_type_id != null
+              ? result.result[i][column_index_import.budget_type_id]
+              : null,
+          approved_date:
+            column_index_import.approved_date != null
+              ? result.result[i][column_index_import.approved_date]
+              : null,
+          department_id:
+            column_index_import.department_id != null
+              ? result.result[i][column_index_import.department_id]
+              : null,
+          brand:
+            column_index_import.brand != null
+              ? result.result[i][column_index_import.brand]
+              : null,
+          serial_number:
+            column_index_import.serial_number != null
+              ? result.result[i][column_index_import.serial_number]
+              : null,
+          price:
+            column_index_import.price != null
+              ? result.result[i][column_index_import.price]
+              : null,
+          drawer_name:
+            column_index_import.drawer_name != null
+              ? result.result[i][column_index_import.drawer_name]
+              : null,
+          inspection_date:
+            column_index_import.inspection_date != null
+              ? result.result[i][column_index_import.inspection_date]
+              : null,
+          vendor:
+            column_index_import.vendor != null
+              ? result.result[i][column_index_import.vendor]
+              : null,
         });
       }
-    });
-
-    console.log(data);
+    }
 
     let type_object = {
       text_success: "นำเข้าข้อมูลเสร็จสิ้น",
