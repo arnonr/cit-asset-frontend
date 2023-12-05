@@ -7,44 +7,55 @@ export const useAuthStore = defineStore("auth", {
   }),
   actions: {
     async authenticateUser({ email, password }) {
-      // useFetch from nuxt 3
-      const runtimeConfig = useRuntimeConfig();
+      try {
+        // useFetch from nuxt 3
+        const runtimeConfig = useRuntimeConfig();
 
-      const { data, pending } = await useFetch(
-        `${runtimeConfig.public.apiBase}/user/login`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: useCookie("token").value
-              ? `Bearer ${useCookie("token").value}`
-              : "",
-          },
-          body: {
-            username: email,
-            password,
-          },
+        const { data, pending, error } = await useFetch(
+          `${runtimeConfig.public.apiBase}/user/login`,
+          {
+            method: "post",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: useCookie("token").value
+                ? `Bearer ${useCookie("token").value}`
+                : "",
+            },
+            body: {
+              username: email,
+              password,
+            },
+          }
+        );
+
+        if (error.value) {
+          throw new Error(error.value.data.msg);
         }
-      );
-      this.loading = pending;
 
-      if (data.value) {
-        const token = useCookie("token"); // useCookie new hook in nuxt 3
-        token.value = data?.value?.token; // set token to cookie
-        const user = useCookie("user");
+        this.loading = pending;
 
-        user.value = {
-          id: data?.value?.id,
-          username: data?.value?.username,
-          firstname: data?.value?.name,
-          surname: "", //data?.value?.profile.surname,
-          //   group_id: data?.value?.profile.group_id,
-          department_id: data?.value?.department_id,
-          level: data?.value?.level,
-          token: token,
-        };
+        if (data.value) {
+          const token = useCookie("token"); // useCookie new hook in nuxt 3
+          token.value = data?.value?.token; // set token to cookie
+          const user = useCookie("user");
 
-        this.authenticated = true; // set authenticated  state value to true
+          user.value = {
+            id: data?.value?.id,
+            username: data?.value?.username,
+            firstname: data?.value?.name,
+            surname: "", //data?.value?.profile.surname,
+            //   group_id: data?.value?.profile.group_id,
+            department_id: data?.value?.department_id,
+            level: data?.value?.level,
+            token: token,
+          };
+
+          this.authenticated = true; // set authenticated  state value to true
+
+          return "success";
+        }
+      } catch (error) {
+        return error;
       }
     },
     logUserOut() {

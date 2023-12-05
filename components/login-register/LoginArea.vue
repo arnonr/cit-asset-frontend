@@ -124,13 +124,19 @@ const login = ref({
 
 const handleSubmit = async () => {
   login.value.username = login.value.email;
-  await authenticateUser(login.value); // call authenticateUser and pass the user object
+  let checkLogin = await authenticateUser(login.value); // call authenticateUser and pass the user object
+  console.log(checkLogin);
+  console.log(authenticated.value)
+
+  //   if(checkLogin != 'success'){
+
+  //   }
   // redirect to homepage if user is authenticated
-  if (authenticated.value == true) {
+  if (authenticated.value == true && checkLogin == "success") {
     localStorage.setItem("login", true);
     router.push("/");
   } else {
-    useToast("Data is Wrong", "error");
+    useToast(checkLogin, "error");
   }
 };
 </script>
