@@ -7,7 +7,7 @@
             <div class="breadcrumb__list">
               <span> ผู้ดูแลระบบ </span>
               <span class="dvdr"><i class="fa-solid fa-circle-small"></i></span>
-              <span> รายการคำขอย้ายสถานที่ติดตั้ง </span>
+              <span> รายการคำขอย้ายสถานที่ใช้งานปัจจุบัน </span>
             </div>
           </div>
         </div>
@@ -179,7 +179,7 @@
       <div class="mt-10 mb-30 pl-10 pt-15 pb-10 bg-grey">
         <h4>
           <i class="fa-regular fa-list"></i>
-          <span class="ml-10">รายการคำขอย้ายสถานที่ติดตั้ง</span>
+          <span class="ml-10">รายการคำขอย้ายสถานที่ใช้งานปัจจุบัน</span>
         </h4>
       </div>
 
@@ -307,7 +307,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มคำขอย้ายสถานที่ติดตั้ง
+            แบบฟอร์มคำขอย้ายสถานที่ใช้งานปัจจุบัน
           </h1>
           <button
             type="button"
@@ -724,7 +724,7 @@ const onSubmit = async () => {
 };
 
 useHead({
-  title: "รายการคำขอย้ายสถานที่ติดตั้ง",
+  title: "รายการคำขอย้ายสถานที่ใช้งานปัจจุบัน",
 });
 
 // definePageMeta({

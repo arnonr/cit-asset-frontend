@@ -21,7 +21,7 @@
             "
           >
             <i class="fa-regular fa-plus"></i>
-            คำขอย้ายสถานที่ติดตั้ง
+            คำขอย้ายสถานที่ใช้งานปัจจุบัน
           </button>
         </div>
 
@@ -127,7 +127,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มคำขอย้ายสถานที่ติดตั้ง
+            แบบฟอร์มคำขอย้ายสถานที่ใช้งานปัจจุบัน
           </h1>
           <button
             type="button"
