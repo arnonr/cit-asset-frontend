@@ -324,6 +324,10 @@
           <form>
             <div class="row">
               <div class="col-md-12">
+                <AssetWarranty :item="item" v-if="item"></AssetWarranty>
+                <hr />
+              </div>
+              <div class="col-md-12">
                 <AssetFix :item="item" type="view" v-if="item"></AssetFix>
                 <hr />
               </div>

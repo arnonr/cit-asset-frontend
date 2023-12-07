@@ -8,15 +8,13 @@
         }}</span>
       </div>
       <div class="col-12 col-lg-4">
-        <span class="fw-bold">จำนวนวันรับประกันรายการที่ 1 : </span>
+        <span class="fw-bold">จำนวนวันรับประกัน : </span>
         <span class="fw-bold text-primary"
           >{{ item.warranty_type_1 ? item.warranty_day_1 + " วัน" : "-" }}
         </span>
       </div>
       <div class="col-12 col-lg-4">
-        <span class="fw-bold">วันรับประกันที่เหลือ : </span>
-        <!-- item.warranty_day_1 - (วันปัจจุบัน - วันที่ตรวจรับ)  -->
-        <!-- 4-(2) -->
+        <span class="fw-bold">วันรับประกันคงเหลือ : </span>
 
         <span class="fw-bold text-primary">
           {{
@@ -42,13 +40,13 @@
         }}</span>
       </div>
       <div class="col-12 col-lg-4">
-        <span class="fw-bold">จำนวนวันรับประกันรายการที่ 2 : </span>
+        <span class="fw-bold">จำนวนวันรับประกัน : </span>
         <span class="fw-bold text-primary">{{
           item.warranty_type_2 ? item.warranty_day_2 + " วัน" : "-"
         }}</span>
       </div>
       <div class="col-12 col-lg-4">
-        <span class="fw-bold">วันรับประกันที่เหลือ : </span>
+        <span class="fw-bold">วันรับประกันคงเหลือ : </span>
         <span class="fw-bold text-primary">
           {{
             item.warranty_type_2
