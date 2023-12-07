@@ -307,11 +307,11 @@
     aria-labelledby="modal-form"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มคำขอเปลี่ยนผู้ใช้งาน
+            แบบฟอร์มคำขอแจ้งซ่อม
           </h1>
           <button
             type="button"
@@ -323,6 +323,10 @@
         <div class="modal-body">
           <form>
             <div class="row">
+              <div class="col-md-12">
+                <AssetFix :item="item" type="view" v-if="item"></AssetFix>
+                <hr />
+              </div>
               <div class="col-12">
                 <label for="fix-description" class="col-form-label"
                   ><span class="text-danger">*</span>รายละเอียด :</label

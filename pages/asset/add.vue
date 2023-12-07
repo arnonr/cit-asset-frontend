@@ -97,6 +97,7 @@
                         class="form-control form-control-plaintext"
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
+                        :disabled="at.disabled == true ? true : false"
                       />
 
                       <input
@@ -120,7 +121,7 @@
 
                       <VueDatePicker
                         v-if="at.input_type == 'datepicker'"
-                        v-model="item[at.name]"
+                        v-model="item[at['name']]"
                         :enable-time-picker="false"
                         locale="th"
                         auto-apply
@@ -207,6 +208,7 @@
                         class="form-control form-control-plaintext"
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
+                        :disabled="at.disabled == true ? true : false"
                       />
 
                       <input
@@ -230,7 +232,7 @@
 
                       <VueDatePicker
                         v-if="at.input_type == 'datepicker'"
-                        v-model="item[at.name]"
+                        v-model="item[at['name']]"
                         :enable-time-picker="false"
                         locale="th"
                         auto-apply
@@ -273,6 +275,7 @@
                         class="form-control form-control-plaintext"
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
+                        :disabled="at.disabled == true ? true : false"
                       />
 
                       <input
@@ -296,7 +299,7 @@
 
                       <VueDatePicker
                         v-if="at.input_type == 'datepicker'"
-                        v-model="item[at.name]"
+                        v-model="item[at['name']]"
                         :enable-time-picker="false"
                         locale="th"
                         auto-apply
@@ -498,7 +501,7 @@ const attributes_warranty = [
   },
 ];
 
-const attributes_cancel = [
+const attributes_cancel = ref([
   {
     name: "cancel_type",
     show_name: "ประเภทการยกเลิก",
@@ -509,25 +512,27 @@ const attributes_cancel = [
   },
   {
     name: "cancel_date",
-    show_name: "วันที่ยกเลิก",
+    show_name: "วันที่",
     input_type: "datepicker",
   },
   {
     name: "cancel_comment",
-    show_name: "หมายเหตุการยกเลิก",
+    show_name: "หมายเหตุ",
     input_type: "text",
   },
   {
     name: "transfer_to",
     show_name: "ผู้รับโอน",
     input_type: "text",
+    disabled: true,
   },
   {
     name: "transfer_to_department",
     show_name: "หน่วยงานผู้รับโอน",
     input_type: "text",
+    disabled: true,
   },
-];
+]);
 const item = ref({
   asset_name: null,
   asset_type_id: null,
@@ -729,4 +734,25 @@ onMounted(() => {
   fetchBudgetTypes();
   fetchDepartments();
 });
+
+watch(
+  () => item.value.cancel_type,
+  (val) => {
+    if (val) {
+      let disabled = true;
+      if (val.value == 1) {
+        disabled = false;
+      }
+
+      let new_att = attributes_cancel.value.map((x) => {
+        if (x.name == "transfer_to" || x.name == "transfer_to_department") {
+          x.disabled = disabled;
+        }
+        return x;
+      });
+
+      attributes_cancel.value = [...new_att];
+    }
+  }
+);
 </script>

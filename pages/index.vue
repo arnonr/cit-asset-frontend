@@ -5,7 +5,7 @@
         <div class="col-xl-12 text-center">
           <ClientOnly>
             <h4 class="mb-4">จำนวนครุภัณฑ์แบ่งตามหน่วยงาน</h4>
-            <Bar :data="data_department" :options="options" v-if="loaded" />
+            <Bar :data="data_department" :options="bar_options" v-if="loaded" />
           </ClientOnly>
         </div>
 
@@ -122,7 +122,26 @@ const data_asset_status = ref({
   ],
 });
 
+const bar_options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  //   scales: {
+  //     y: {
+  //       beginAtZero: true,
+  //     },
+  //   },
+};
+
 const options = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
   responsive: true,
 };
 

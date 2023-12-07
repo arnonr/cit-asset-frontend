@@ -158,6 +158,42 @@
           ></v-select>
         </div>
 
+        <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_from"
+            :enable-time-picker="false"
+            locale="th"
+            auto-apply
+            placeholder="ช่วงวันที่เพิ่มข้อมูลเริ่มต้น"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_to"
+            :enable-time-picker="false"
+            locale="th"
+            auto-apply
+            placeholder="ช่วงวันที่เพิ่มข้อมูลสิ้นสุด"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
         <!-- Date -->
         <div class="col-12 col-lg-4">
           <!-- <v-select
@@ -258,7 +294,7 @@
             <table class="table table-bordered table-striped table-admin">
               <thead>
                 <tr>
-                  <th class="text-center"></th>
+                  <th class="text-center">รูป</th>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
                   <th class="text-center">ยี่ห้อ</th>
@@ -274,9 +310,15 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td>
                     <img
+                      v-if="it.cover_photo != null"
                       :src="it.cover_photo"
-                      alt=""
-                      class="img-thumbnail"
+                      class="img-thumbnail mx-auto"
+                      style="width: 100px"
+                    />
+                    <img
+                      v-else
+                      src="~/assets/img/icon/no-photo-available.png"
+                      class="img-thumbnail mx-auto"
                       style="width: 100px"
                     />
                   </td>
@@ -384,36 +426,21 @@
               </div>
 
               <div class="table-responsive mt-4">
-                <h5>ผลลัพธ์การนำเข้าข้อมูล</h5>
+                <h5 class="text-danger">รายการนำเข้าไม่สำเร็จ</h5>
                 <table class="table table-bordered table-striped table-admin">
                   <thead>
                     <tr>
+                      <th class="text-center" style="min-width: 50px">แถว</th>
                       <th class="text-center">หมายเลขครุภัณฑ์</th>
-                      <th class="text-center">ผล</th>
-                      <th class="text-center">หมายเหตุ</th>
-                      <th class="text-center">สถานะ</th>
-                      <th class="text-center" style="min-width: 150px">
-                        จัดการ
-                      </th>
+                      <th class="text-center">ข้อผิดพลาด</th>
                     </tr>
                   </thead>
                   <tbody v-if="items.length != 0">
                     <tr v-for="(it, idx) in import_result" :key="idx">
-                      <td>{{ it.asset_code }}</td>
-                      <td
-                        :class="
-                          it.message == 'success' ? 'text-green' : 'text-red'
-                        "
-                      >
-                        {{ it.status }}
-                      </td>
-                      <td>
-                        <span
-                          :class="
-                            it.message == 'success' ? 'text-green' : 'text-red'
-                          "
-                          >{{ it.message }}</span
-                        >
+                      <td class="text-center">{{ it.row_id }}</td>
+                      <td class="text-center">{{ it.asset_code }}</td>
+                      <td class="text-center">
+                        <span>{{ it.error_message }}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -461,7 +488,15 @@
         class="text-center pagebreak"
         style="width: 200px; top: -20px !important"
       >
-        {{ it.asset_code }}
+        {{
+          it.input_year +
+          543 +
+          "-" +
+          it.asset_code +
+          "(" +
+          it.budget_type.code +
+          ")"
+        }}
         <hr />
       </div>
     </div>
@@ -479,6 +514,8 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import QrcodeVue from "qrcode.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 // import  VueQr31 from ("vue3-qr-code-styling");
 
 // import tableItem from "~/components/list/TableItem.vue";
@@ -498,6 +535,8 @@ const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
 const search = ref({
+  created_at_from: null,
+  created_at_to: null,
   orderBy: {
     id: 1,
     value: "created_at",
@@ -509,6 +548,16 @@ const search = ref({
     name: "มาก > น้อย",
   },
 });
+
+const format = (date) => {
+  console.log(date);
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = dayjs(date).locale("th").format("BBBB");
+
+  return `${day} ${month} ${year}`;
+};
+
 const json_data = ref([]);
 const selectOptions = ref({
   perPage: [
@@ -625,6 +674,14 @@ const fetchItems = async () => {
       search.value.expire_day == null ? undefined : search.value.expire_day.id,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     perPage: perPage.value,
     currentPage: currentPage.value,
     lang: "th",
@@ -682,6 +739,14 @@ const fetchItemsExport = async () => {
       search.value.expire_day == null ? undefined : search.value.expire_day.id,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     perPage: 100000,
     currentPage: currentPage.value,
     lang: "th",
@@ -839,9 +904,8 @@ const onImportSubmit = async () => {
 
     for (var i = 0; i < result.result.length; i++) {
       if (result.result[i].length != 0) {
-        console.log(result.result[i]);
-
         data.push({
+          row_id: i + 1,
           asset_code:
             column_index_import.asset_code != null
               ? result.result[i][column_index_import.asset_code]
@@ -856,7 +920,7 @@ const onImportSubmit = async () => {
               : null,
           input_year:
             column_index_import.input_year != null
-              ? result.result[i][column_index_import.input_year]
+              ? Number(result.result[i][column_index_import.input_year]) - 543
               : null,
           budget_type_id:
             column_index_import.budget_type_id != null
@@ -911,18 +975,24 @@ const onImportSubmit = async () => {
       .then((res) => {
         if (res.msg == "success") {
           useToast(type_object.text_success, "success");
-          data = data.map((e) => {
-            let check = response.data.data.find((x) => {
+
+          let data_err = data.map((e) => {
+            let check = res.data.find((x) => {
               return x.asset_code == e.asset_code;
             });
             if (check) {
-              e["status"] = check.status;
-              e["message"] = check.message;
+              e["import_success"] = check.import_success;
+              e["error_message"] = check.error_message;
             }
             return e;
           });
-          console.log(data);
-          import_result.value = [...data];
+
+          import_result.value = data_err.filter((e) => {
+            return e.import_success == false;
+          });
+
+          console.log(import_result.value);
+
           fetchItems();
         } else {
           throw new Error("ERROR");

@@ -16,7 +16,7 @@
                   <div class="login__input-wrapper">
                     <div class="login__input-item">
                       <div class="login__input">
-                        <label for="email">Email</label>
+                        <label for="email">ICIT Account</label>
                         <input
                           v-model="login.email"
                           type="text"
@@ -47,7 +47,7 @@
                       <label for="tp-remember">Remember me</label>
                     </div>
                     <div class="login__forgot">
-                      <nuxt-link href="/forgot">forgot password?</nuxt-link>
+                      <nuxt-link href="https://account.kmutnb.ac.th/web/recovery/password" target="_blank">forgot password?</nuxt-link>
                     </div>
                   </div>
                   <div class="login__btn">

@@ -18,7 +18,7 @@
                 disableOnInteraction: true,
               }"
               class="mySwiper2 mb-10"
-              v-if="gallery.length != 0"
+              v-if="gallery.length != 0 && item.cover_photo"
             >
               <SwiperSlide v-for="ng in gallery" :key="ng.id">
                 <img
@@ -41,6 +41,7 @@
               :watchSlidesProgress="true"
               :modules="modules"
               class="mySwiper"
+              v-if="gallery.length != 0 && item.cover_photo"
             >
               <SwiperSlide v-for="ng in gallery" :key="ng.id">
                 <img
@@ -49,6 +50,13 @@
                 />
               </SwiperSlide>
             </Swiper>
+
+            <img
+              v-if="!item.cover_photo"
+              src="~/assets/img/icon/no-photo-available.png"
+              class="img-thumbnail mx-auto"
+              style="max-width: 500px"
+            />
           </ClientOnly>
         </div>
         <hr class="hr-separator" />
@@ -128,7 +136,7 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12">
-        <span class="fw-bold">สถานที่ติดตั้ง : </span>
+        <span class="fw-bold">สถานที่ใช้งานปัจจุบัน : </span>
         <span class="fw-bold text-primary">{{ item.location }}</span>
         <hr class="hr-separator" />
       </div>
@@ -145,6 +153,11 @@
       <div class="col-12 col-lg-6">
         <span class="fw-bold">ผู้ใช้งาน : </span>
         <span class="fw-bold text-primary">{{ item.holder_name }}</span>
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-6">
+        <span class="fw-bold">หมายเหตุ : </span>
+        <span class="fw-bold text-primary">{{ item.comment }}</span>
         <hr class="hr-separator" />
       </div>
     </div>

@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-12 col-lg-12">
         <div class="mb-30">
+          <h4 v-if="type == 'view'">ประวัติคำขอแจ้งซ่อม</h4>
           <button
             type="button"
             class="btn btn-warning"
@@ -14,10 +15,11 @@
               }
             "
             v-if="
-              (useCookie('user').value != undefined &&
+              ((useCookie('user').value != undefined &&
                 useCookie('user').value.level == 1) ||
-              (useCookie('user').value != undefined &&
-                useCookie('user').value.level == 3)
+                (useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 3)) &&
+              type == 'edit'
             "
           >
             <i class="fa-regular fa-plus"></i>
@@ -42,7 +44,8 @@
                       class="text-center"
                       v-if="
                         useCookie('user').value != undefined &&
-                        useCookie('user').value.level == 1
+                        useCookie('user').value.level == 1 &&
+                        type == 'edit'
                       "
                     >
                       จัดการ
@@ -97,7 +100,8 @@
                       class="text-center"
                       v-if="
                         useCookie('user').value != undefined &&
-                        useCookie('user').value.level == 1
+                        useCookie('user').value.level == 1 &&
+                        type == 'edit'
                       "
                     >
                       <button class="btn btn-info">
@@ -275,6 +279,10 @@ export default {
     masonry: {
       type: Boolean,
       default: false,
+    },
+    type: {
+      type: String,
+      default: "edit",
     },
   },
 };

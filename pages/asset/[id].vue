@@ -30,12 +30,14 @@
                 <div class="col-lg-12">
                   <div class="postbox__main-wrapper">
                     <div class="postbox__details-content-wrapper">
-                      <div class="text-end">
+                      <div
+                        class="text-end"
+                        v-if="
+                          useCookie('user').value != undefined &&
+                          useCookie('user').value.level == 1
+                        "
+                      >
                         <NuxtLink
-                          v-if="
-                            useCookie('user').value != undefined &&
-                            useCookie('user').value.level == 1
-                          "
                           :to="{
                             name: 'asset-edit-id',
                             params: { id: item.id },
@@ -45,10 +47,6 @@
                         >
 
                         <button
-                          v-if="
-                            useCookie('user').value != undefined &&
-                            useCookie('user').value.level == 1
-                          "
                           class="btn btn-danger ml-5"
                           @click="onConfirmDelete(item.id)"
                         >
@@ -122,7 +120,7 @@
                             role="tab"
                             aria-controls="nav-holder"
                             aria-selected="false"
-                            >ประวัติผู้ถือ</a
+                            >ประวัติผู้ใช้งาน</a
                           >
                         </li>
                         <li class="nav-item">
@@ -204,7 +202,7 @@
                           role="tabpanel"
                           aria-labelledby="nav-fix-tab"
                         >
-                          <AssetFix :item="item" v-if="item"></AssetFix>
+                          <AssetFix :item="item" v-if="item"  type="edit"></AssetFix>
                         </div>
                       </div>
                     </div>
