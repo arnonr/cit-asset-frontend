@@ -28,6 +28,15 @@
         <div class="col-12 col-lg-4">
           <input
             class="form-control"
+            v-model="search.asset_code"
+            name="title"
+            type="text"
+            placeholder="หมายเลขครุภัณฑ์"
+          />
+        </div>
+        <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
             v-model="search.asset_name"
             name="title"
             type="text"
@@ -46,6 +55,15 @@
             class="form-control v-select-no-border"
             :clearable="true"
           ></v-select>
+        </div>
+        <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
+            v-model="search.asset_detail"
+            name="title"
+            type="text"
+            placeholder="รายละเอียดครุภัณฑ์"
+          />
         </div>
         <div
           class="col-12 col-lg-4"
@@ -72,7 +90,7 @@
           ></v-select>
         </div>
 
-        <div class="col-12 col-lg-4">
+        <!-- <div class="col-12 col-lg-4">
           <input
             class="form-control"
             v-model="search.brand"
@@ -89,6 +107,16 @@
             name="title"
             type="text"
             placeholder="รุ่น"
+          />
+        </div> -->
+
+        <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
+            v-model="search.asset_detail"
+            name="title"
+            type="text"
+            placeholder="รายละเอียด"
           />
         </div>
 
@@ -253,7 +281,7 @@
             Import Asset
           </button>
 
-          <button
+          <!-- <button
             type="button"
             v-if="
               useCookie('user').value.level == 1 ||
@@ -264,7 +292,37 @@
           >
             <i class="fa-regular fa-qrcode"></i>
             QR CODE
-          </button>
+          </button> -->
+
+          <div class="dropdown d-inline">
+            <button
+              class="btn btn-info dropdown-toggle me-2 mt-2"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fa-regular fa-qrcode"></i> QR CODE
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="onGenerateQR('ALL', 4)"
+                  style="cursor: pointer"
+                  >4*4</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="onGenerateQR('ALL', 2)"
+                  style="cursor: pointer"
+                  >2*2</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
         <div class="col-lg-3">
           <v-select
@@ -297,13 +355,14 @@
                   <th class="text-center">รูป</th>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">ยี่ห้อ</th>
-                  <th class="text-center">รุ่น</th>
+                  <!-- <th class="text-center">ยี่ห้อ</th>
+                  <th class="text-center">รุ่น</th> -->
+                  <th class="text-center">รายละเอียด</th>
                   <th class="text-center">ประเภทครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ติดตั้ง</th>
+                  <th class="text-center">สถานที่ใช้งาน</th>
                   <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
                   <th class="text-center">สถานะครุภัณฑ์</th>
-                  <th class="text-center" style="min-width: 110px">จัดการ</th>
+                  <th class="text-center" style="min-width: 130px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -324,8 +383,9 @@
                   </td>
                   <td>{{ it.asset_code }}</td>
                   <td>{{ it.asset_name }}</td>
-                  <td>{{ it.brand }}</td>
-                  <td>{{ it.model }}</td>
+                  <!-- <td>{{ it.brand }}</td>
+                  <td>{{ it.model }}</td> -->
+                  <td>{{ it.asset_detail }}</td>
                   <td>
                     {{ it.asset_type.name }}
                   </td>
@@ -351,20 +411,43 @@
                         name: 'asset-id',
                         params: { id: it.id },
                       }"
-                      class="btn btn-warning text-uppercase"
+                      class="btn btn-warning text-uppercase  d-inline"
                     >
                       <i class="fa-regular fa-edit"></i>
                     </NuxtLink>
-                    <button
-                      class="btn btn-info ms-2"
-                      @click="onGenerateQR(it)"
-                      v-if="
-                        useCookie('user').value.level == 1 ||
-                        useCookie('user').value.level == 2
-                      "
-                    >
-                      <i class="fa fa-qrcode"></i>
-                    </button>
+
+                    <div class="dropdown d-inline ms-2">
+                      <button
+                        class="btn btn-info dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="fa-regular fa-qrcode"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1"
+                      >
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            @click="onGenerateQR(it, 4)"
+                            style="cursor: pointer"
+                            >4*4</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            @click="onGenerateQR(it, 2)"
+                            style="cursor: pointer"
+                            >2*2</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -471,22 +554,36 @@
 
   <!-- Qr -->
   <ClientOnly>
-    <div class="printable pagebreak" v-for="(it, idx) in qr_items" :key="idx">
-      <figure class="qrcode">
+    <div
+      :class="'printable ' + show44"
+      v-for="(it, idx) in qr_items"
+      :key="idx"
+      style="position: relative"
+    >
+      <figure class="qrcode" style="margin-bottom: 9px !important">
         <vue-qrcode
           :value="'http://172.16.214.67:4000/asset/' + it.id"
-          tag="img"
+          tag="canvas"
           :options="{
             errorCorrectionLevel: 'Q',
-            width: 200,
-            margin: 1,
+            width: 130,
+            margin: 2,
           }"
         ></vue-qrcode>
+
         <img src="~/assets/img/logo/logo_cit.png" class="qrcode__image" />
       </figure>
       <div
-        class="text-center pagebreak"
-        style="width: 200px; top: -20px !important"
+        style="
+          width: 130px;
+          position: absolute;
+          left: 5px;
+          top: 15px;
+          font-size: 0.7em;
+          font-weight: bold;
+          color: #000;
+          line-height: 1;
+        "
       >
         {{
           it.input_year +
@@ -497,7 +594,54 @@
           it.budget_type.code +
           ")"
         }}
-        <hr />
+      </div>
+    </div>
+  </ClientOnly>
+
+  <ClientOnly>
+    <div
+      :class="'printable ' + show22"
+      v-for="(it, idx) in qr_items"
+      :key="idx"
+      style="position: relative"
+    >
+      <figure class="qrcode" style="margin-bottom: 9px !important">
+        <vue-qrcode
+          :value="'http://172.16.214.67:4000/asset/' + it.id"
+          tag="canvas"
+          :options="{
+            errorCorrectionLevel: 'Q',
+            width: 75,
+            margin: 1,
+          }"
+        ></vue-qrcode>
+
+        <img
+          src="~/assets/img/logo/logo_cit.png"
+          class="qrcode__image"
+          style="width: 18px"
+        />
+      </figure>
+      <div
+        style="
+          width: 73px;
+          position: absolute;
+          left: 5px;
+          top: 15px;
+          font-size: 0.4em;
+          color: #000;
+          line-height: 1;
+        "
+      >
+        {{
+          it.input_year +
+          543 +
+          "-" +
+          it.asset_code +
+          "(" +
+          it.budget_type.code +
+          ")"
+        }}
       </div>
     </div>
   </ClientOnly>
@@ -534,6 +678,8 @@ const perPage = ref(20);
 const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
+const show22 = ref("");
+const show44 = ref("");
 const search = ref({
   created_at_from: null,
   created_at_to: null,
@@ -602,7 +748,7 @@ const selectOptions = ref({
     {
       id: 4,
       value: "location",
-      name: "สถานที่ติดตั้ง",
+      name: "สถานที่ใช้งานปัจจุบัน",
     },
     {
       id: 5,
@@ -873,7 +1019,7 @@ const onImportSubmit = async () => {
       },
       {
         name: "รายละเอียด",
-        name_en: "serial_number",
+        name_en: "asset_detail",
       },
       {
         name: "มูลค่าครุภัณฑ์",
@@ -1002,8 +1148,16 @@ const onImportSubmit = async () => {
   }
 };
 
-const onGenerateQR = (it) => {
+const onGenerateQR = (it, size) => {
   qr_items.value = [];
+  console.log(size);
+  if (size == 2) {
+    show44.value = "show-44-none";
+    show22.value = "";
+  } else {
+    show22.value = "show-22-none";
+    show44.value = "";
+  }
 
   if (it == "ALL") {
     qr_items.value = [...items.value];

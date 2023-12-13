@@ -99,13 +99,19 @@
                         v-model="item[at.name]"
                         :disabled="at.disabled == true ? true : false"
                       />
-
                       <input
                         v-if="at.input_type == 'number'"
                         type="number"
                         class="form-control form-control-plaintext"
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
+                      />
+                      <textarea
+                        v-if="at.input_type == 'textarea'"
+                        :id="'txt-' + at.name"
+                        v-model="item[at.name]"
+                        :disabled="at.disabled == true ? true : false"
+                        style="height: 150px;"
                       />
 
                       <v-select
@@ -398,6 +404,11 @@ const attributes = [
     input_type: "text",
   },
   {
+    name: "asset_detail",
+    show_name: "รายละเอียด",
+    input_type: "textarea",
+  },
+  {
     name: "brand",
     show_name: "ยี่ห้อ",
     input_type: "text",
@@ -433,8 +444,13 @@ const attributes = [
     required: true,
   },
   {
-    name: "location",
+    name: "install_location",
     show_name: "สถานที่ติดตั้ง",
+    input_type: "text",
+  },
+  {
+    name: "location",
+    show_name: "สถานที่ใช้งานปัจจุบัน",
     input_type: "text",
   },
   {
@@ -496,6 +512,18 @@ const attributes_warranty = [
   {
     name: "warranty_day_2",
     show_name: "จำนวนวันรับประกันรายการที่ 2",
+    input_type: "number",
+    required: false,
+  },
+  {
+    name: "warranty_type_3",
+    show_name: "การรับประกันรายการที่ 3",
+    input_type: "text",
+    required: false,
+  },
+  {
+    name: "warranty_day_3",
+    show_name: "จำนวนวันรับประกันรายการที่ 3",
     input_type: "number",
     required: false,
   },

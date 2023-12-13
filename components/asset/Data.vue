@@ -67,26 +67,31 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
+        <span class="fw-bold">ชื่อครุภัณฑ์ : </span>
+        <span class="fw-bold text-primary">{{ item.asset_name }}</span>
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-6">
         <span class="fw-bold">ปีที่รับเข้าคลัง (พ.ศ.) : </span>
         <span class="fw-bold text-primary">{{ item.input_year + 543 }}</span>
         <hr class="hr-separator" />
       </div>
 
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">วันที่ตรวจรับ : </span>
         <span class="fw-bold text-primary">{{
           dayjs(item.inspection_date).locale("th").format("DD MMM BBBB")
         }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">วันที่คณะกรรมการเห็นถูกต้องครบถ้วน : </span>
         <span class="fw-bold text-primary">{{
           dayjs(item.approved_date).locale("th").format("DD MMM BBBB")
         }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">ผู้จัดจำหน่าย : </span>
         <span class="fw-bold text-primary">{{ item.vendor }}</span>
         <hr class="hr-separator" />
@@ -96,24 +101,41 @@
         <span class="fw-bold text-primary">{{ item.asset_type?.name }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">ยี่ห้อ : </span>
         <span class="fw-bold text-primary">{{ item.brand }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">รุ่น : </span>
         <span class="fw-bold text-primary">{{ item.model }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12">
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">หมายเลขประจำเครื่อง : </span>
         <span class="fw-bold text-primary">{{ item.serial_number }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-12">
+        <span class="fw-bold">รายละเอียด : </span>
+        <span class="fw-bold text-primary">{{ item.asset_detail }}</span>
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">มูลค่าการได้มา : </span>
-        <span class="fw-bold text-primary">{{ item.price }} บาท</span>
+        <span class="fw-bold text-primary"
+          >{{
+            item.price != null
+              ? Number(item.price)
+                  .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              : ""
+          }}
+          <!-- // toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") -->
+          บาท</span
+        >
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6">
@@ -121,22 +143,13 @@
         <span class="fw-bold text-primary">{{ item.budget_type?.name }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
-        <span class="fw-bold">ได้รับโอนมา : </span>
-        <span class="fw-bold text-primary">{{
-          item.is_transfer == 1 ? "YES" : "NO"
-        }}</span>
-        <hr class="hr-separator" />
-      </div>
-      <div class="col-12 col-lg-6">
-        <span class="fw-bold">ได้รับโอนจาก : </span>
-        <span class="fw-bold text-primary">{{
-          item.is_transfer == 1 ? item.transfer_from : "-"
-        }}</span>
+      <div class="col-12" v-if="useCookie('user').value != undefined">
+        <span class="fw-bold">สถานที่ติดตั้ง : </span>
+        <span class="fw-bold text-primary">{{ item.install_location }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12">
-        <span class="fw-bold">สถานที่ใช้งานปัจจุบัน : </span>
+        <span class="fw-bold">สถานที่ใช้งาน : </span>
         <span class="fw-bold text-primary">{{ item.location }}</span>
         <hr class="hr-separator" />
       </div>
@@ -155,7 +168,22 @@
         <span class="fw-bold text-primary">{{ item.holder_name }}</span>
         <hr class="hr-separator" />
       </div>
-      <div class="col-12 col-lg-6">
+
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
+        <span class="fw-bold">ได้รับโอนมา : </span>
+        <span class="fw-bold text-primary">{{
+          item.is_transfer == 1 ? "YES" : "NO"
+        }}</span>
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
+        <span class="fw-bold">ได้รับโอนจาก : </span>
+        <span class="fw-bold text-primary">{{
+          item.is_transfer == 1 ? item.transfer_from : "-"
+        }}</span>
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">หมายเหตุ : </span>
         <span class="fw-bold text-primary">{{ item.comment }}</span>
         <hr class="hr-separator" />

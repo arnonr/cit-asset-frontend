@@ -24,10 +24,12 @@
                 </NuxtLink>
 
                 <h5 class="d-none d-xl-block d-lg-block text-color-secondary">
-                  ระบบบริหารจัดการครุภัณฑ์ด้วยคิวอาร์โค้ด วิทยาลัยเทคโนโลยีอุตสาหกรรม
+                  ระบบบริหารจัดการครุภัณฑ์ด้วยคิวอาร์โค้ด
+                  วิทยาลัยเทคโนโลยีอุตสาหกรรม
                 </h5>
                 <h6 class="d-none d-xl-block d-lg-block text-color-secondary">
-                  Asset Management System, College of Industrial Technology
+                  Asset Management System by QR code, College of Industrial
+                  Technology
                 </h6>
               </div>
             </div>

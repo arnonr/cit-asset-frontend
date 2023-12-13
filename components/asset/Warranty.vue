@@ -30,6 +30,7 @@
           }}
         </span>
       </div>
+      <!-- 2 -->
       <div class="col-12 col-lg-12">
         <hr class="hr-separator" />
       </div>
@@ -55,6 +56,38 @@
                 0
                 ? "หมดการรับประกัน"
                 : item.warranty_day_2 -
+                  dayjs().diff(dayjs(item.approved_date), "day") +
+                  " วัน"
+              : "-"
+          }}
+        </span>
+      </div>
+      <!-- 3 -->
+      <div class="col-12 col-lg-12">
+        <hr class="hr-separator" />
+      </div>
+      <div class="col-12 col-lg-4">
+        <span class="fw-bold">การรับประกันรายการที่ 3 : </span>
+        <span class="fw-bold text-primary">{{
+          item.warranty_type_3 != null ? item.warranty_type_2 : "-"
+        }}</span>
+      </div>
+      <div class="col-12 col-lg-4">
+        <span class="fw-bold">จำนวนวันรับประกัน : </span>
+        <span class="fw-bold text-primary">{{
+          item.warranty_type_3 ? item.warranty_day_3 + " วัน" : "-"
+        }}</span>
+      </div>
+      <div class="col-12 col-lg-4">
+        <span class="fw-bold">วันรับประกันคงเหลือ : </span>
+        <span class="fw-bold text-primary">
+          {{
+            item.warranty_type_3
+              ? item.warranty_day_3 -
+                  dayjs().diff(dayjs(item.approved_date), "day") <
+                0
+                ? "หมดการรับประกัน"
+                : item.warranty_day_3 -
                   dayjs().diff(dayjs(item.approved_date), "day") +
                   " วัน"
               : "-"

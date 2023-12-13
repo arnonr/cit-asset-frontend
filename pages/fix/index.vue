@@ -221,11 +221,20 @@
                   <td class="text-center">{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
                   <td>{{ it.description }}</td>
-                  <td class="text-center">{{ it.price }}</td>
                   <td class="text-center">
                     {{
-                      it.created_at != null
-                        ? dayjs(it.created_at)
+                      it.price != null
+                        ? Number(it.price)
+                            .toFixed(2)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : ""
+                    }}
+                  </td>
+                  <td class="text-center">
+                    {{
+                      it.repair_date != null
+                        ? dayjs(it.repair_date)
                             .locale("th")
                             .format("DD MMM BBBB")
                         : "-"

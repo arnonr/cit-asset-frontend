@@ -83,7 +83,10 @@
                             >การรับประกัน</a
                           >
                         </li>
-                        <li class="nav-item">
+                        <li
+                          class="nav-item"
+                          v-if="useCookie('user').value != undefined"
+                        >
                           <a
                             class="nav-link"
                             id="nav-cancel-tab"
@@ -96,7 +99,10 @@
                             >การโอน/จำหน่าย</a
                           >
                         </li>
-                        <li class="nav-item">
+                        <li
+                          class="nav-item"
+                          v-if="useCookie('user').value != undefined"
+                        >
                           <a
                             class="nav-link"
                             id="nav-location-tab"
@@ -106,11 +112,14 @@
                             role="tab"
                             aria-controls="nav-location"
                             aria-selected="false"
-                            >ประวัติสถานที่ติดตั้ง</a
+                            >ประวัติสถานที่ใช้งาน</a
                           >
                         </li>
 
-                        <li class="nav-item">
+                        <li
+                          class="nav-item"
+                          v-if="useCookie('user').value != undefined"
+                        >
                           <a
                             class="nav-link"
                             id="nav-holder-tab"
@@ -123,7 +132,10 @@
                             >ประวัติผู้ใช้งาน</a
                           >
                         </li>
-                        <li class="nav-item">
+                        <li
+                          class="nav-item"
+                          v-if="useCookie('user').value != undefined"
+                        >
                           <a
                             class="nav-link"
                             id="nav-fix-tab"
@@ -202,7 +214,11 @@
                           role="tabpanel"
                           aria-labelledby="nav-fix-tab"
                         >
-                          <AssetFix :item="item" v-if="item"  type="edit"></AssetFix>
+                          <AssetFix
+                            :item="item"
+                            v-if="item"
+                            type="edit"
+                          ></AssetFix>
                         </div>
                       </div>
                     </div>

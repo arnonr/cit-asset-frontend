@@ -167,8 +167,8 @@ const fetchItems = async () => {
         : undefined,
     perPage: perPage.value,
     currentPage: currentPage.value,
-    orderBy: "created_at",
-    order: "desc",
+    orderBy: "department_id",
+    order: "asc",
   };
 
   if (useCookie("user").value.level == 3) {

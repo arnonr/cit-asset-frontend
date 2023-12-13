@@ -199,7 +199,7 @@
                 <tr>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ติดตั้ง</th>
+                  <th class="text-center">สถานที่ใช้งานปัจจุบัน</th>
                   <th class="text-center">สถานะคำขอย้าย</th>
                   <th class="text-center">วันที่ขอย้าย</th>
                   <th class="text-center">วันที่อนุมัติ</th>

@@ -52,10 +52,19 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody v-if="items.length != 0">
-                  <tr v-for="(it, idx) in items" :key="idx">
+                <tbody v-if="fix_item.length != 0">
+                  <tr v-for="(it, idx) in fix_item" :key="idx">
                     <td>{{ it.description }}</td>
-                    <td class="text-center">{{ it.price }}</td>
+                    <td class="text-center">
+                      {{
+                        it.price != null
+                          ? Number(it.price)
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : ""
+                      }}
+                    </td>
                     <td class="text-center">
                       {{
                         it.repair_date != null
@@ -273,20 +282,26 @@ dayjs.extend(buddhistEra);
 
 const route = useRoute();
 
-export default {
-  props: {
-    item: {},
-    masonry: {
-      type: Boolean,
-      default: false,
-    },
-    type: {
-      type: String,
-      default: "edit",
-    },
-  },
-};
+// export default {
+//   props: {
+//     item: {},
+//     masonry: {
+//       type: Boolean,
+//       default: false,
+//     },
+//     type: {
+//       type: String,
+//       default: "edit",
+//     },
+//   },
+//   //   watch: {
+//   //     props: function (val) {
+//   //       this.fullName = val + " " + this.lastName;
+//   //     },
+//   //   },
+// };
 </script>
+
 <script setup>
 import asset_data from "~~/mixins/assetData";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -301,6 +316,11 @@ const totalPage = ref(1);
 const totalItems = ref(0);
 const update_fix = ref(false);
 let modalForm;
+const props = defineProps({
+  item: Object,
+  type: String,
+});
+
 const selectOptions = ref({
   perPage: [
     { title: "20", value: 20 },
@@ -321,7 +341,7 @@ const format = (date) => {
 // Function Fetch
 const fetchItems = async () => {
   let params = {
-    asset_id: route.params.id,
+    asset_id: props.type == "view" ? props.item.asset_id : route.params.id,
     orderBy: "created_at",
     order: "desc",
   };
@@ -330,10 +350,11 @@ const fetchItems = async () => {
     params: params,
   }).catch((error) => error.data);
 
-  items.value = data.data.map((e) => {
+  fix_item.value = data.data.map((e) => {
     return e;
   });
 
+  console.log(fix_item.value)
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
 };
@@ -413,7 +434,6 @@ const onSubmit = async () => {
         // }
         modalForm.hide();
         fetchItems();
-
         fix_item.value = {};
         update_fix.value = false;
       } else {
@@ -422,6 +442,11 @@ const onSubmit = async () => {
     })
     .catch((error) => error.data);
 };
+
+watch(props, async (newValue, oldValue) => {
+  fetchItems();
+//   this.fullName = val + " " + this.lastName;
+});
 
 onMounted(() => {
   fetchItems();
