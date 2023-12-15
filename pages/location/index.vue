@@ -202,16 +202,8 @@
                   <th class="text-center">สถานที่ใช้งานปัจจุบัน</th>
                   <th class="text-center">สถานะคำขอย้าย</th>
                   <th class="text-center">วันที่ขอย้าย</th>
-                  <th class="text-center">วันที่อนุมัติ</th>
-                  <th
-                    class="text-center"
-                    v-if="
-                      useCookie('user').value != undefined &&
-                      useCookie('user').value.level == 1
-                    "
-                  >
-                    จัดการ
-                  </th>
+                  <th class="text-center">วันที่พิจารณา</th>
+                  <th class="text-center">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
@@ -250,14 +242,14 @@
                     }}
                   </td>
 
-                  <td
-                    class="text-center"
-                    v-if="
-                      (useCookie('user').value != undefined &&
-                        useCookie('user').value.level) == 1
-                    "
-                  >
-                    <button class="btn btn-info">
+                  <td class="text-center">
+                    <button
+                      class="btn btn-info"
+                      v-if="
+                        (useCookie('user').value != undefined &&
+                          useCookie('user').value.level) == 1
+                      "
+                    >
                       <i
                         class="fa fa-edit"
                         @click="
@@ -273,6 +265,18 @@
                           }
                         "
                       ></i>
+                    </button>
+
+                    <button
+                      class="btn btn-info"
+                      v-if="
+                        useCookie('user').value != undefined &&
+                        useCookie('user').value.level == 3 &&
+                        it.is_notice == 1
+                      "
+                    >
+                      <i class="fa fa-edit" @click="onChangeNotice(it.id)"></i>
+                      รับทราบผล
                     </button>
                   </td>
                 </tr>
@@ -713,8 +717,7 @@ const onSubmit = async () => {
 
         // refreshNoti
         let data1 = await $fetch(
-          `${runtimeConfig.public.apiBase}/asset-location-history`,
-         
+          `${runtimeConfig.public.apiBase}/asset-location-history`
         ).catch((error) => error.data);
 
         let item1 = data1.data.filter((e) => {
@@ -733,6 +736,55 @@ const onSubmit = async () => {
 
         item.value = {};
         update_location.value = false;
+      } else {
+        throw new Error("ERROR");
+      }
+    })
+    .catch((error) => error.data);
+};
+
+const onChangeNotice = async (id) => {
+  let type_object = {
+    text_success: "รับทราบผลเสร็จสิ้น",
+    method: "put",
+    url: runtimeConfig.public.apiBase + "/asset-location-history" + id,
+  };
+
+  await $fetch(type_object.url, {
+    method: type_object.method,
+    headers: {
+      Authorization: useCookie("token").value
+        ? `Bearer ${useCookie("token").value}`
+        : "",
+    },
+    body: {
+      is_notice: 0,
+    },
+  })
+    .then(async (res) => {
+      if (res.msg == "success") {
+        // refreshNoti
+        let params = {};
+        params["asset_deparment_id"] = useCookie("user").value.department_id;
+        params["is_notice"] = 1;
+
+        let data1 = await $fetch(
+          `${runtimeConfig.public.apiBase}/asset-location-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
+
+        let item1 = data1.data.filter((e) => {
+          return e;
+        });
+
+        useNotification().value = {
+          location: item1.length,
+          holder: useNotification().value.holder,
+          fix: useNotification().value.fix,
+        };
+        // EndRefresh
       } else {
         throw new Error("ERROR");
       }

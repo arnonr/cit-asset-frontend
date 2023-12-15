@@ -13,7 +13,8 @@
           is_user_type == 'admin' ||
           (is_user_type == 'staff' &&
             menu.title != 'Manage' &&
-            menu.title != 'Request')
+            menu.title != 'Request') ||
+          (is_user_type == 'dep' && menu.title != 'Manage')
         "
       >
         {{ $t(menu.title) }}
@@ -78,44 +79,91 @@ export default {
         order: "desc",
       };
 
-      let data1 = await $fetch(
-        `${runtimeConfig.public.apiBase}/asset-location-history`,
-        {
-          params: params,
-        }
-      ).catch((error) => error.data);
+      if (useCookie("user").value.level == 1) {
+        params["status"] = 0;
+        let data1 = await $fetch(
+          `${runtimeConfig.public.apiBase}/asset-location-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
 
-      let item1 = data1.data.filter((e) => {
-        return e.status == 0;
-      });
+        let item1 = data1.data.filter((e) => {
+          return e;
+        });
 
-      let data2 = await $fetch(
-        `${runtimeConfig.public.apiBase}/holder-history`,
-        {
-          params: params,
-        }
-      ).catch((error) => error.data);
+        let data2 = await $fetch(
+          `${runtimeConfig.public.apiBase}/holder-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
 
-      let item2 = data2.data.filter((e) => {
-        return e.status == 0;
-      });
+        let item2 = data2.data.filter((e) => {
+          return e;
+        });
 
-      let data3 = await $fetch(
-        `${runtimeConfig.public.apiBase}/repair-history`,
-        {
-          params: params,
-        }
-      ).catch((error) => error.data);
+        let data3 = await $fetch(
+          `${runtimeConfig.public.apiBase}/repair-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
 
-      let item3 = data3.data.filter((e) => {
-        return e.status == 0;
-      });
+        let item3 = data3.data.filter((e) => {
+          return e;
+        });
 
-      useNotification().value = {
-        location: item1.length,
-        holder: item2.length,
-        fix: item3.length,
-      };
+        useNotification().value = {
+          location: item1.length,
+          holder: item2.length,
+          fix: item3.length,
+        };
+      } else if (useCookie("user").value.level == 2) {
+      } else if (useCookie("user").value.level == 3) {
+        params["asset_deparment_id"] = useCookie("user").value.department_id;
+        params["is_notice"] = 1;
+
+        let data1 = await $fetch(
+          `${runtimeConfig.public.apiBase}/asset-location-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
+
+        let item1 = data1.data.filter((e) => {
+          return e;
+        });
+
+        let data2 = await $fetch(
+          `${runtimeConfig.public.apiBase}/holder-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
+
+        let item2 = data2.data.filter((e) => {
+          return e;
+        });
+
+        let data3 = await $fetch(
+          `${runtimeConfig.public.apiBase}/repair-history`,
+          {
+            params: params,
+          }
+        ).catch((error) => error.data);
+
+        let item3 = data3.data.filter((e) => {
+          return e;
+        });
+
+        useNotification().value = {
+          location: item1.length,
+          holder: item2.length,
+          fix: item3.length,
+        };
+      } else {
+      }
     };
 
     onMounted(() => {
