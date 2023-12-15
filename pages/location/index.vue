@@ -269,13 +269,15 @@
 
                     <button
                       class="btn btn-info"
+                      
                       v-if="
                         useCookie('user').value != undefined &&
                         useCookie('user').value.level == 3 &&
                         it.is_notice == 1
                       "
+                      @click="onChangeNotice(it.id)"
                     >
-                      <i class="fa fa-edit" @click="onChangeNotice(it.id)"></i>
+                      <i class="fa fa-edit"></i>
                       รับทราบผล
                     </button>
                   </td>
@@ -747,7 +749,7 @@ const onChangeNotice = async (id) => {
   let type_object = {
     text_success: "รับทราบผลเสร็จสิ้น",
     method: "put",
-    url: runtimeConfig.public.apiBase + "/asset-location-history" + id,
+    url: runtimeConfig.public.apiBase + "/asset-location-history/" + id,
   };
 
   await $fetch(type_object.url, {
@@ -785,6 +787,8 @@ const onChangeNotice = async (id) => {
           fix: useNotification().value.fix,
         };
         // EndRefresh
+        useToast(type_object.text_success, "success");
+        fetchItems();
       } else {
         throw new Error("ERROR");
       }

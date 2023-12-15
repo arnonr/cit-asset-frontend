@@ -282,13 +282,14 @@
 
                     <button
                       class="btn btn-info"
+                      @click="onChangeNotice(it.id)"
                       v-if="
                         useCookie('user').value != undefined &&
                         useCookie('user').value.level == 3 &&
                         it.is_notice == 1
                       "
                     >
-                      <i class="fa fa-edit" @click="onChangeNotice(it.id)"></i>
+                      <i class="fa fa-edit" ></i>
                       รับทราบผล
                     </button>
                   </td>
@@ -783,7 +784,7 @@ const onChangeNotice = async (id) => {
   let type_object = {
     text_success: "รับทราบผลเสร็จสิ้น",
     method: "put",
-    url: runtimeConfig.public.apiBase + "/repair-history" + id,
+    url: runtimeConfig.public.apiBase + "/repair-history/" + id,
   };
 
   await $fetch(type_object.url, {
@@ -821,6 +822,8 @@ const onChangeNotice = async (id) => {
           fix: item3.length,
         };
         // EndRefresh
+        useToast(type_object.text_success, "success");
+        fetchItems();
       } else {
         throw new Error("ERROR");
       }
