@@ -7,6 +7,11 @@
           <div class="col-xl-6 col-lg-8 col-md-10">
             <div class="login__wrapper">
               <div class="login__top mb-30 text-center">
+                <img
+                  src="~/assets/img/logo/logo_cit.png"
+                  style="width: 20%"
+                  alt="logo"
+                />
                 <h3 class="login__title">CIT QR Search</h3>
                 <p>Enter your ICIT ACCOUNT</p>
               </div>
@@ -47,7 +52,11 @@
                       <label for="tp-remember">Remember me</label>
                     </div>
                     <div class="login__forgot">
-                      <nuxt-link href="https://account.kmutnb.ac.th/web/recovery/password" target="_blank">forgot password?</nuxt-link>
+                      <nuxt-link
+                        href="https://account.kmutnb.ac.th/web/recovery/password"
+                        target="_blank"
+                        >forgot password?</nuxt-link
+                      >
                     </div>
                   </div>
                   <div class="login__btn">
@@ -126,7 +135,7 @@ const handleSubmit = async () => {
   login.value.username = login.value.email;
   let checkLogin = await authenticateUser(login.value); // call authenticateUser and pass the user object
   console.log(checkLogin);
-  console.log(authenticated.value)
+  console.log(authenticated.value);
 
   //   if(checkLogin != 'success'){
 
