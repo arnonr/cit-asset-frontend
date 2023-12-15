@@ -20,9 +20,9 @@ export default {
           hasDropdown: true,
           link: "#",
           submenus: [
-            { title: "Location", link: "/location" },
-            { title: "Holder", link: "/holder" },
-            { title: "Fix", link: "/fix" },
+            { title: "Location", link: "/location",noti: "location" },
+            { title: "Holder", link: "/holder",noti: "holder" },
+            { title: "Fix", link: "/fix",noti: "fix" },
           ],
         },
         {

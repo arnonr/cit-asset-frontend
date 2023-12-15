@@ -55,6 +55,29 @@
                 <div
                   class="header__info-wrapper-4 d-flex align-items-center justify-content-center"
                 >
+                  <!-- <div class="dropdown mr-0-5 fw-bold">
+                    <button
+                      class="btn btn-light btn-custom-light dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                        <i class="fa fa-bell"></i>
+                    </button>
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li>
+                        <a class="dropdown-item item-link" @click="logout"
+                          >ออกจากระบบ</a
+                        >
+                      </li>
+                    </ul>
+                  </div> -->
+
+                  <!-- <span class="mr-0-5 fw-bold"> | </span> -->
                   <span class="mr-0-5 item-link" @click="changeSkin()">
                     <svg
                       v-if="useSkin().value == 'skin-dark'"

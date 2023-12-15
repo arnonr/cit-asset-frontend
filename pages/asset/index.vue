@@ -267,32 +267,43 @@
             </button>
           </json-excel>
 
-          <button
-            type="button"
-            v-if="useCookie('user').value.level == 1"
-            class="btn btn-primary me-2 mt-2"
-            @click="
-              () => {
-                modalForm.show();
-              }
-            "
-          >
-            <i class="fa-regular fa-file-text"></i>
-            Import Asset
-          </button>
-
-          <!-- <button
-            type="button"
-            v-if="
-              useCookie('user').value.level == 1 ||
-              useCookie('user').value.level == 2
-            "
-            class="btn btn-info me-2 mt-2"
-            @click="onGenerateQR('ALL')"
-          >
-            <i class="fa-regular fa-qrcode"></i>
-            QR CODE
-          </button> -->
+          <div class="dropdown d-inline">
+            <button
+              class="btn btn-primary dropdown-toggle me-2 mt-2"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fa-regular fa-file-text"></i> Import
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-if="useCookie('user').value.level == 1">
+                <a
+                  class="dropdown-item"
+                  @click="
+                    () => {
+                      modalForm.show();
+                    }
+                  "
+                  style="cursor: pointer"
+                  >นำเข้าข้อมูลครุภัณฑ์</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="
+                    () => {
+                      modalForm2.show();
+                    }
+                  "
+                  style="cursor: pointer"
+                  >นำเข้าข้อมูลการโอน/จำหน่าย</a
+                >
+              </li>
+            </ul>
+          </div>
 
           <div class="dropdown d-inline">
             <button
@@ -411,7 +422,7 @@
                         name: 'asset-id',
                         params: { id: it.id },
                       }"
-                      class="btn btn-warning text-uppercase  d-inline"
+                      class="btn btn-warning text-uppercase d-inline"
                     >
                       <i class="fa-regular fa-edit"></i>
                     </NuxtLink>
@@ -481,7 +492,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
-            แบบฟอร์มนำเข้าข้อมูล
+            แบบฟอร์มนำเข้าข้อมูลครุภัณฑ์
           </h1>
           <button
             type="button"
@@ -543,7 +554,91 @@
           <button
             type="button"
             class="btn btn-warning"
-            @click="onImportSubmit()"
+            @click="onImportSubmit(1)"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2-->
+  <div
+    class="modal fade"
+    data-bs-backdrop="static"
+    id="modal-form-2"
+    tabindex="-1"
+    aria-labelledby="modal-form"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modal-form-label">
+            แบบฟอร์มนำเข้าข้อมูลการโอน/จำหน่าย
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="form-group row mt-10">
+                <label for="gallery" class="col-sm-12 col-form-label"
+                  >อัพโหลดไฟล์ Excel (.xls, .xlsx) :
+                </label>
+
+                <div class="col-sm-12">
+                  <input
+                    ref="file"
+                    class="form-control"
+                    type="file"
+                    id="formFile"
+                  />
+                </div>
+              </div>
+
+              <div class="table-responsive mt-4">
+                <h5 class="text-danger">รายการนำเข้าไม่สำเร็จ</h5>
+                <table class="table table-bordered table-striped table-admin">
+                  <thead>
+                    <tr>
+                      <th class="text-center" style="min-width: 50px">แถว</th>
+                      <th class="text-center">หมายเลขครุภัณฑ์</th>
+                      <th class="text-center">ข้อผิดพลาด</th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="items.length != 0">
+                    <tr v-for="(it, idx) in import_result" :key="idx">
+                      <td class="text-center">{{ it.row_id }}</td>
+                      <td class="text-center">{{ it.asset_code }}</td>
+                      <td class="text-center">
+                        <span>{{ it.error_message }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            @click="onImportSubmit(2)"
           >
             Submit
           </button>
@@ -761,7 +856,7 @@ const qr_items = ref([]);
 const import_result = ref([]);
 const file = ref(null);
 let modalForm;
-
+let modalForm2;
 // Function Fetch
 const fetchAssetTypes = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/asset-type`, {
@@ -959,7 +1054,7 @@ const readFileAsync = (importFile) => {
   });
 };
 
-const onImportSubmit = async () => {
+const onImportSubmit = async (type) => {
   import_result.value = [];
   let importFile = null;
   if (file.value.files != null) {
@@ -1116,7 +1211,10 @@ const onImportSubmit = async () => {
 
     await $fetch(type_object.url, {
       method: type_object.method,
-      body: data,
+      body: {
+        data: data,
+        type: type,
+      },
     })
       .then((res) => {
         if (res.msg == "success") {
@@ -1176,6 +1274,7 @@ onMounted(() => {
   fetchDepartments();
   fetchItems();
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
+  modalForm2 = new bootstrap.Modal(document.getElementById("modal-form-2"));
 });
 
 useHead({

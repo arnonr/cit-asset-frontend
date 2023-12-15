@@ -705,6 +705,22 @@ const onSubmit = async () => {
           );
         }
 
+        // refreshNoti
+        let data2 = await $fetch(
+          `${runtimeConfig.public.apiBase}/holder-history`
+        ).catch((error) => error.data);
+
+        let item2 = data2.data.filter((e) => {
+          return e.status == 0;
+        });
+
+        useNotification().value = {
+          location: useNotification().value.location,
+          holder: item2.length,
+          fix: useNotification().value.fix,
+        };
+        // EndRefresh
+
         modalForm.hide();
         fetchItems();
 

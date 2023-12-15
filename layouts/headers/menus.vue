@@ -11,7 +11,9 @@
         :to="menu.link"
         v-if="
           is_user_type == 'admin' ||
-          (is_user_type == 'staff' && menu.title != 'Manage' && menu.title != 'Request')
+          (is_user_type == 'staff' &&
+            menu.title != 'Manage' &&
+            menu.title != 'Request')
         "
       >
         {{ $t(menu.title) }}
@@ -20,6 +22,9 @@
         <li v-for="(sub, i) in menu.submenus" :key="i" class="submenu-item">
           <NuxtLink :to="sub.link">
             {{ $t(sub.title) }}
+            <span class="badge bg-info" v-if="sub.noti">{{
+              useNotification().value[sub.noti]
+            }}</span>
             <hr style="width: 100%; color: #ddd; padding: 0px; margin: 0" />
           </NuxtLink>
         </li>
@@ -49,6 +54,9 @@ export default {
   mixins: [menuData],
   setup() {
     const is_user_type = ref("guest");
+
+    const runtimeConfig = useRuntimeConfig();
+
     if (useCookie("user").value != undefined) {
       if (useCookie("user").value.level == 1) {
         is_user_type.value = "admin";
@@ -62,6 +70,58 @@ export default {
     } else {
       is_user_type.value = "guest";
     }
+
+    // Fetch
+    const fetchNoti = async () => {
+      let params = {
+        orderBy: "created_at",
+        order: "desc",
+      };
+
+      let data1 = await $fetch(
+        `${runtimeConfig.public.apiBase}/asset-location-history`,
+        {
+          params: params,
+        }
+      ).catch((error) => error.data);
+
+      let item1 = data1.data.filter((e) => {
+        return e.status == 0;
+      });
+
+      let data2 = await $fetch(
+        `${runtimeConfig.public.apiBase}/holder-history`,
+        {
+          params: params,
+        }
+      ).catch((error) => error.data);
+
+      let item2 = data2.data.filter((e) => {
+        return e.status == 0;
+      });
+
+      let data3 = await $fetch(
+        `${runtimeConfig.public.apiBase}/repair-history`,
+        {
+          params: params,
+        }
+      ).catch((error) => error.data);
+
+      let item3 = data3.data.filter((e) => {
+        return e.status == 0;
+      });
+
+      useNotification().value = {
+        location: item1.length,
+        holder: item2.length,
+        fix: item3.length,
+      };
+    };
+
+    onMounted(() => {
+      fetchNoti();
+    });
+
     return {
       is_user_type,
     };

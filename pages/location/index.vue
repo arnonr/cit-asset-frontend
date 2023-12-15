@@ -711,6 +711,23 @@ const onSubmit = async () => {
           );
         }
 
+        // refreshNoti
+        let data1 = await $fetch(
+          `${runtimeConfig.public.apiBase}/asset-location-history`,
+         
+        ).catch((error) => error.data);
+
+        let item1 = data1.data.filter((e) => {
+          return e.status == 0;
+        });
+
+        useNotification().value = {
+          location: item1.length,
+          holder: useNotification().value.holder,
+          fix: useNotification().value.fix,
+        };
+        // EndRefresh
+
         modalForm.hide();
         fetchItems();
 

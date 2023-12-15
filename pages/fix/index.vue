@@ -747,6 +747,22 @@ const onSubmit = async () => {
       if (res.msg == "success") {
         useToast(type_object.text_success, "success");
 
+        // refreshNoti
+        let data3 = await $fetch(
+          `${runtimeConfig.public.apiBase}/repair-history`
+        ).catch((error) => error.data);
+
+        let item3 = data3.data.filter((e) => {
+          return e.status == 0;
+        });
+
+        useNotification().value = {
+          location: useNotification().value.location,
+          holder: useNotification().value.holder,
+          fix: item3.length,
+        };
+        // EndRefresh
+
         modalForm.hide();
         fetchItems();
 
