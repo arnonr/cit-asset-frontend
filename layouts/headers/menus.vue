@@ -121,7 +121,7 @@ export default {
         };
       } else if (useCookie("user").value.level == 2) {
       } else if (useCookie("user").value.level == 3) {
-        params["asset_deparment_id"] = useCookie("user").value.department_id;
+        params["deparment_id"] = useCookie("user").value.department_id;
         params["is_notice"] = 1;
 
         let data1 = await $fetch(

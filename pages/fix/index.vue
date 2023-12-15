@@ -801,7 +801,7 @@ const onChangeNotice = async (id) => {
       if (res.msg == "success") {
         // refreshNoti
         let params = {};
-        params["asset_deparment_id"] = useCookie("user").value.department_id;
+        params["department_id"] = useCookie("user").value.department_id;
         params["is_notice"] = 1;
 
         let data3 = await $fetch(

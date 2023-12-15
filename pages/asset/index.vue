@@ -274,11 +274,16 @@
               id="dropdownMenuButton1"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              v-if="
+                useCookie('user').value != undefined &&
+                (useCookie('user').value.level == 1 ||
+                  useCookie('user').value.level == 2)
+              "
             >
               <i class="fa-regular fa-file-text"></i> Import
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li v-if="useCookie('user').value.level == 1">
+              <li>
                 <a
                   class="dropdown-item"
                   @click="
@@ -290,7 +295,12 @@
                   >นำเข้าข้อมูลครุภัณฑ์</a
                 >
               </li>
-              <li>
+              <li
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
+              >
                 <a
                   class="dropdown-item"
                   @click="
@@ -312,6 +322,11 @@
               id="dropdownMenuButton1"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              v-if="
+                useCookie('user').value != undefined &&
+                (useCookie('user').value.level == 1 ||
+                  useCookie('user').value.level == 2)
+              "
             >
               <i class="fa-regular fa-qrcode"></i> QR CODE
             </button>
@@ -434,6 +449,11 @@
                         id="dropdownMenuButton1"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
+                        v-if="
+                          useCookie('user').value != undefined &&
+                          (useCookie('user').value.level == 1 ||
+                            useCookie('user').value.level == 2)
+                        "
                       >
                         <i class="fa-regular fa-qrcode"></i>
                       </button>
@@ -1213,7 +1233,7 @@ const onImportSubmit = async (type) => {
       method: type_object.method,
       body: {
         data: data,
-        type: type,
+        is_import: type,
       },
     })
       .then((res) => {

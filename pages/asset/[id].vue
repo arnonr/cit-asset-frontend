@@ -34,7 +34,8 @@
                         class="text-end"
                         v-if="
                           useCookie('user').value != undefined &&
-                          useCookie('user').value.level == 1
+                          (useCookie('user').value.level == 1 ||
+                            useCookie('user').value.level == 2)
                         "
                       >
                         <NuxtLink
