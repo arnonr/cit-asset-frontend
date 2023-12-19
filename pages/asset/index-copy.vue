@@ -1,6 +1,6 @@
 <template>
   <section
-    class="breadcrumb__area include-bg pb-40 pt-30 grey-bg-4 d-print-none wrapper"
+    class="breadcrumb__area include-bg pb-40 pt-30 grey-bg-4 d-print-none"
   >
     <div class="container">
       <div class="row">
@@ -15,7 +15,7 @@
     </div>
   </section>
 
-  <section class="portfolio__area pt-40 d-print-none wrapper1">
+  <section class="portfolio__area pt-40 d-print-none">
     <div class="container">
       <div class="mt-10 mb-30 pl-10 pt-15 pb-10 bg-grey">
         <h4>
@@ -237,7 +237,7 @@
     </div>
   </section>
 
-  <section class="portfolio__area pt-40 pb-40 d-print-none wrapper1">
+  <section class="portfolio__area pt-40 pb-40 d-print-none">
     <div class="container">
       <div class="mt-10 mb-30 pl-10 pt-15 pb-10 bg-grey">
         <h4>
@@ -564,11 +564,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <a
-            class="btn btn-primary"
-            target="_blank"
-            href="http://citqresearch.cit.kmutnb.ac.th/_nuxt/logo_cit.3f048880.png"
-          >
+          <a class="btn btn-primary" target="_blank" href="http://citqresearch.cit.kmutnb.ac.th/_nuxt/logo_cit.3f048880.png">
             Download Template
           </a>
           <button
@@ -767,13 +763,6 @@
       </div>
     </div>
   </ClientOnly>
-
-  <!-- Overlay -->
-  <div class="overlay"></div>
-  <div :class="'spanner ' + show_spinner">
-    <div class="loader"></div>
-    <div class="text-loader fw-bold">Importing Asset.</div>
-  </div>
 </template>
 
 <script setup>
@@ -825,6 +814,7 @@ const search = ref({
 });
 
 const format = (date) => {
+  console.log(date);
   const day = dayjs(date).locale("th").format("DD");
   const month = dayjs(date).locale("th").format("MMM");
   const year = dayjs(date).locale("th").format("BBBB");
@@ -889,7 +879,6 @@ const qr_items = ref([]);
 const import_result = ref([]);
 const file = ref(null);
 const file2 = ref(null);
-const show_spinner = ref("");
 let modalForm;
 let modalForm2;
 // Function Fetch
@@ -1067,17 +1056,15 @@ watchEffect(() => {
 // Event
 const readFileAsync = (importFile) => {
   return new Promise((resolve, reject) => {
-    // importFile
-
     let reader = new FileReader();
 
     reader.onload = () => {
       let data = reader.result;
       data = new Uint8Array(data);
+
       let workbook = XLSX.read(data, {
         type: "array",
       });
-
       let first_worksheet = workbook.Sheets[workbook.SheetNames[0]];
       let result = XLSX.utils.sheet_to_json(first_worksheet, {
         header: 1,
@@ -1114,6 +1101,7 @@ const onImportSubmit = async (type) => {
     importFile = file2.value.files[0];
     result = await readFileAsync(importFile);
   }
+
   let data = [];
 
   let column_index_import = {
@@ -1125,16 +1113,16 @@ const onImportSubmit = async (type) => {
     vendor: null,
     asset_detail: null,
     install_location: null,
-    asset_type_code: null,
+    asset_type_id: null,
     brand: null,
     model: null,
     serial_number: null,
     price: null,
-    budget_type_code: null,
+    budget_type_id: null,
     is_transfer: null,
     transfer_from: null,
     location: null,
-    department_code: null,
+    department_id: null,
     drawer_name: null,
     holder_name: null,
     warranty_type_1: null,
@@ -1178,7 +1166,7 @@ const onImportSubmit = async (type) => {
       name_en: "vendor",
     },
     {
-      name: "คุณสมบัติ",
+      name: "รายละเอียด",
       name_en: "asset_detail",
     },
     {
@@ -1186,8 +1174,8 @@ const onImportSubmit = async (type) => {
       name_en: "install_location",
     },
     {
-      name: "รหัสหมวดสินทรัพย์",
-      name_en: "asset_type_code",
+      name: "ชื่อหมวดสินทรัพย์",
+      name_en: "asset_type_id",
     },
     {
       name: "ยี่ห้อ",
@@ -1206,8 +1194,8 @@ const onImportSubmit = async (type) => {
       name_en: "price",
     },
     {
-      name: "รหัสแหล่งเงิน",
-      name_en: "budget_type_code",
+      name: "แหล่งเงิน",
+      name_en: "budget_type_id",
     },
     {
       name: "การโอน",
@@ -1222,8 +1210,8 @@ const onImportSubmit = async (type) => {
       name_en: "location",
     },
     {
-      name: "รหัสภาค/กอง",
-      name_en: "department_code",
+      name: "ชื่อภาค/กอง",
+      name_en: "department_id",
     },
     {
       name: "ผู้เบิก",
@@ -1297,165 +1285,157 @@ const onImportSubmit = async (type) => {
   }
 
   const convert_day = (day) => {
-    // console.log(day)
-    // let day_arr = day.split("/");
-    return day;
-    // (
-    //   day_arr[2] + "-" + day_arr[1] + "-" + day_arr[0]
-    // );
+    console.log(day);
+    let day_arr = day.split("/");
+    return (
+      day_arr[2].trim() + "-" + day_arr[1].trim() + "-" + day_arr[0].trim()
+    );
   };
 
   for (var i = 0; i < result.result.length; i++) {
     if (result.result[i].length != 0) {
-      console.log(
-        "inspection_date: " +
-          result.result[i][column_index_import.inspection_date]
-      );
-      console.log(
-        "approve_date: " + result.result[i][column_index_import.approved_date]
-      );
-      console.log(
-        "cancel_date: " + result.result[i][column_index_import.cancel_date]
-      );
-
-      data.push({
-        row_id: i + 1,
-        asset_code:
-          column_index_import.asset_code != undefined
-            ? result.result[i][column_index_import.asset_code].trim()
-            : null,
-        asset_name:
-          column_index_import.asset_name != undefined
-            ? result.result[i][column_index_import.asset_name].trim()
-            : null,
-        input_year:
-          column_index_import.input_year != undefined
-            ? Number(result.result[i][column_index_import.input_year]) - 543
-            : null,
-        inspection_date:
-          column_index_import.inspection_date != undefined
-            ? convert_day(result.result[i][column_index_import.inspection_date])
-            : null,
-        approved_date:
-          column_index_import.approved_date != undefined
-            ? convert_day(result.result[i][column_index_import.approved_date])
-            : null,
-        vendor:
-          column_index_import.vendor != undefined
-            ? result.result[i][column_index_import.vendor].trim()
-            : null,
-        asset_detail:
-          column_index_import.asset_detail != undefined
-            ? result.result[i][column_index_import.asset_detail]
-            : null,
-        install_location:
-          column_index_import.install_location != undefined
-            ? result.result[i][column_index_import.install_location].trim()
-            : null,
-        asset_type_code:
-          column_index_import.asset_type_code != undefined
-            ? result.result[i][column_index_import.asset_type_code].trim()
-            : null,
-        brand:
-          column_index_import.brand != undefined
-            ? result.result[i][column_index_import.brand]
-            : null,
-        model:
-          column_index_import.model != undefined
-            ? result.result[i][column_index_import.model]
-            : null,
-        serial_number:
-          column_index_import.serial_number != undefined
-            ? result.result[i][column_index_import.serial_number]
-            : null,
-        price:
-          column_index_import.price != undefined
-            ? result.result[i][column_index_import.price].trim()
-            : null,
-        budget_type_code:
-          column_index_import.budget_type_code != undefined
-            ? result.result[i][column_index_import.budget_type_code]
-            : null,
-        is_transfer:
-          column_index_import.is_transfer != undefined
-            ? result.result[i][column_index_import.is_transfer]
-            : null,
-        transfer_from:
-          column_index_import.transfer_from != undefined
-            ? result.result[i][column_index_import.transfer_from]
-            : null,
-        location:
-          column_index_import.location != undefined
-            ? result.result[i][column_index_import.location].trim()
-            : null,
-        department_code:
-          column_index_import.department_code != undefined
-            ? result.result[i][column_index_import.department_code]
-            : null,
-        drawer_name:
-          column_index_import.drawer_name != undefined
-            ? result.result[i][column_index_import.drawer_name].trim()
-            : null,
-        holder_name:
-          column_index_import.holder_name != undefined
-            ? result.result[i][column_index_import.holder_name].trim()
-            : null,
-        warranty_type_1:
-          column_index_import.warranty_type_1 != undefined
-            ? result.result[i][column_index_import.warranty_type_1].trim()
-            : null,
-        warranty_day_1:
-          column_index_import.warranty_day_1 != undefined
-            ? result.result[i][column_index_import.warranty_day_1].trim()
-            : null,
-        warranty_type_2:
-          column_index_import.warranty_type_2 != undefined
-            ? result.result[i][column_index_import.warranty_type_2].trim()
-            : null,
-        warranty_day_2:
-          column_index_import.warranty_day_2 != undefined
-            ? result.result[i][column_index_import.warranty_day_2].trim()
-            : null,
-        warranty_type_3:
-          column_index_import.warranty_type_3 != undefined
-            ? result.result[i][column_index_import.warranty_type_3].trim()
-            : null,
-        warranty_day_3:
-          column_index_import.warranty_day_3 != undefined
-            ? result.result[i][column_index_import.warranty_day_3].trim()
-            : null,
-        asset_status:
-          column_index_import.asset_status != undefined
-            ? result.result[i][column_index_import.asset_status].trim()
-            : null,
-        cancel_type:
-          column_index_import.cancel_type != undefined
-            ? result.result[i][column_index_import.cancel_type].trim()
-            : null,
-        cancel_date:
-          column_index_import.cancel_date != undefined
-            ? convert_day(result.result[i][column_index_import.cancel_date])
-            : null,
-        cancel_comment:
-          column_index_import.cancel_comment != undefined
-            ? result.result[i][column_index_import.cancel_comment].trim()
-            : null,
-        transfer_to:
-          column_index_import.transfer_to != undefined
-            ? result.result[i][column_index_import.transfer_to].trim()
-            : null,
-        transfer_to_department:
-          column_index_import.transfer_to_department != undefined
-            ? result.result[i][
-                column_index_import.transfer_to_department
-              ].trim()
-            : null,
-        comment:
-          column_index_import.comment != undefined
-            ? result.result[i][column_index_import.comment].trim()
-            : null,
-      });
+      console.log("inspection_date: " + column_index_import.inspection_date);
+      console.log("approve_date: " + column_index_import.approved_date);
+      console.log("cancel_date: " + column_index_import.cancel_date);
     }
+    //   data.push({
+    //     row_id: i + 1,
+    //     asset_code:
+    //       column_index_import.asset_code != null
+    //         ? result.result[i][column_index_import.asset_code].trim()
+    //         : null,
+    //     asset_name:
+    //       column_index_import.asset_name != null
+    //         ? result.result[i][column_index_import.asset_name].trim()
+    //         : null,
+    //     input_year:
+    //       column_index_import.input_year != null
+    //         ? Number(result.result[i][column_index_import.input_year]) - 543
+    //         : null,
+    //     inspection_date:
+    //       column_index_import.inspection_date != null
+    //         ? convert_day(column_index_import.inspection_date)
+    //         : null,
+    //     approved_date:
+    //       column_index_import.approved_date != null
+    //         ? convert_day(column_index_import.approved_date)
+    //         : null,
+    //     vendor:
+    //       column_index_import.vendor != null
+    //         ? result.result[i][column_index_import.vendor].trim()
+    //         : null,
+    //     asset_detail:
+    //       column_index_import.asset_detail != null
+    //         ? result.result[i][column_index_import.asset_detail]
+    //         : null,
+    //     install_location:
+    //       column_index_import.install_location != null
+    //         ? result.result[i][column_index_import.install_location].trim()
+    //         : null,
+    //     asset_type_id:
+    //       column_index_import.asset_type_id != null
+    //         ? result.result[i][column_index_import.asset_type_id].trim()
+    //         : null,
+    //     brand:
+    //       column_index_import.brand != null
+    //         ? result.result[i][column_index_import.brand]
+    //         : null,
+    //     model:
+    //       column_index_import.model != null
+    //         ? result.result[i][column_index_import.model]
+    //         : null,
+    //     serial_number:
+    //       column_index_import.serial_number != null
+    //         ? result.result[i][column_index_import.serial_number]
+    //         : null,
+    //     price:
+    //       column_index_import.price != null
+    //         ? result.result[i][column_index_import.price].trim()
+    //         : null,
+    //     budget_type_id:
+    //       column_index_import.budget_type_id != null
+    //         ? result.result[i][column_index_import.budget_type_id]
+    //         : null,
+    //     is_transfer:
+    //       column_index_import.is_transfer != null
+    //         ? result.result[i][column_index_import.is_transfer]
+    //         : null,
+    //     transfer_from:
+    //       column_index_import.transfer_from != null
+    //         ? result.result[i][column_index_import.transfer_from]
+    //         : null,
+    //     location:
+    //       column_index_import.location != null
+    //         ? result.result[i][column_index_import.location].trim()
+    //         : null,
+    //     department_id:
+    //       column_index_import.department_id != null
+    //         ? result.result[i][column_index_import.department_id]
+    //         : null,
+    //     drawer_name:
+    //       column_index_import.drawer_name != null
+    //         ? result.result[i][column_index_import.drawer_name].trim()
+    //         : null,
+    //     holder_name:
+    //       column_index_import.holder_name != null
+    //         ? result.result[i][column_index_import.holder_name].trim()
+    //         : null,
+    //     warranty_type_1:
+    //       column_index_import.warranty_type_1 != null
+    //         ? result.result[i][column_index_import.warranty_type_1].trim()
+    //         : null,
+    //     warranty_day_1:
+    //       column_index_import.warranty_day_1 != null
+    //         ? result.result[i][column_index_import.warranty_day_1].trim()
+    //         : null,
+    //     warranty_type_2:
+    //       column_index_import.warranty_type_2 != null
+    //         ? result.result[i][column_index_import.warranty_type_2].trim()
+    //         : null,
+    //     warranty_day_2:
+    //       column_index_import.warranty_day_2 != null
+    //         ? result.result[i][column_index_import.warranty_day_2].trim()
+    //         : null,
+    //     warranty_type_3:
+    //       column_index_import.warranty_type_3 != null
+    //         ? result.result[i][column_index_import.warranty_type_3].trim()
+    //         : null,
+    //     warranty_day_3:
+    //       column_index_import.warranty_day_3 != null
+    //         ? result.result[i][column_index_import.warranty_day_3].trim()
+    //         : null,
+    //     asset_status:
+    //       column_index_import.asset_status != null
+    //         ? result.result[i][column_index_import.asset_status].trim()
+    //         : null,
+    //     cancel_type:
+    //       column_index_import.cancel_type != null
+    //         ? result.result[i][column_index_import.cancel_type].trim()
+    //         : null,
+    //     cancel_date:
+    //       column_index_import.cancel_date != null
+    //         ? convert_day(column_index_import.cancel_date)
+    //         : null,
+    //     cancel_comment:
+    //       column_index_import.cancel_comment != null
+    //         ? result.result[i][column_index_import.cancel_comment].trim()
+    //         : null,
+    //     transfer_to:
+    //       column_index_import.transfer_to != null
+    //         ? result.result[i][column_index_import.transfer_to].trim()
+    //         : null,
+    //     transfer_to_department:
+    //       column_index_import.transfer_to_department != null
+    //         ? result.result[i][
+    //             column_index_import.transfer_to_department
+    //           ].trim()
+    //         : null,
+    //     comment:
+    //       column_index_import.comment != null
+    //         ? result.result[i][column_index_import.comment].trim()
+    //         : null,
+    //   });
+    // }
   }
 
   let type_object = {
@@ -1464,7 +1444,6 @@ const onImportSubmit = async (type) => {
     url: runtimeConfig.public.apiBase + "/asset/import-asset",
   };
 
-  show_spinner.value = "show";
   await $fetch(type_object.url, {
     method: type_object.method,
     body: {
@@ -1491,21 +1470,19 @@ const onImportSubmit = async (type) => {
           return e.import_success == false;
         });
 
-        fetchItems();
+        console.log(import_result.value);
 
-        show_spinner.value = "";
+        fetchItems();
       } else {
         throw new Error("ERROR");
       }
     })
-    .catch((error) => {
-      show_spinner.value = "";
-      return error.data;
-    });
+    .catch((error) => error.data);
 };
 
 const onGenerateQR = (it, size) => {
   qr_items.value = [];
+  console.log(size);
   if (size == 2) {
     show44.value = "show-44-none";
     show22.value = "";
@@ -1563,117 +1540,5 @@ definePageMeta({
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-}
-
-/* Spinner */
-/* .wrapper1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300px;
-  text-align: center;
-  transform: translateX(-50%);
-} */
-
-.spanner {
-  position: fixed;
-  top: 0%;
-  left: 0;
-  background: #2a2a2a55;
-  width: 100%;
-  display: block;
-  text-align: center;
-  height: 150%;
-  color: #fff;
-  z-index: 20000;
-  visibility: hidden;
-}
-
-.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: #2a2a2a55;
-  background: rgba(0, 0, 0, 0.5);
-  visibility: hidden;
-}
-
-.loader,
-.loader:before,
-.loader:after {
-  border-radius: 50%;
-  width: 2.5em;
-  height: 2.5em;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation: load7 1.8s infinite ease-in-out;
-  animation: load7 1.8s infinite ease-in-out;
-}
-.loader {
-  color: #ffffff;
-  font-size: 10px;
-  top: 30%;
-  left: 50%;
-  position: absolute;
-  text-indent: -9999em;
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
-}
-
-.text-loader {
-  position: absolute;
-  top: 35%;
-  left: 47.5%;
-}
-.loader:before,
-.loader:after {
-  content: "";
-  position: absolute;
-  top: 0;
-}
-.loader:before {
-  left: -3.5em;
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-.loader:after {
-  left: 3.5em;
-}
-@-webkit-keyframes load7 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 2.5em 0 -1.3em;
-  }
-  40% {
-    box-shadow: 0 2.5em 0 0;
-  }
-}
-@keyframes load7 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 2.5em 0 -1.3em;
-  }
-  40% {
-    box-shadow: 0 2.5em 0 0;
-  }
-}
-
-.show {
-  visibility: visible;
-}
-
-.spanner,
-.overlay {
-  opacity: 0;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
-.spanner.show,
-.overlay.show {
-  opacity: 1;
 }
 </style>
