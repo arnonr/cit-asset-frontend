@@ -683,12 +683,13 @@
   </div>
 
   <!-- Qr -->
+  <!-- 4/4 -->
   <ClientOnly>
     <div
       :class="'printable ' + show44"
       v-for="(it, idx) in qr_items"
       :key="idx"
-      style="position: relative"
+      :style="'position: relative; left: 20px'"
     >
       <figure class="qrcode" style="margin-bottom: 9px !important">
         <vue-qrcode
@@ -696,7 +697,7 @@
           tag="canvas"
           :options="{
             errorCorrectionLevel: 'Q',
-            width: 130,
+            width: 220,
             margin: 2,
           }"
         ></vue-qrcode>
@@ -705,9 +706,9 @@
       </figure>
       <div
         style="
-          width: 130px;
+          width: 220px;
           position: absolute;
-          left: 5px;
+          left: 18px;
           top: 15px;
           font-size: 0.7em;
           font-weight: bold;
@@ -733,7 +734,7 @@
       :class="'printable ' + show22"
       v-for="(it, idx) in qr_items"
       :key="idx"
-      style="position: relative"
+      :style="'position: relative; left: 20px'"
     >
       <figure class="qrcode" style="margin-bottom: 9px !important">
         <vue-qrcode
@@ -741,24 +742,24 @@
           tag="canvas"
           :options="{
             errorCorrectionLevel: 'Q',
-            width: 75,
-            margin: 1,
+            width: 130,
+            margin: 2,
           }"
         ></vue-qrcode>
 
         <img
           src="~/assets/img/logo/logo_cit.png"
           class="qrcode__image"
-          style="width: 18px"
+          style="width: 28px"
         />
       </figure>
       <div
         style="
-          width: 73px;
+          width: 130px;
           position: absolute;
           left: 5px;
           top: 15px;
-          font-size: 0.4em;
+          font-size: 0.6em;
           color: #000;
           line-height: 1;
         "
@@ -1405,7 +1406,7 @@ const onImportSubmit = async (type) => {
             : null,
         drawer_name:
           column_index_import.drawer_name != undefined
-            ? result.result[i][column_index_import.drawer_name].trim()
+            ? result.result[i][column_index_import.drawer_name]
             : null,
         holder_name:
           column_index_import.holder_name != undefined
