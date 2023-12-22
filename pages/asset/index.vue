@@ -540,7 +540,15 @@
               </div>
 
               <div class="table-responsive mt-4">
-                <h5 class="text-danger">รายการนำเข้าไม่สำเร็จ</h5>
+                <h5>
+                  <span class="text-success"
+                    >รายการนำเข้าสำเร็จ {{ count_success_import }} รายการ</span
+                  >
+                  <span>, </span>
+                  <span class="text-danger"
+                    >รายการนำเข้าไม่สำเร็จ {{ count_error_import }} รายการ</span
+                  >
+                </h5>
                 <table class="table table-bordered table-striped table-admin">
                   <thead>
                     <tr>
@@ -713,7 +721,7 @@
           "-" +
           it.asset_code +
           "(" +
-          it.budget_type.code +
+          it.budget_type.category +
           ")"
         }}
       </div>
@@ -761,7 +769,7 @@
           "-" +
           it.asset_code +
           "(" +
-          it.budget_type.code +
+          it.budget_type.category +
           ")"
         }}
       </div>
@@ -833,6 +841,9 @@ const format = (date) => {
 };
 
 const json_data = ref([]);
+const count_success_import = ref(0);
+const count_error_import = ref(0);
+
 const selectOptions = ref({
   perPage: [
     { title: "20", value: 20 },
@@ -1487,7 +1498,15 @@ const onImportSubmit = async (type) => {
           return e;
         });
 
+        count_error_import.value = 0;
+        count_success_import.value = 0;
+
         import_result.value = data_err.filter((e) => {
+          if (e.import_success == false) {
+            count_error_import.value = count_error_import.value + 1;
+          } else {
+            count_success_import.value = count_success_import.value + 1;
+          }
           return e.import_success == false;
         });
 

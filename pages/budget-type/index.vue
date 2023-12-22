@@ -35,6 +35,8 @@
           />
         </div>
       </div>
+
+    
     </div>
   </section>
 
@@ -73,14 +75,16 @@
                     รหัสแหล่งเงิน
                   </th>
                   <th class="text-center">ชื่อแหล่งเงิน</th>
+                  <th class="text-center">หมวดหมู่แหล่งเงิน</th>
                   <th class="text-center">สถานะ</th>
-                  <th class="text-center" style="min-width:110px;">จัดการ</th>
+                  <th class="text-center" style="min-width: 110px">จัดการ</th>
                 </tr>
               </thead>
               <tbody v-if="items.length != 0">
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td class="text-center">{{ it.code }}</td>
                   <td class="text-center">{{ it.name }}</td>
+                  <td class="text-center">{{ it.category }}</td>
                   <th class="text-center">
                     <span
                       v-if="it.is_active != null"
@@ -183,6 +187,19 @@
                   id="txt-name"
                   v-model="item.name"
                   placeholder="ชื่อแหล่งเงิน"
+                />
+              </div>
+
+              <div class="col-12">
+                <label for="name" class="col-form-label"
+                  ><span class="text-danger">*</span>หมวดหมู่แหล่งเงิน :</label
+                >
+                <input
+                  type="text"
+                  class="form-control form-control-plaintext"
+                  id="txt-name"
+                  v-model="item.category"
+                  placeholder="หมวดหมู่แหล่งเงิน"
                 />
               </div>
 
