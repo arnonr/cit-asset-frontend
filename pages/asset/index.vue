@@ -693,7 +693,7 @@
     >
       <figure class="qrcode" style="margin-bottom: 9px !important">
         <vue-qrcode
-          :value="'http://172.16.214.67:4000/asset/' + it.id"
+          :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
           tag="canvas"
           :options="{
             errorCorrectionLevel: 'Q',
@@ -738,7 +738,7 @@
     >
       <figure class="qrcode" style="margin-bottom: 9px !important">
         <vue-qrcode
-          :value="'http://172.16.214.67:4000/asset/' + it.id"
+          :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
           tag="canvas"
           :options="{
             errorCorrectionLevel: 'Q',
