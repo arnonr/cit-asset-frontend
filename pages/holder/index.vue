@@ -689,6 +689,7 @@ const onSubmit = async () => {
     body: {
       ...item.value,
       asset_id: item.value.asset_id,
+      previous_holder_name: item.value.asset.holder_name,
       status: item.value.status != null ? item.value.status.id : "",
       approved_at: approved_date,
       approved_by: approved_by,

@@ -184,9 +184,17 @@
       </div>
 
       <div class="mb-30">
+        <!-- before-generate -->
+        <!-- fetch -->
+        <!-- :data="json_data" -->
         <json-excel
-          :data="json_data"
-          :options="json_options"
+          :fetch="fetchItemsExport"
+          :fields="json_fields"
+          :name="'location'"
+          :header="[
+            'รายการประวัติการเปลี่ยนแปลงสถานที่ใช้งาน',
+            'ระหว่างวันที่ .............. ถึง ..............',
+          ]"
           class="d-inline ms-2"
         >
           <button type="button" class="btn btn-success">
@@ -426,12 +434,31 @@ const selectOptions = ref({
   location_statuses: asset_data.data().location_statuses,
   input_years: asset_data.data().input_years(),
   asset_types: [],
+  asset_types_array: [],
   budget_types: [],
   departments: [],
 });
 
-const json_options = {
-  width: [200, 50, 200],
+const json_fields = {
+  หมายเลขครุภัณฑ์: "หมายเลขครุภัณฑ์",
+  ชื่อครุภัณฑ์: "ชื่อครุภัณฑ์",
+  รายละเอียด: "รายละเอียด",
+  ประเภทครุภัณฑ์: "ประเภทครุภัณฑ์",
+  สถานที่ติดตั้ง: "สถานที่ติดตั้ง",
+  สถานที่ใช้งานเดิม: "สถานที่ใช้งานเดิม",
+  สถานที่ใช้งานใหม่: "สถานที่ใช้งานใหม่",
+  วันที่ขอย้าย: "วันที่ขอย้าย",
+  ผู้แจ้ง: "ผู้แจ้ง",
+  สถานะ: "สถานะ",
+  //   วันที่อนุมัติ: "วันที่อนุมัติ",
+  //   City: "city",
+  //   Telephone: "phone.mobile",
+  //   "Telephone 2": {
+  //     field: "phone.landline",
+  //     callback: (value) => {
+  //       return `Landline Phone - ${value}`;
+  //     },
+  //   },
 };
 
 // Function Fetch
@@ -442,9 +469,11 @@ const fetchAssetTypes = async () => {
     },
   }).catch((error) => error.data);
 
-  selectOptions.value.asset_types = data.data.map((e) => {
-    return { title: e.name, value: e.id };
-  });
+  selectOptions.value.asset_types_array = selectOptions.value.asset_types =
+    data.data.map((e) => {
+      selectOptions.value.asset_types_array[e.id] = e.name;
+      return { title: e.name, value: e.id };
+    });
 };
 const fetchBudgetTypes = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/budget-type`, {
@@ -515,27 +544,11 @@ const fetchItems = async () => {
 
   json_data.value = [];
   items.value = data.data.map((e) => {
-    json_data.value.push({
-      หมายเลขครุภัณฑ์: e.asset.asset_code,
-      ชื่อครุภัณฑ์: e.asset.asset_name,
-      สถานที่ติดตั้ง: e.location,
-      สถานะคำขอย้าย: e.status,
-      วันที่ขอย้าย:
-        e.created_at != null
-          ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      วันที่อนุมัติ:
-        e.approved_date != null
-          ? dayjs(e.approved_date).locale("th").format("DD MMM BBBB")
-          : "-",
-    });
     return e;
   });
 
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
-
-  fetchItemsExport();
 };
 
 const fetchItemsExport = async () => {
@@ -574,21 +587,41 @@ const fetchItemsExport = async () => {
     }
   ).catch((error) => error.data);
 
-  json_data.value = [];
-  json_data.value = data.data.map((e) => {
+  //   json_data.value = [];
+  //   json_data.value = data.data.map((e) => {
+  //     return {
+  //       หมายเลขครุภัณฑ์: e.asset.asset_code,
+  //       ชื่อครุภัณฑ์: e.asset.asset_name,
+  //       รายละเอียด: e.asset.asset_detail,
+  //       ประเภทครุภัณฑ์: e.asset.asset_type?.name,
+  //       สถานที่ติดตั้ง: e.install_location,
+  //       สถานที่ใช้งานเดิม: e.location,
+  //       สถานที่ใช้งานใหม่: e.location,
+  //       วันที่ขอย้าย:
+  //         e.created_at != null
+  //           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
+  //           : "-",
+  //       ผู้แจ้ง: 1,
+  //       สถานะ: e.status,
+  //     };
+  //   });
+
+
+  return data.data.map((e) => {
     return {
       หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
+      รายละเอียด: e.asset.asset_detail,
+    //   ประเภทครุภัณฑ์: e.asset.asset_type_id ? selectOptions.value.asset_types_arra : ,
       สถานที่ติดตั้ง: e.location,
-      สถานะคำขอย้าย: selectOptions.value.location_statuses[e.status].name,
+      สถานที่ใช้งานเดิม: e.location,
+      สถานที่ใช้งานใหม่: e.location,
       วันที่ขอย้าย:
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
           : "-",
-      วันที่อนุมัติ:
-        e.approved_at != null
-          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
-          : "-",
+      ผู้แจ้ง: e.created_by,
+      สถานะ: e.status,
     };
   });
 };
@@ -693,6 +726,7 @@ const onSubmit = async () => {
     }
   }
 
+
   await $fetch(type_object.url, {
     method: type_object.method,
     headers: {
@@ -703,6 +737,7 @@ const onSubmit = async () => {
     body: {
       ...item.value,
       asset_id: item.value.asset_id,
+      previous_location: item.value.asset.location,
       status: item.value.status != null ? item.value.status.id : "",
       approved_at: approved_date,
       approved_by: approved_by,
