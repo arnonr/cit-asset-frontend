@@ -289,7 +289,7 @@
                         it.is_notice == 1
                       "
                     >
-                      <i class="fa fa-edit" ></i>
+                      <i class="fa fa-edit"></i>
                       รับทราบผล
                     </button>
                   </td>
@@ -488,7 +488,11 @@ const fetchAssetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.asset_types = data.data.map((e) => {
-    return { title: e.name, value: e.id };
+    let category = "";
+    if (e.category != null) {
+      category = " (" + e.category + ")";
+    }
+    return { title: e.name + category, value: e.id };
   });
 };
 const fetchBudgetTypes = async () => {
