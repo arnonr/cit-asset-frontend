@@ -684,7 +684,6 @@ const fetchDepartments = async () => {
 };
 // Event
 const onSubmit = async () => {
-  console.log(file.value.files[0]);
   if (
     item.value.asset_status == null ||
     item.value.asset_status.id == null ||

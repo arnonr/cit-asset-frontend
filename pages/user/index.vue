@@ -446,7 +446,11 @@ const onSubmit = async () => {
         throw new Error("ERROR");
       }
     })
-    .catch((error) => error.data);
+    .catch((error) => {
+        console.log(error.data.msg)
+        useToast(error.data.msg, "error");
+
+    });
 };
 
 const onLoadAccount = async () => {

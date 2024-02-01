@@ -184,7 +184,11 @@
       </div>
 
       <div class="mb-30">
-        <json-excel :data="json_data" class="d-inline ms-2">
+        <json-excel
+          :data="json_data"
+          :options="json_options"
+          class="d-inline ms-2"
+        >
           <button type="button" class="btn btn-success">
             <i class="fa-regular fa-file"></i> Export Excel
           </button>
@@ -269,7 +273,6 @@
 
                     <button
                       class="btn btn-info"
-                      
                       v-if="
                         useCookie('user').value != undefined &&
                         useCookie('user').value.level == 3 &&
@@ -426,6 +429,10 @@ const selectOptions = ref({
   budget_types: [],
   departments: [],
 });
+
+const json_options = {
+  width: [200, 50, 200],
+};
 
 // Function Fetch
 const fetchAssetTypes = async () => {

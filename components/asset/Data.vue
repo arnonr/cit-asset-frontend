@@ -80,14 +80,14 @@
       <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">วันที่ตรวจรับ : </span>
         <span class="fw-bold text-primary">{{
-          dayjs(item.inspection_date).locale("th").format("DD MMM BBBB")
+          item.inspection_date ? dayjs(item.inspection_date).locale("th").format("DD MMM BBBB") : ""
         }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
         <span class="fw-bold">วันที่คณะกรรมการเห็นถูกต้องครบถ้วน : </span>
         <span class="fw-bold text-primary">{{
-          dayjs(item.approved_date).locale("th").format("DD MMM BBBB")
+          item.approved_date ? dayjs(item.approved_date).locale("th").format("DD MMM BBBB") : ""
         }}</span>
         <hr class="hr-separator" />
       </div>
@@ -140,7 +140,7 @@
       </div>
       <div class="col-12 col-lg-6">
         <span class="fw-bold">แหล่งเงิน : </span>
-        <span class="fw-bold text-primary">{{ item.budget_type?.name }}</span>
+        <span class="fw-bold text-primary">{{ item.budget_type?.name }} {{ item.budget_type?.category ? " ("+item.budget_type?.category+")" : "" }}</span>
         <hr class="hr-separator" />
       </div>
       <div class="col-12" v-if="useCookie('user').value != undefined">

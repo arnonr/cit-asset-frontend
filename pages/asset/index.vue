@@ -721,7 +721,7 @@
           543 +
           "-" +
           it.asset_code +
-          "(" +
+          " (" +
           it.budget_type.category +
           ")"
         }}
@@ -769,7 +769,7 @@
           543 +
           "-" +
           it.asset_code +
-          "(" +
+          " (" +
           it.budget_type.category +
           ")"
         }}
@@ -924,7 +924,11 @@ const fetchBudgetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.budget_types = data.data.map((e) => {
-    return { title: e.name, value: e.id };
+    let category = "";
+    if (e.category != null) {
+      category = " (" + e.category + ")";
+    }
+    return { title: e.name + category, value: e.id };
   });
 };
 const fetchDepartments = async () => {
