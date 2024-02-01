@@ -175,7 +175,20 @@ const fetchItems = async () => {
     params["department_id"] = useCookie("user").value.department_id;
   }
 
-  let data = await $fetch(`${runtimeConfig.public.apiBase}/asset`, {
+  let department = await $fetch(
+    `${runtimeConfig.public.apiBase}/department`
+  ).catch((error) => error.data);
+
+  let asset_type = await $fetch(
+    `${runtimeConfig.public.apiBase}/asset-type`
+  ).catch((error) => error.data);
+
+  let budget_type = await $fetch(
+    `${runtimeConfig.public.apiBase}/budget-type`
+  ).catch((error) => error.data);
+
+
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/asset/report`, {
     params: params,
   }).catch((error) => error.data);
 
@@ -184,6 +197,7 @@ const fetchItems = async () => {
   let budget_type_report = [];
   let input_year_report = [];
   let asset_status_report = [];
+
   items.value = data.data.map((e) => {
     let find_department = department_report.find((x) => {
       return x.department_id == e.department_id;
@@ -192,9 +206,12 @@ const fetchItems = async () => {
     if (find_department) {
       find_department.count = find_department.count + 1;
     } else {
+      let d = department.data.find((x) => {
+        return x.id == e.department_id;
+      });
       department_report.push({
         department_id: e.department_id,
-        department_name: e.department.name,
+        department_name: d.name,
         count: 1,
       });
     }
@@ -206,9 +223,13 @@ const fetchItems = async () => {
     if (find_asset_type) {
       find_asset_type.count = find_asset_type.count + 1;
     } else {
+      let a = asset_type.data.find((x) => {
+        return x.id == e.asset_type_id;
+      });
+
       asset_type_report.push({
         asset_type_id: e.asset_type_id,
-        asset_type_name: e.asset_type.name,
+        asset_type_name: a.name,
         count: 1,
       });
     }
@@ -220,9 +241,13 @@ const fetchItems = async () => {
     if (find_budget_type) {
       find_budget_type.count = find_budget_type.count + 1;
     } else {
+      let c = budget_type.data.find((x) => {
+        return x.id == e.budget_type_id;
+      });
+
       budget_type_report.push({
         budget_type_id: e.budget_type_id,
-        budget_type_name: e.budget_type.name,
+        budget_type_name: c.name,
         count: 1,
       });
     }
@@ -257,7 +282,7 @@ const fetchItems = async () => {
 
     return e;
   });
-
+  
   items.value = data.data;
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;

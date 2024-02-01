@@ -18,6 +18,11 @@
         "
       >
         {{ $t(menu.title) }}
+        <span
+          class="badge bg-info"
+          v-if="menu.title == 'Request' && count_all_request != 0"
+          >{{ count_all_request }}</span
+        >
       </NuxtLink>
       <ul v-if="menu.hasDropdown" class="submenu">
         <li v-for="(sub, i) in menu.submenus" :key="i" class="submenu-item">
@@ -55,6 +60,9 @@ export default {
   mixins: [menuData],
   setup() {
     const is_user_type = ref("guest");
+    const count_all_request = ref(0);
+
+    let test = menuData.data().menuData;
 
     const runtimeConfig = useRuntimeConfig();
 
@@ -164,6 +172,19 @@ export default {
         };
       } else {
       }
+
+      for (let i = 0; i < test.length; i++) {
+        if (test[i].hasDropdown == true) {
+          for (let k = 0; k < test[i].submenus.length; k++) {
+            if (test[i].submenus[k].noti) {
+              // console.log(useNotification().value[test[i].submenus[k].noti]);
+              count_all_request.value =
+                count_all_request.value +
+                useNotification().value[test[i].submenus[k].noti];
+            }
+          }
+        }
+      }
     };
 
     onMounted(() => {
@@ -172,6 +193,7 @@ export default {
 
     return {
       is_user_type,
+      count_all_request,
     };
   },
 };
