@@ -589,7 +589,7 @@
           <a
             class="btn btn-primary"
             target="_blank"
-            href="http://localhost:3009/_nuxt/assets/img/template/template_import_asset.xlsx"
+            href="http://citqresearch.cit.kmutnb.ac.th/assets/img/template/template_import_asset.xlsx"
           >
             Download Template
           </a>
@@ -680,7 +680,7 @@
           <a
             class="btn btn-primary"
             target="_blank"
-            href="http://localhost:3009/_nuxt/assets/img/template/template_import_cancel_asset.xlsx"
+            href="http://citqresearch.cit.kmutnb.ac.th/_nuxt/assets/img/template/template_import_cancel_asset.xlsx"
           >
             Download Template
           </a>
