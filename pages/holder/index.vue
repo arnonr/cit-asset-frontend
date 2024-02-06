@@ -137,6 +137,44 @@
         </div>
 
         <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_from"
+            :enable-time-picker="false"
+            locale="th"
+            class="mt-5"
+            auto-apply
+            placeholder="ช่วงวันที่ขอเปลี่ยน (จากวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_to"
+            :enable-time-picker="false"
+            locale="th"
+            auto-apply
+            class="mt-5"
+            placeholder="ช่วงวันที่ขอเปลี่ยน (ถึงวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
           <v-select
             label="name"
             placeholder="สถานะคำขอเปลี่ยน"
@@ -184,7 +222,19 @@
       </div>
 
       <div class="mb-30">
-        <json-excel :data="json_data" class="d-inline ms-2">
+        <json-excel
+          :fetch="fetchItemsExport"
+          :fields="json_fields"
+          :name="'holder_name'"
+          :header="[
+            'รายการประวัติการเปลี่ยนแปลงผู้ใช้งาน',
+            'ระหว่างวันที่ ' +
+              dayjs(search.created_at_from).locale('th').format('DD MMM BBBB') +
+              ' ถึง ' +
+              dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
+          ]"
+          class="d-inline ms-2"
+        >
           <button type="button" class="btn btn-success">
             <i class="fa-regular fa-file"></i> Export Excel
           </button>
@@ -199,10 +249,12 @@
                 <tr>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">ผู้ใช้งาน</th>
-                  <th class="text-center">สถานะคำขอเปลี่ยน</th>
+                  <th class="text-center">ผู้ใช้งานเดิม</th>
+                  <th class="text-center">ผู้ใช้งานใหม่</th>
                   <th class="text-center">วันที่ขอเปลี่ยน</th>
-                  <th class="text-center">วันที่อนุมัติ</th>
+                  <th class="text-center">ผู้ขอเปลี่ยน</th>
+                  <th class="text-center">วันที่พิจารณา</th>
+                  <th class="text-center">สถานะคำขอเปลี่ยน</th>
                   <th class="text-center">จัดการ</th>
                 </tr>
               </thead>
@@ -210,7 +262,29 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td>{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
+                  <td>{{ it.previous_holder_name }}</td>
                   <td>{{ it.holder_name }}</td>
+
+                  <td class="text-center">
+                    {{
+                      it.created_at != null
+                        ? dayjs(it.created_at)
+                            .locale("th")
+                            .format("DD MMM BBBB")
+                        : "-"
+                    }}
+                  </td>
+
+                  <td>{{ it.created_by }}</td>
+                  <td class="text-center">
+                    {{
+                      it.approved_at != null
+                        ? dayjs(it.approved_at)
+                            .locale("th")
+                            .format("DD MMM BBBB")
+                        : "-"
+                    }}
+                  </td>
                   <td class="text-center">
                     <span
                       v-if="it.status != null"
@@ -221,25 +295,6 @@
                       >{{ selectOptions.holder_statuses[it.status].name }}</span
                     >
                   </td>
-                  <td class="text-center">
-                    {{
-                      it.created_at != null
-                        ? dayjs(it.created_at)
-                            .locale("th")
-                            .format("DD MMM BBBB")
-                        : "-"
-                    }}
-                  </td>
-                  <td class="text-center">
-                    {{
-                      it.approved_at != null
-                        ? dayjs(it.approved_at)
-                            .locale("th")
-                            .format("DD MMM BBBB")
-                        : "-"
-                    }}
-                  </td>
-
                   <td class="text-center">
                     <button
                       class="btn btn-info"
@@ -393,6 +448,8 @@ import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
 import XLSX from "xlsx";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 // Variable
 
 dayjs.extend(buddhistEra);
@@ -411,6 +468,14 @@ const type_submit = ref("");
 const update_location = ref(false);
 let modalForm;
 
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = dayjs(date).locale("th").format("BBBB");
+
+  return `${day} ${month} ${year}`;
+};
+
 const selectOptions = ref({
   perPage: [
     { title: "20", value: 20 },
@@ -420,9 +485,22 @@ const selectOptions = ref({
   holder_statuses: asset_data.data().holder_statuses,
   input_years: asset_data.data().input_years(),
   asset_types: [],
+  asset_types_array: [],
   budget_types: [],
   departments: [],
 });
+
+const json_fields = {
+  หมายเลขครุภัณฑ์: "หมายเลขครุภัณฑ์",
+  ชื่อครุภัณฑ์: "ชื่อครุภัณฑ์",
+  รายละเอียด: "รายละเอียด",
+  ประเภทครุภัณฑ์: "ประเภทครุภัณฑ์",
+  ผู้ใช้งานเดิม: "ผู้ใช้งานเดิม",
+  ผู้ใช้งานใหม่: "ผู้ใช้งานใหม่",
+  วันที่ขอเปลี่ยน: "วันที่ขอเปลี่ยน",
+  ผู้แจ้ง: "ผู้แจ้ง",
+  สถานะ: "สถานะ",
+};
 
 // Function Fetch
 const fetchAssetTypes = async () => {
@@ -433,6 +511,7 @@ const fetchAssetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.asset_types = data.data.map((e) => {
+    selectOptions.value.asset_types_array[e.id] = e.name;
     return { title: e.name, value: e.id };
   });
 };
@@ -473,18 +552,26 @@ const fetchItems = async () => {
     ...search.value,
     asset_type_id:
       search.value.asset_type_id != null
-        ? search.value.asset_type_id
+        ? search.value.asset_type_id.value
         : undefined,
     budget_type_id:
       search.value.budget_type_id != null
-        ? search.value.budget_type_id
+        ? search.value.budget_type_id.value
         : undefined,
     department_id:
       search.value.departmentid != null
-        ? search.value.department_id
+        ? search.value.department_id.value
         : undefined,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: perPage.value,
     currentPage: currentPage.value,
@@ -502,21 +589,6 @@ const fetchItems = async () => {
 
   json_data.value = [];
   items.value = data.data.map((e) => {
-    json_data.value.push({
-      หมายเลขครุภัณฑ์: e.asset.asset_code,
-      ชื่อครุภัณฑ์: e.asset.asset_name,
-      ผู้ใช้งาน: e.holder_name,
-      สถานะคำขอเปลี่ยนผู้ใช้งาน:
-        selectOptions.value.holder_statuses[e.status].name,
-      วันที่ขอเปลี่ยน:
-        e.created_at != null
-          ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      วันที่อนุมัติ:
-        e.approved_at != null
-          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
-          : "-",
-    });
     return e;
   });
 
@@ -543,6 +615,14 @@ const fetchItemsExport = async () => {
         : search.value.department_id.value,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: 100000,
     currentPage: currentPage.value,
@@ -559,22 +639,22 @@ const fetchItemsExport = async () => {
     params: params,
   }).catch((error) => error.data);
 
-  json_data.value = [];
-  json_data.value = data.data.map((e) => {
+  return data.data.map((e) => {
     return {
       หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
-      ผู้ใช้งาน: e.holder_name,
-      สถานะคำขอเปลี่ยนผู้ใช้งาน:
-        selectOptions.value.holder_statuses[e.status].name,
+      รายละเอียด: e.asset.asset_detail,
+      ประเภทครุภัณฑ์: e.asset.asset_type_id
+        ? selectOptions.value.asset_types_array[e.asset.asset_type_id]
+        : "",
+      ผู้ใช้งานเดิม: e.previous_holder_name,
+      ผู้ใช้งานใหม่: e.holder_name,
       วันที่ขอเปลี่ยน:
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
           : "-",
-      วันที่อนุมัติ:
-        e.approved_at != null
-          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
-          : "-",
+      ผู้แจ้ง: e.created_by,
+      สถานะ: selectOptions.value.holder_statuses[e.status].name,
     };
   });
 };

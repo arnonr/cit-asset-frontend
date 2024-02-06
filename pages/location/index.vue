@@ -137,6 +137,44 @@
         </div>
 
         <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_from"
+            :enable-time-picker="false"
+            locale="th"
+            class="mt-5"
+            auto-apply
+            placeholder="ช่วงวันที่ขอย้าย (จากวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_to"
+            :enable-time-picker="false"
+            locale="th"
+            auto-apply
+            class="mt-5"
+            placeholder="ช่วงวันที่ขอย้าย (ถึงวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
           <v-select
             label="name"
             placeholder="สถานะคำขอย้าย"
@@ -193,7 +231,10 @@
           :name="'location'"
           :header="[
             'รายการประวัติการเปลี่ยนแปลงสถานที่ใช้งาน',
-            'ระหว่างวันที่ .............. ถึง ..............',
+            'ระหว่างวันที่ ' +
+              dayjs(search.created_at_from).locale('th').format('DD MMM BBBB') +
+              ' ถึง ' +
+              dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
           ]"
           class="d-inline ms-2"
         >
@@ -211,10 +252,12 @@
                 <tr>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ใช้งานปัจจุบัน</th>
-                  <th class="text-center">สถานะคำขอย้าย</th>
+                  <th class="text-center">สถานที่ใช้งานเดิม</th>
+                  <th class="text-center">สถานที่ใช้งานใหม่</th>
                   <th class="text-center">วันที่ขอย้าย</th>
+                  <th class="text-center">ผู้ขอย้าย</th>
                   <th class="text-center">วันที่พิจารณา</th>
+                  <th class="text-center">สถานะคำขอย้าย</th>
                   <th class="text-center">จัดการ</th>
                 </tr>
               </thead>
@@ -222,6 +265,7 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td>{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
+                  <td>{{ it.previous_location }}</td>
                   <td>{{ it.location }}</td>
                   <td class="text-center">
                     <span
@@ -244,6 +288,8 @@
                         : "-"
                     }}
                   </td>
+
+                  <td>{{ it.created_by }}</td>
                   <td class="text-center">
                     {{
                       it.approved_at != null
@@ -407,6 +453,8 @@ import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
 import XLSX from "xlsx";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 // Variable
 
 dayjs.extend(buddhistEra);
@@ -424,6 +472,14 @@ const json_data = ref([]);
 const type_submit = ref("");
 const update_location = ref(false);
 let modalForm;
+
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = dayjs(date).locale("th").format("BBBB");
+
+  return `${day} ${month} ${year}`;
+};
 
 const selectOptions = ref({
   perPage: [
@@ -450,15 +506,6 @@ const json_fields = {
   วันที่ขอย้าย: "วันที่ขอย้าย",
   ผู้แจ้ง: "ผู้แจ้ง",
   สถานะ: "สถานะ",
-  //   วันที่อนุมัติ: "วันที่อนุมัติ",
-  //   City: "city",
-  //   Telephone: "phone.mobile",
-  //   "Telephone 2": {
-  //     field: "phone.landline",
-  //     callback: (value) => {
-  //       return `Landline Phone - ${value}`;
-  //     },
-  //   },
 };
 
 // Function Fetch
@@ -469,11 +516,10 @@ const fetchAssetTypes = async () => {
     },
   }).catch((error) => error.data);
 
-  selectOptions.value.asset_types_array = selectOptions.value.asset_types =
-    data.data.map((e) => {
-      selectOptions.value.asset_types_array[e.id] = e.name;
-      return { title: e.name, value: e.id };
-    });
+  selectOptions.value.asset_types = data.data.map((e) => {
+    selectOptions.value.asset_types_array[e.id] = e.name;
+    return { title: e.name, value: e.id };
+  });
 };
 const fetchBudgetTypes = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/budget-type`, {
@@ -512,18 +558,26 @@ const fetchItems = async () => {
     ...search.value,
     asset_type_id:
       search.value.asset_type_id != null
-        ? search.value.asset_type_id
+        ? search.value.asset_type_id.value
         : undefined,
     budget_type_id:
       search.value.budget_type_id != null
-        ? search.value.budget_type_id
+        ? search.value.budget_type_id.value
         : undefined,
     department_id:
       search.value.departmentid != null
-        ? search.value.department_id
+        ? search.value.department_id.value
         : undefined,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: perPage.value,
     currentPage: currentPage.value,
@@ -568,6 +622,14 @@ const fetchItemsExport = async () => {
         : undefined,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: 100000,
     currentPage: currentPage.value,
@@ -606,22 +668,24 @@ const fetchItemsExport = async () => {
   //     };
   //   });
 
-
   return data.data.map((e) => {
     return {
       หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
       รายละเอียด: e.asset.asset_detail,
-    //   ประเภทครุภัณฑ์: e.asset.asset_type_id ? selectOptions.value.asset_types_arra : ,
-      สถานที่ติดตั้ง: e.location,
-      สถานที่ใช้งานเดิม: e.location,
+      ประเภทครุภัณฑ์: e.asset.asset_type_id
+        ? selectOptions.value.asset_types_array[e.asset.asset_type_id]
+        : "",
+      //   ประเภทครุภัณฑ์: e.asset.asset_type_id ? selectOptions.value.asset_types_arra : ,
+      สถานที่ติดตั้ง: e.asset.install_location,
+      สถานที่ใช้งานเดิม: e.previous_location,
       สถานที่ใช้งานใหม่: e.location,
       วันที่ขอย้าย:
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
           : "-",
       ผู้แจ้ง: e.created_by,
-      สถานะ: e.status,
+      สถานะ: selectOptions.value.location_statuses[e.status].name,
     };
   });
 };
@@ -725,7 +789,6 @@ const onSubmit = async () => {
       }
     }
   }
-
 
   await $fetch(type_object.url, {
     method: type_object.method,

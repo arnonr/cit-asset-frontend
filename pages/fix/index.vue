@@ -137,6 +137,44 @@
         </div>
 
         <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_from"
+            :enable-time-picker="false"
+            locale="th"
+            class="mt-5"
+            auto-apply
+            placeholder="ช่วงวันที่ขอแจ้งซ่อม (จากวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <VueDatePicker
+            v-model="search.created_at_to"
+            :enable-time-picker="false"
+            locale="th"
+            auto-apply
+            class="mt-5"
+            placeholder="ช่วงวันที่ขอแจ้งซ่อม (ถึงวันที่)"
+            :format="format"
+          >
+            <template #year-overlay-value="{ text }">
+              {{ parseInt(text) + 543 }}
+            </template>
+            <template #year="{ value }">
+              {{ value + 543 }}
+            </template>
+          </VueDatePicker>
+        </div>
+
+        <div class="col-12 col-lg-4">
           <v-select
             label="name"
             placeholder="สถานะคำขอแจ้งซ่อม"
@@ -184,7 +222,19 @@
       </div>
 
       <div class="mb-30">
-        <json-excel :data="json_data" class="d-inline ms-2">
+        <json-excel
+          :fetch="fetchItemsExport"
+          :fields="json_fields"
+          :name="'repair'"
+          :header="[
+            'รายการประวัติการแจ้งซ่อม',
+            'ระหว่างวันที่ ' +
+              dayjs(search.created_at_from).locale('th').format('DD MMM BBBB') +
+              ' ถึง ' +
+              dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
+          ]"
+          class="d-inline ms-2"
+        >
           <button type="button" class="btn btn-success">
             <i class="fa-regular fa-file"></i> Export Excel
           </button>
@@ -199,12 +249,15 @@
                 <tr>
                   <th class="text-center">หมายเลขครุภัณฑ์</th>
                   <th class="text-center">ชื่อครุภัณฑ์</th>
-                  <th class="text-center">รายละเอียด</th>
-                  <th class="text-center">ราคา</th>
+                  <th class="text-center">ประเภทครุภัณฑ์</th>
+                  <th class="text-center">วันที่ตรวจรับ</th>
+                  <th class="text-center">มูลค่าครุภัณฑ์</th>
                   <th class="text-center">วันที่แจ้งซ่อม</th>
+                  <th class="text-center">รายละเอียดการแจ้ง</th>
+                  <th class="text-center">ราคา</th>
+                  <th class="text-center">ผู้แจ้ง</th>
                   <th class="text-center">วันที่อนุมัติ</th>
                   <th class="text-center">สถานะคำขอแจ้งซ่อม</th>
-                  <th class="text-center">หมายเหตุ</th>
                   <th class="text-center">จัดการ</th>
                 </tr>
               </thead>
@@ -212,11 +265,20 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td class="text-center">{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
-                  <td>{{ it.description }}</td>
-                  <td class="text-center">
+                  <td>{{ it.asset.asset_type_id }}</td>
+                  <td>
                     {{
-                      it.price != null
-                        ? Number(it.price)
+                      it.asset.inspection_date != null
+                        ? dayjs(it.asset.inspection_date)
+                            .locale("th")
+                            .format("DD MMM BBBB")
+                        : "-"
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      it.asset.price != null
+                        ? Number(it.asset.price)
                             .toFixed(2)
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -232,7 +294,19 @@
                         : "-"
                     }}
                   </td>
-                  <td class="text-center">
+                  <td>{{ it.description }}</td>
+                  <td>
+                    {{
+                      it.price != null
+                        ? Number(it.price)
+                            .toFixed(2)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : ""
+                    }}
+                  </td>
+                  <td>{{ it.created_by }}</td>
+                  <td>
                     {{
                       it.approved_at != null
                         ? dayjs(it.approved_at)
@@ -251,9 +325,9 @@
                       >{{ selectOptions.fix_statuses[it.status].name }}</span
                     >
                   </td>
-                  <td class="text-center">
+                  <!-- <td class="text-center">
                     {{ it.reject_comment }}
-                  </td>
+                  </td> -->
 
                   <td class="text-center">
                     <button
@@ -268,6 +342,7 @@
                         @click="
                           () => {
                             item = { ...it };
+
                             item.status = selectOptions.fix_statuses.find(
                               (x) => {
                                 return x.id == it.status;
@@ -339,6 +414,83 @@
             <div class="row">
               <div class="col-md-12">
                 <AssetWarranty :item="item" v-if="item"></AssetWarranty>
+                <hr />
+              </div>
+
+              <div class="col-md-12" v-if="item && item.asset">
+                <h4>รายละเอียดคำขอแจ้งซ่อม</h4>
+                <div>
+                  <span>หมายเลขครุภัณฑ์ : </span>
+                  <span class="fst-italic">{{ item.asset.asset_code }}</span>
+                </div>
+                <div>
+                  <span>ชื่อครุภัณฑ์ : </span>
+                  <span class="fst-italic">{{ item.asset.asset_name }}</span>
+                </div>
+                <div>
+                  <span>รายละเอียดครุภัณฑ์ : </span>
+                  <span class="fst-italic">{{ item.asset.asset_detail }}</span>
+                </div>
+                <div>
+                  <span>ประเภทครุภัณฑ์ : </span>
+                  <span class="fst-italic">{{
+                    selectOptions.asset_types_array[item.asset.asset_type_id]
+                  }}</span>
+                </div>
+                <div>
+                  <span>วันที่ตรวจรับ : </span>
+                  <span class="fst-italic">{{
+                    item.asset.inspection_date != null
+                      ? dayjs(item.asset.inspection_date)
+                          .locale("th")
+                          .format("DD MMM BBBB")
+                      : ""
+                  }}</span>
+                </div>
+                <div>
+                  <span>มูลค่าครุภัณฑ์ : </span>
+                  <span class="fst-italic">{{
+                    item.asset.price != null
+                      ? Number(item.asset.price)
+                          .toFixed(2)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : ""
+                  }}</span>
+                </div>
+                <div>
+                  <span>วันที่แจ้งซ่อม : </span>
+                  <span class="fst-italic">{{
+                    item.repair_date != null
+                      ? dayjs(item.repair_date)
+                          .locale("th")
+                          .format("DD MMM BBBB")
+                      : ""
+                  }}</span>
+                </div>
+                <div>
+                  <span>รายละเอียดการแจ้ง : </span>
+                  <span class="fst-italic">{{ item.description }}</span>
+                </div>
+                <div>
+                  <span>ราคา : </span>
+                  <span class="fst-italic">{{
+                    item.price != null
+                      ? Number(item.price)
+                          .toFixed(2)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : ""
+                  }}</span>
+                </div>
+                <div>
+                  <span>ผู้แจ้ง : </span>
+                  <span class="fst-italic">{{ item.created_by }}</span>
+                </div>
+                <div>
+                  <span>สถานะการอนุมัติ : </span>
+                  <span class="fst-italic">{{ item.status.name }}</span>
+                </div>
                 <hr />
               </div>
               <div class="col-md-12">
@@ -448,6 +600,8 @@ import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
 import XLSX from "xlsx";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 // Variable
 dayjs.extend(buddhistEra);
@@ -466,6 +620,14 @@ const type_submit = ref("");
 const update_location = ref(false);
 let modalForm;
 
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = dayjs(date).locale("th").format("BBBB");
+
+  return `${day} ${month} ${year}`;
+};
+
 const selectOptions = ref({
   perPage: [
     { title: "20", value: 20 },
@@ -475,9 +637,25 @@ const selectOptions = ref({
   fix_statuses: asset_data.data().fix_statuses,
   input_years: asset_data.data().input_years(),
   asset_types: [],
+  asset_types_array: [],
   budget_types: [],
   departments: [],
 });
+
+const json_fields = {
+  หมายเลขครุภัณฑ์: "หมายเลขครุภัณฑ์",
+  ชื่อครุภัณฑ์: "ชื่อครุภัณฑ์",
+  รายละเอียด: "รายละเอียด",
+  ประเภทครุภัณฑ์: "ประเภทครุภัณฑ์",
+  วันที่ตรวจรับ: "วันที่ตรวจรับ",
+  มูลค่าครุภัณฑ์: "มูลค่าครุภัณฑ์",
+  วันที่สิ้นสุดรับประกัน: "วันที่สิ้นสุดรับประกัน",
+  วันที่แจ้งซ่อม: "วันที่แจ้งซ่อม",
+  รายละเอียดการแจ้ง: "รายละเอียดการแจ้ง",
+  ราคา: "ราคา",
+  ผู้แจ้ง: "ผู้แจ้ง",
+  สถานะ: "สถานะ",
+};
 
 // Function Fetch
 const fetchAssetTypes = async () => {
@@ -488,13 +666,11 @@ const fetchAssetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.asset_types = data.data.map((e) => {
-    let category = "";
-    if (e.category != null) {
-      category = " (" + e.category + ")";
-    }
-    return { title: e.name + category, value: e.id };
+    selectOptions.value.asset_types_array[e.id] = e.name;
+    return { title: e.name, value: e.id };
   });
 };
+
 const fetchBudgetTypes = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/budget-type`, {
     params: {
@@ -503,7 +679,11 @@ const fetchBudgetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.budget_types = data.data.map((e) => {
-    return { title: e.name, value: e.id };
+    let category = "";
+    if (e.category != null) {
+      category = " (" + e.category + ")";
+    }
+    return { title: e.name + category, value: e.id };
   });
 };
 
@@ -528,18 +708,26 @@ const fetchItems = async () => {
     ...search.value,
     asset_type_id:
       search.value.asset_type_id != null
-        ? search.value.asset_type_id
+        ? search.value.asset_type_id.value
         : undefined,
     budget_type_id:
       search.value.budget_type_id != null
-        ? search.value.budget_type_id
+        ? search.value.budget_type_id.value
         : undefined,
     department_id:
       search.value.departmentid != null
-        ? search.value.department_id
+        ? search.value.department_id.value
         : undefined,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: perPage.value,
     currentPage: currentPage.value,
@@ -557,30 +745,11 @@ const fetchItems = async () => {
 
   json_data.value = [];
   items.value = data.data.map((e) => {
-    json_data.value.push({
-      หมายเลขครุภัณฑ์: e.asset.asset_code,
-      ชื่อครุภัณฑ์: e.asset.asset_name,
-      รายละเอียด: e.description,
-      ราคา: e.price,
-      สถานะคำขอแจ้งซ่อม: selectOptions.value.fix_statuses[e.status].name,
-      วันที่ส่งคำขอ:
-        e.created_at != null
-          ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      วันที่อนุมัติ:
-        e.approved_at != null
-          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      หมายเหตุ: e.reject_comment,
-    });
     return e;
   });
 
-  items.value = data.data;
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
-
-  fetchItemsExport();
 };
 
 const fetchItemsExport = async () => {
@@ -600,6 +769,14 @@ const fetchItemsExport = async () => {
         : search.value.department_id.value,
     input_year:
       search.value.input_year == null ? undefined : search.value.input_year.id,
+    created_at_from:
+      search.value.created_at_from == null
+        ? undefined
+        : dayjs(search.value.created_at_from).format("YYYY-MM-DD"),
+    created_at_to:
+      search.value.created_at_to == null
+        ? undefined
+        : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: 100000,
     currentPage: currentPage.value,
@@ -616,23 +793,60 @@ const fetchItemsExport = async () => {
     params: params,
   }).catch((error) => error.data);
 
-  json_data.value = [];
-  json_data.value = data.data.map((e) => {
+  return data.data.map((e) => {
+    let expire_date_all =
+      e.asset.warranty_type_1 != null && e.asset.warranty_type_1 != ""
+        ? e.asset.warranty_type_1 +
+          " " +
+          dayjs(e.asset.expiry_date_1).locale("th").format("DD/MM/BBBB")
+        : "";
+    expire_date_all +=
+      e.asset.warranty_type_2 != null && e.asset.warranty_type_2 != ""
+        ? ", " +
+          e.asset.warranty_type_2 +
+          " " +
+          dayjs(e.asset.expiry_date_2).locale("th").format("DD MMM BBBB")
+        : "";
+    expire_date_all +=
+      e.asset.warranty_type_3 != null && e.asset.warranty_type_3 != ""
+        ? ", " +
+          e.asset.warranty_type_3 +
+          " " +
+          dayjs(e.asset.expiry_date_3).locale("th").format("DD MMM BBBB")
+        : "";
     return {
       หมายเลขครุภัณฑ์: e.asset.asset_code,
       ชื่อครุภัณฑ์: e.asset.asset_name,
-      รายละเอียด: e.description,
-      ราคา: e.price,
-      สถานะคำขอแจ้งซ่อม: selectOptions.value.fix_statuses[e.status].name,
-      วันที่ส่งคำขอ:
+      รายละเอียด: e.asset.asset_detail,
+      ประเภทครุภัณฑ์: e.asset.asset_type_id
+        ? selectOptions.value.asset_types_array[e.asset.asset_type_id]
+        : "",
+      วันที่ตรวจรับ:
+        e.asset.inspection_date != null
+          ? dayjs(e.asset.inspection_date).locale("th").format("DD MMM BBBB")
+          : "",
+      มูลค่าครุภัณฑ์:
+        e.asset.price != null
+          ? Number(e.asset.price)
+              .toFixed(2)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          : "",
+      วันที่สิ้นสุดรับประกัน: expire_date_all,
+      วันที่แจ้งซ่อม:
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      วันที่อนุมัติ:
-        e.approved_at != null
-          ? dayjs(e.approved_at).locale("th").format("DD MMM BBBB")
-          : "-",
-      หมายเหตุ: e.reject_comment,
+          : "",
+      รายละเอียดการแจ้ง: e.description,
+      ราคา:
+        e.price != null
+          ? Number(e.price)
+              .toFixed(2)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          : "",
+      ผู้แจ้ง: e.created_by,
+      สถานะ: selectOptions.value.fix_statuses[e.status].name,
     };
   });
 };

@@ -186,7 +186,7 @@
           ></v-select>
         </div>
 
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-4 mt-1">
           <VueDatePicker
             v-model="search.created_at_from"
             :enable-time-picker="false"
@@ -204,7 +204,7 @@
           </VueDatePicker>
         </div>
 
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-4 mt-1">
           <VueDatePicker
             v-model="search.created_at_to"
             :enable-time-picker="false"
@@ -261,8 +261,22 @@
             ADD
           </button>
 
-          <json-excel :data="json_data" class="d-inline">
-            <button type="button" class="btn btn-success me-2 mt-2">
+          <json-excel
+            :fetch="fetchItemsExport"
+            :fields="json_fields"
+            :name="'asset'"
+            :header="[
+              'รายการทะเบียนครุภัณฑ์',
+              'ระหว่างวันที่ ' +
+                dayjs(search.created_at_from)
+                  .locale('th')
+                  .format('DD MMM BBBB') +
+                ' ถึง ' +
+                dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
+            ]"
+            class="d-inline me-2"
+          >
+            <button type="button" class="btn btn-success mt-2">
               <i class="fa-regular fa-file"></i> Export Excel
             </button>
           </json-excel>
@@ -385,7 +399,7 @@
                   <th class="text-center">รุ่น</th> -->
                   <th class="text-center">รายละเอียด</th>
                   <th class="text-center">ประเภทครุภัณฑ์</th>
-                  <th class="text-center">สถานที่ใช้งาน</th>
+                  <th class="text-center">สถานที่ใช้งานปัจจุบัน</th>
                   <th class="text-center">หน่วยงานที่รับผิดชอบ</th>
                   <th class="text-center">สถานะครุภัณฑ์</th>
                   <th class="text-center" style="min-width: 130px">จัดการ</th>
@@ -904,6 +918,20 @@ const file2 = ref(null);
 const show_spinner = ref("");
 let modalForm;
 let modalForm2;
+
+const json_fields = {
+  หมายเลขครุภัณฑ์: "หมายเลขครุภัณฑ์",
+  ชื่อครุภัณฑ์: "ชื่อครุภัณฑ์",
+  ปีงบประมาณ: "ปีงบประมาณ",
+  รายละเอียด: "รายละเอียด",
+  ประเภทครุภัณฑ์: "ประเภทครุภัณฑ์",
+  วันที่ตรวจรับ: "วันที่ตรวจรับ",
+  มูลค่าครุภัณฑ์: "มูลค่าครุภัณฑ์",
+  ผู้จัดจำหน่าย: "ผู้จัดจำหน่าย",
+  แหล่งเงิน: "แหล่งเงิน",
+  การรับประกัน: "การรับประกัน",
+};
+
 // Function Fetch
 const fetchAssetTypes = async () => {
   let data = await $fetch(`${runtimeConfig.public.apiBase}/asset-type`, {
@@ -991,21 +1019,10 @@ const fetchItems = async () => {
 
   json_data.value = [];
   items.value = data.data.map((e) => {
-    json_data.value.push({
-      หมายเลขครุภัณฑ์: e.asset_code,
-      ชื่อครุภัณฑ์: e.asset_name,
-      หมายเลขประจำเครื่อง: e.serial_number,
-      ผู้เบิก: e.drawer_name,
-      ผู้ใช้งาน: e.holder_name,
-      มูลค่าการได้มา: e.price,
-    });
-
     return e;
   });
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
-
-  fetchItemsExport();
 };
 
 const fetchItemsExport = async () => {
@@ -1050,20 +1067,46 @@ const fetchItemsExport = async () => {
     params["department_id"] = useCookie("user").value.department_id;
   }
 
-  let data = await $fetch(`${runtimeConfig.public.apiBase}/asset`, {
+  let data = await $fetch(`${runtimeConfig.public.apiBase}/asset/export`, {
     params: params,
   }).catch((error) => error.data);
 
-  json_data.value = [];
-  json_data.value = data.data.map((e) => {
-    return {
-      หมายเลขครุภัณฑ์: e.asset_code,
-      ชื่อครุภัณฑ์: e.asset_name,
-      หมายเลขประจำเครื่อง: e.serial_number,
-      ผู้เบิก: e.drawer_name,
-      ผู้ใช้งาน: e.holder_name,
-      มูลค่าการได้มา: e.price,
-    };
+  return data.data.map((e) => {
+    return e;
+    // let expire_date_all =
+    //   e.warranty_type_1 != null && e.warranty_type_1 != ""
+    //     ? e.warranty_type_1 + " " + e.warranty_day_1 + " วัน"
+    //     : "";
+    // expire_date_all +=
+    //   e.warranty_type_2 != null && e.warranty_type_2 != ""
+    //     ? ", " + e.warranty_type_2 + " " + e.warranty_day_2 + " วัน"
+    //     : "";
+    // expire_date_all +=
+    //   e.warranty_type_3 != null && e.warranty_type_3 != ""
+    //     ? ", " + e.warranty_type_3 + " " + e.warranty_day_3 + " วัน"
+    //     : "";
+
+    // return {
+    //   หมายเลขครุภัณฑ์: e.asset_code,
+    //   ชื่อครุภัณฑ์: e.asset_name,
+    //   ปีงบประมาณ: e.input_year,
+    //   รายละเอียด: e.asset_detail,
+    //   ประเภทครุภัณฑ์: e.asset_type.name,
+    //   วันที่ตรวจรับ:
+    //     e.inspection_date != null
+    //       ? dayjs(e.inspection_date).locale("th").format("DD MMM BBBB")
+    //       : "",
+    //   มูลค่าครุภัณฑ์:
+    //     e.price != null
+    //       ? Number(e.price)
+    //           .toFixed(2)
+    //           .toString()
+    //           .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    //       : "",
+    //   ผู้จัดจำหน่าย: e.vendor,
+    //   แหล่งเงิน: e.budget_type.name,
+    //   การรับประกัน: expire_date_all,
+    // };
   });
 };
 
@@ -1121,6 +1164,7 @@ const onImportSubmit = async (type) => {
   }
 
   let result = null;
+  let data = [];
   if (type == 1) {
     importFile = file.value.files[0];
     result = await readFileAsync(importFile);
@@ -1130,7 +1174,6 @@ const onImportSubmit = async (type) => {
     importFile = file2.value.files[0];
     result = await readFileAsync(importFile);
   }
-  let data = [];
 
   let column_index_import = {
     asset_code: null,
@@ -1250,27 +1293,27 @@ const onImportSubmit = async (type) => {
       name_en: "holder_name",
     },
     {
-      name: "การรับประกัน 1",
+      name: "การรับประกัน1",
       name_en: "warranty_type_1",
     },
     {
-      name: "จำนวนวันรับประกัน 1",
+      name: "จำนวนวันรับประกัน1",
       name_en: "warranty_day_1",
     },
     {
-      name: "การรับประกัน 2",
+      name: "การรับประกัน2",
       name_en: "warranty_type_2",
     },
     {
-      name: "จำนวนวันรับประกัน 2",
+      name: "จำนวนวันรับประกัน2",
       name_en: "warranty_day_2",
     },
     {
-      name: "การรับประกัน 3",
+      name: "การรับประกัน3",
       name_en: "warranty_type_3",
     },
     {
-      name: "จำนวนวันรับประกัน 3",
+      name: "จำนวนวันรับประกัน3",
       name_en: "warranty_day_3",
     },
     {
@@ -1290,11 +1333,11 @@ const onImportSubmit = async (type) => {
       name_en: "cancel_comment",
     },
     {
-      name: "การโอน",
+      name: "ผู้รับโอน",
       name_en: "transfer_to",
     },
     {
-      name: "หน่วยงานรับโอน",
+      name: "หน่วยงานผู้รับโอน",
       name_en: "transfer_to_department",
     },
     {
@@ -1418,27 +1461,39 @@ const onImportSubmit = async (type) => {
             : null,
         warranty_type_1:
           column_index_import.warranty_type_1 != undefined
-            ? result.result[i][column_index_import.warranty_type_1].trim()
+            ? result.result[i][column_index_import.warranty_type_1]
+              ? result.result[i][column_index_import.warranty_type_1].trim()
+              : null
             : null,
         warranty_day_1:
           column_index_import.warranty_day_1 != undefined
-            ? result.result[i][column_index_import.warranty_day_1].trim()
+            ? result.result[i][column_index_import.warranty_day_1]
+              ? result.result[i][column_index_import.warranty_day_1].trim()
+              : null
             : null,
         warranty_type_2:
           column_index_import.warranty_type_2 != undefined
-            ? result.result[i][column_index_import.warranty_type_2].trim()
+            ? result.result[i][column_index_import.warranty_type_2]
+              ? result.result[i][column_index_import.warranty_type_2].trim()
+              : null
             : null,
         warranty_day_2:
           column_index_import.warranty_day_2 != undefined
-            ? result.result[i][column_index_import.warranty_day_2].trim()
+            ? result.result[i][column_index_import.warranty_day_2]
+              ? result.result[i][column_index_import.warranty_day_2].trim()
+              : null
             : null,
         warranty_type_3:
           column_index_import.warranty_type_3 != undefined
-            ? result.result[i][column_index_import.warranty_type_3].trim()
+            ? result.result[i][column_index_import.warranty_type_3]
+              ? result.result[i][column_index_import.warranty_type_3].trim()
+              : null
             : null,
         warranty_day_3:
           column_index_import.warranty_day_3 != undefined
-            ? result.result[i][column_index_import.warranty_day_3].trim()
+            ? result.result[i][column_index_import.warranty_day_3]
+              ? result.result[i][column_index_import.warranty_day_3].trim()
+              : null
             : null,
         asset_status:
           column_index_import.asset_status != undefined
@@ -1446,25 +1501,35 @@ const onImportSubmit = async (type) => {
             : null,
         cancel_type:
           column_index_import.cancel_type != undefined
-            ? result.result[i][column_index_import.cancel_type].trim()
+            ? result.result[i][column_index_import.cancel_type]
+              ? result.result[i][column_index_import.cancel_type].trim()
+              : null
             : null,
         cancel_date:
           column_index_import.cancel_date != undefined
-            ? convert_day(result.result[i][column_index_import.cancel_date])
+            ? result.result[i][column_index_import.cancel_date]
+              ? convert_day(result.result[i][column_index_import.cancel_date])
+              : null
             : null,
         cancel_comment:
           column_index_import.cancel_comment != undefined
-            ? result.result[i][column_index_import.cancel_comment].trim()
+            ? result.result[i][column_index_import.cancel_comment]
+              ? result.result[i][column_index_import.cancel_comment].trim()
+              : null
             : null,
         transfer_to:
           column_index_import.transfer_to != undefined
-            ? result.result[i][column_index_import.transfer_to].trim()
+            ? result.result[i][column_index_import.transfer_to]
+              ? result.result[i][column_index_import.transfer_to].trim()
+              : null
             : null,
         transfer_to_department:
           column_index_import.transfer_to_department != undefined
-            ? result.result[i][
-                column_index_import.transfer_to_department
-              ].trim()
+            ? result.result[i][column_index_import.transfer_to_department]
+              ? result.result[i][
+                  column_index_import.transfer_to_department
+                ].trim()
+              : null
             : null,
         comment:
           column_index_import.comment != undefined

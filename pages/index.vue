@@ -206,9 +206,11 @@ const fetchItems = async () => {
     if (find_department) {
       find_department.count = find_department.count + 1;
     } else {
+        console.log(department.data)
       let d = department.data.find((x) => {
         return x.id == e.department_id;
       });
+      console.log( e.department_id)
       department_report.push({
         department_id: e.department_id,
         department_name: d.name,
