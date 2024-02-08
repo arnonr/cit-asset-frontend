@@ -16,21 +16,22 @@
         <div class="col-xl-4 ps-4 text-center">
           <ClientOnly>
             <h4 class="mb-4">จำนวนครุภัณฑ์แบ่งตามประเภท</h4>
-            <Pie :data="data_asset_type" :options="options" v-if="loaded" />
+            <Doughnut :data="data_asset_type" :options="options" v-if="loaded" />
           </ClientOnly>
         </div>
 
         <div class="col-xl-4">
           <ClientOnly>
             <h4 class="mb-4 text-center">จำนวนครุภัณฑ์แบ่งตามแหล่งเงิน</h4>
-            <Pie :data="data_budget_type" :options="options" v-if="loaded" />
+            <Doughnut :data="data_budget_type" :options="options" v-if="loaded" />
           </ClientOnly>
         </div>
 
         <div class="col-xl-4">
           <ClientOnly>
             <h4 class="mb-4 text-center">จำนวนครุภัณฑ์แบ่งตามปีเข้าคลัง</h4>
-            <Pie :data="data_input_year" :options="options" v-if="loaded" />
+            <!-- <Pie :data="data_input_year" :options="options" v-if="loaded" /> -->
+            <Doughnut :data="data_input_year" :options="options" v-if="loaded" />
           </ClientOnly>
         </div>
 
@@ -41,7 +42,7 @@
         <div class="col-xl-4 mb-40">
           <ClientOnly>
             <h4 class="mb-4 text-center">จำนวนครุภัณฑ์แบ่งตามสถานะ</h4>
-            <Pie :data="data_asset_status" :options="options" v-if="loaded" />
+            <Doughnut :data="data_asset_status" :options="options" v-if="loaded" />
           </ClientOnly>
         </div>
       </div>
@@ -62,7 +63,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { Pie, Bar } from "vue-chartjs";
+import { Pie, Bar, Doughnut } from "vue-chartjs";
 
 // Variable
 ChartJS.register(
