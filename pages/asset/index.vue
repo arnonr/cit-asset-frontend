@@ -589,7 +589,7 @@
           <a
             class="btn btn-primary"
             target="_blank"
-            href="http://citqresearch.cit.kmutnb.ac.th/assets/img/template/template_import_asset.xlsx"
+            href="~/assets/img/template/template_import_asset.xlsx"
           >
             Download Template
           </a>
@@ -680,7 +680,7 @@
           <a
             class="btn btn-primary"
             target="_blank"
-            href="http://citqresearch.cit.kmutnb.ac.th/_nuxt/assets/img/template/template_import_cancel_asset.xlsx"
+            href="~/assets/img/template/template_import_cancel_asset.xlsx"
           >
             Download Template
           </a>
@@ -706,7 +706,7 @@
 
   <!-- Qr -->
   <!-- 4/4 -->
-  <ClientOnly>
+  <!-- <ClientOnly>
     <div
       :class="'printable ' + show44"
       v-for="(it, idx) in qr_items"
@@ -749,53 +749,176 @@
         }}
       </div>
     </div>
-  </ClientOnly>
+  </ClientOnly> -->
 
+  <!-- 4/4 -->
+  <ClientOnly>
+    <div
+      :class="'printable ' + show44"
+      style="display: block; padding-left: 40px; padding-top: 41px"
+    >
+      <div
+        v-for="(it, idx) in qr_items"
+        :key="idx"
+        style="
+          width: 220px;
+          height: 220px;
+          display: inline-block;
+          padding-left: 3px;
+        "
+      >
+        <figure class="qrcode">
+          <vue-qrcode
+            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            tag="canvas"
+            style="display: inline-block !important; vertical-align: top"
+            :options="{
+              errorCorrectionLevel: 'Q',
+              width: 200,
+              margin: 0,
+            }"
+          ></vue-qrcode>
+
+          <img
+            src="~/assets/img/logo/logo_cit.png"
+            class="qrcode__image"
+            style="width: 60px"
+          />
+        </figure>
+        <div
+          style="
+            font-size: 1em;
+            width: 200px;
+            min-height: 200px;
+            word-wrap: break-word;
+            margin-left: 2px;
+            margin-top: 10px;
+            vertical-align: top;
+            color: #000;
+            line-height: 1;
+          "
+        >
+          {{
+            it.input_year +
+            543 +
+            "-" +
+            it.asset_code +
+            " (" +
+            it.budget_type.category +
+            ")"
+          }}
+        </div>
+      </div>
+    </div>
+  </ClientOnly>
+  <!-- 2/2 -->
   <ClientOnly>
     <div
       :class="'printable ' + show22"
-      v-for="(it, idx) in qr_items"
-      :key="idx"
-      :style="'position: relative; left: 20px'"
+      style="display: block; padding-left: 40px; padding-top: 41px"
     >
-      <figure class="qrcode" style="margin-bottom: 9px !important">
-        <vue-qrcode
-          :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
-          tag="canvas"
-          :options="{
-            errorCorrectionLevel: 'Q',
-            width: 130,
-            margin: 2,
-          }"
-        ></vue-qrcode>
-
-        <img
-          src="~/assets/img/logo/logo_cit.png"
-          class="qrcode__image"
-          style="width: 28px"
-        />
-      </figure>
       <div
+        v-for="(it, idx) in qr_items"
+        :key="idx"
         style="
-          width: 130px;
-          position: absolute;
-          left: 5px;
-          top: 15px;
-          font-size: 0.6em;
-          color: #000;
-          line-height: 1;
+          width: 143px;
+          height: 75px;
+          display: inline-block;
+          padding-left: 3px;
         "
       >
-        {{
-          it.input_year +
-          543 +
-          "-" +
-          it.asset_code +
-          " (" +
-          it.budget_type.category +
-          ")"
-        }}
+        <figure class="qrcode">
+          <vue-qrcode
+            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            tag="canvas"
+            style="display: inline-block !important"
+            :options="{
+              errorCorrectionLevel: 'Q',
+              width: 72,
+              margin: 0,
+            }"
+          ></vue-qrcode>
+
+          <img
+            src="~/assets/img/logo/logo_cit.png"
+            class="qrcode__image"
+            style="width: 25px"
+          />
+        </figure>
+        <div
+          style="
+            font-size: 0.7em;
+            width: 66px;
+            word-wrap: break-word;
+            margin-top: 15px;
+            margin-left: 2px;
+            vertical-align: top;
+            display: inline-block !important;
+            color: #000;
+            line-height: 1;
+          "
+        >
+          {{
+            it.input_year +
+            543 +
+            "-" +
+            it.asset_code +
+            " (" +
+            it.budget_type.category +
+            ")"
+          }}
+        </div>
       </div>
+
+      <!-- <div
+        :class="'printable ' + show22"
+        v-for="(it, idx) in qr_items"
+        :key="idx"
+        :style="'position: relative; left: 3px; margin-bottom: 2px !important;margin-top: 2px !important;'"
+      >
+        <figure class="qrcode" style="margin-bottom: 0px !important; margin-top: -4px !important;">
+          <vue-qrcode
+            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            tag="canvas"
+            style="margin-top: -4px !important;"
+            :options="{
+              errorCorrectionLevel: 'Q',
+              width: 75,
+              margin: 2,
+            }"
+          ></vue-qrcode>
+
+          <img
+            src="~/assets/img/logo/logo_cit.png"
+            class="qrcode__image"
+            style="width: 25px"
+          />
+        </figure>
+        <div
+          style="
+            width: 65px;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            left: 1px;
+            margin-right: 5px;
+            top: 10px;
+            font-size: 0.6em;
+            color: #000;
+            line-height: 1;
+          "
+        >
+          {{
+            it.input_year +
+            543 +
+            "-" +
+            it.asset_code +
+            " (" +
+            it.budget_type.category +
+            ")"
+          }}
+        </div>
+      </div> -->
     </div>
   </ClientOnly>
 
@@ -1653,12 +1776,12 @@ definePageMeta({
   border: 0.25rem solid #fff;
   border-radius: 0.25rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
-  height: 20%;
+  height: 29%;
   width: 20%;
   left: 50%;
   overflow: hidden;
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translate(-50%, -50%);
 }
 
