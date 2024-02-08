@@ -217,6 +217,20 @@ h6 {
         page-break-before: always;
     }
 
+    .back-to-top-wrapper {
+
+        display: none !important;
+    }
+
+    .scroll-top {
+        display: none !important;
+    }
+
+    .back_to_top {
+        display: none !important;
+
+    }
+
     /* page-break-after works, as well */
 
 }
