@@ -586,10 +586,11 @@
           </form>
         </div>
         <div class="modal-footer">
+
           <a
             class="btn btn-primary"
             target="_blank"
-            href="~/assets/img/template/template_import_asset.xlsx"
+            href="/tamplate/template_import_asset.xlsx"
           >
             Download Template
           </a>
@@ -680,7 +681,7 @@
           <a
             class="btn btn-primary"
             target="_blank"
-            href="~/assets/img/template/template_import_cancel_asset.xlsx"
+            href="/tamplate/template_import_cancel_asset.xlsx"
           >
             Download Template
           </a>
