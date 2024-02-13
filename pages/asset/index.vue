@@ -808,7 +808,7 @@
             "-" +
             it.asset_code +
             " (" +
-            it.budget_type_category +
+            it.budget_type.category +
             ")"
           }}
         </div>
@@ -868,7 +868,7 @@
             "-" +
             it.asset_code +
             " (" +
-            it.budget_type_category +
+            it.budget_type.category +
             ")"
           }}
         </div>
