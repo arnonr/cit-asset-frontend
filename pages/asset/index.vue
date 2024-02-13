@@ -281,6 +281,14 @@
             </button>
           </json-excel>
 
+          <button
+            type="button"
+            class="btn btn-success mt-2 me-2"
+            @click="onExport()"
+          >
+            <i class="fa-regular fa-file"></i> Export with qr code
+          </button>
+
           <div class="dropdown d-inline">
             <button
               class="btn btn-primary dropdown-toggle me-2 mt-2"
@@ -586,7 +594,6 @@
           </form>
         </div>
         <div class="modal-footer">
-
           <a
             class="btn btn-primary"
             target="_blank"
@@ -761,17 +768,13 @@
       <div
         v-for="(it, idx) in qr_items"
         :key="idx"
-        style="
-          width: 220px;
-          height: 220px;
-          display: inline-block;
-          padding-left: 3px;
-        "
+        :style="'width: 220px;height: 220px;padding-left: 3px;' + display_qr"
       >
         <figure class="qrcode">
           <vue-qrcode
             :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
-            tag="canvas"
+            :id="'qrcode-asset-' + it.id"
+            tag="img"
             style="display: inline-block !important; vertical-align: top"
             :options="{
               errorCorrectionLevel: 'Q',
@@ -805,7 +808,7 @@
             "-" +
             it.asset_code +
             " (" +
-            it.budget_type.category +
+            it.budget_type_category +
             ")"
           }}
         </div>
@@ -865,7 +868,7 @@
             "-" +
             it.asset_code +
             " (" +
-            it.budget_type.category +
+            it.budget_type_category +
             ")"
           }}
         </div>
@@ -940,17 +943,16 @@ import "vue-select/dist/vue-select.css";
 import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
-import QrcodeVue from "qrcode.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-// import  VueQr31 from ("vue3-qr-code-styling");
 
 // import tableItem from "~/components/list/TableItem.vue";
 import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
-import XLSX from "xlsx";
+// import XLSX from "xlsx";
+import ExcelJS from "exceljs";
 // Variable
 
 dayjs.extend(buddhistEra);
@@ -964,6 +966,7 @@ const totalPage = ref(1);
 const totalItems = ref(0);
 const show22 = ref("");
 const show44 = ref("");
+const display_qr = ref("display: inline-block;");
 const search = ref({
   created_at_from: null,
   created_at_to: null,
@@ -1153,6 +1156,7 @@ const fetchItems = async () => {
   items.value = data.data.map((e) => {
     return e;
   });
+  json_data.value = await fetchItemsExport();
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
 };
@@ -1240,6 +1244,8 @@ const fetchItemsExport = async () => {
     //   การรับประกัน: expire_date_all,
     // };
   });
+
+  //   return json_data.value;
 };
 
 // Watch
@@ -1727,6 +1733,7 @@ const onImportSubmit = async (type) => {
 
 const onGenerateQR = (it, size) => {
   qr_items.value = [];
+  display_qr.value = "display:inline-block;";
   if (size == 2) {
     show44.value = "show-44-none";
     show22.value = "";
@@ -1736,14 +1743,195 @@ const onGenerateQR = (it, size) => {
   }
 
   if (it == "ALL") {
-    qr_items.value = [...items.value];
+    qr_items.value = [...json_data.value];
+    // qr_items.value = [...items.value];
   } else {
     qr_items.value.push(it);
   }
-
   setTimeout(() => {
     window.print();
+    qr_items.value = [];
   }, 1000);
+};
+
+const onGenerateQR1 = (it, size) => {
+  qr_items.value = [];
+  display_qr.value = "display:inline-block;";
+  if (size == 2) {
+    show44.value = "show-44-none";
+    show22.value = "";
+  } else {
+    show22.value = "show-22-none";
+    show44.value = "";
+  }
+
+  if (it == "ALL") {
+    qr_items.value = [...json_data.value];
+  } else {
+    qr_items.value.push(it);
+  }
+};
+
+const onExport = async () => {
+  onGenerateQR1("ALL", 1);
+
+  setTimeout(async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("รายการครุภัณฑ์", {
+      pageSetup: { orientation: "landscape" },
+      headerFooter: {
+        firstHeader: "Hello Exceljs",
+        firstFooter: "Hello World",
+      },
+    });
+
+    //   const title = {
+    //     text: "รายงานข้อมูล",
+    //     alignment: "center",
+    //     font: {
+    //       name: "Calibri",
+    //       size: 16,
+    //       bold: true,
+    //     },
+    //   };
+    //   worksheet.mergeCells("A1:J1");
+    //   worksheet.getCell("A1").value = title;
+
+    worksheet.columns = [
+      { header: "QR Code", width: 10, outlineLevel: 1 },
+      {
+        header: "หมายเลขครุภัณฑ์",
+        key: "หมายเลขครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      {
+        header: "ชื่อครุภัณฑ์",
+        key: "ชื่อครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      { header: "ปีงบประมาณ", key: "ปีงบประมาณ", width: 12, outlineLevel: 1 },
+      { header: "รายละเอียด", key: "รายละเอียด", width: 30, outlineLevel: 1 },
+      {
+        header: "ประเภทครุภัณฑ์",
+        key: "ประเภทครุภัณฑ์",
+        width: 20,
+        outlineLevel: 1,
+      },
+      {
+        header: "วันที่ตรวจรับ",
+        key: "วันที่ตรวจรับ",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "มูลค่าครุภัณฑ์",
+        key: "มูลค่าครุภัณฑ์",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "ผู้จัดจำหน่าย",
+        key: "ผู้จัดจำหน่าย",
+        width: 20,
+        outlineLevel: 1,
+      },
+      { header: "แหล่งเงิน", key: "แหล่งเงิน", width: 20, outlineLevel: 1 },
+      {
+        header: "การรับประกัน",
+        key: "การรับประกัน",
+        width: 20,
+        outlineLevel: 1,
+      },
+    ];
+
+    worksheet.properties.defaultRowHeight = 45;
+
+    worksheet.addRows(json_data.value);
+
+    worksheet.eachRow((row) => {
+      row.height = 45;
+      row.eachCell(function (cell) {
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true,
+        };
+      });
+    });
+
+    const row = worksheet.getRow(1);
+    row.height = 20;
+
+    worksheet.insertRow(1, "รายการทะเบียนครุภัณฑ์");
+    worksheet.mergeCells("A1:K1");
+    worksheet.getCell("A1").value = "รายการทะเบียนครุภัณฑ์";
+    worksheet.getCell("A1").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font;
+
+    let start_date =
+      search.created_at_from != null
+        ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    let end_date =
+      search.created_at_to != null
+        ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    worksheet.insertRow(2);
+    worksheet.mergeCells("A2:K2");
+    worksheet.getCell("A2").value =
+      "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
+    worksheet.getCell("A2").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font1 = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font1;
+
+    // Images
+    let myBase64Image = "";
+    json_data.value.forEach((it, idx) => {
+      let canvas = document.getElementById("qrcode-asset-" + it.id);
+      myBase64Image = canvas.src;
+
+      let image = workbook.addImage({
+        base64: myBase64Image,
+        extension: "png",
+      });
+
+
+
+      const image1 = worksheet.addImage(image, {
+        tl: { col: 0.5, row: idx + 3.1 },
+        // br: { col: 1, row: idx + 4 },
+        ext: { width: 70, height: 70 },
+        editAs: 'oneCell',
+        hyperlinks: {
+          hyperlink: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+          tooltip: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+        },
+      });
+    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "รายการครุภัณฑ์.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    //   End Image
+
+    qr_items.value = [];
+  }, 3000);
 };
 
 onMounted(() => {
