@@ -265,7 +265,11 @@
                 <tr v-for="(it, idx) in items" :key="idx">
                   <td class="text-center">{{ it.asset.asset_code }}</td>
                   <td>{{ it.asset.asset_name }}</td>
-                  <td>{{ it.asset.asset_type_id }}</td>
+                  <td>
+                    {{
+                      selectOptions.asset_types_array[it.asset.asset_type_id]
+                    }}
+                  </td>
                   <td>
                     {{
                       it.asset.inspection_date != null
@@ -396,7 +400,7 @@
     aria-labelledby="modal-form"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modal-form-label">
@@ -413,7 +417,10 @@
           <form>
             <div class="row">
               <div class="col-md-12">
-                <AssetWarranty :item="item" v-if="item"></AssetWarranty>
+                <AssetWarranty
+                  :item="item.asset"
+                  v-if="item && item.asset"
+                ></AssetWarranty>
                 <hr />
               </div>
 

@@ -18,7 +18,7 @@
 
         <span class="fw-bold text-primary">
           {{
-            item.warranty_type_1
+            item.approved_date != null && item.warranty_type_1
               ? item.warranty_day_1 -
                   dayjs().diff(dayjs(item.approved_date), "day") <
                 0
@@ -50,7 +50,7 @@
         <span class="fw-bold">วันรับประกันคงเหลือ : </span>
         <span class="fw-bold text-primary">
           {{
-            item.warranty_type_2
+            item.approved_date != null && item.warranty_type_2
               ? item.warranty_day_2 -
                   dayjs().diff(dayjs(item.approved_date), "day") <
                 0
@@ -82,7 +82,7 @@
         <span class="fw-bold">วันรับประกันคงเหลือ : </span>
         <span class="fw-bold text-primary">
           {{
-            item.warranty_type_3
+            item.approved_date != null && item.warranty_type_3
               ? item.warranty_day_3 -
                   dayjs().diff(dayjs(item.approved_date), "day") <
                 0
