@@ -28,7 +28,7 @@
         <li v-for="(sub, i) in menu.submenus" :key="i" class="submenu-item">
           <NuxtLink :to="sub.link">
             {{ $t(sub.title) }}
-            <span class="badge bg-info" v-if="sub.noti">{{
+            <span class="badge bg-info" v-if="sub.noti && useCookie('user').value.level != 3">{{
               useNotification().value[sub.noti]
             }}</span>
             <hr style="width: 100%; color: #ddd; padding: 0px; margin: 0" />

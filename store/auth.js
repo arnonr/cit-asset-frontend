@@ -34,6 +34,10 @@ export const useAuthStore = defineStore("auth", {
 
         this.loading = pending;
 
+        if (data.value.is_active == 0) {
+          throw new Error("User is not active");
+        }
+
         if (data.value) {
           const token = useCookie("token"); // useCookie new hook in nuxt 3
           token.value = data?.value?.token; // set token to cookie
@@ -48,6 +52,7 @@ export const useAuthStore = defineStore("auth", {
             department_id: data?.value?.department_id,
             level: data?.value?.level,
             token: token,
+            is_active: data?.value?.is_active,
           };
 
           this.authenticated = true; // set authenticated  state value to true

@@ -28,6 +28,15 @@
         <div class="col-12 col-lg-4">
           <input
             class="form-control"
+            v-model="search.asset_code"
+            name="title"
+            type="text"
+            placeholder="หมายเลขครุภัณฑ์"
+          />
+        </div>
+        <div class="col-12 col-lg-4">
+          <input
+            class="form-control"
             v-model="search.asset_name"
             name="title"
             type="text"
@@ -346,13 +355,14 @@
       </div>
 
       <div class="col-xxl-12">
-        <div class="tp-pagination mt-30">
+        <div class="tp-pagination mt-30 d-inline-block">
           <blog-pagination
             :totalPage="totalPage"
             :currentPage="currentPage"
             @update:currentPage="currentPage = $event"
           />
         </div>
+        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
       </div>
     </div>
   </section>

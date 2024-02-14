@@ -80,7 +80,7 @@
             >
               <div class="card" style="border: none">
                 <div class="card-body">
-                  <div v-if="useCookie('user').value.level == 1">
+                  <div v-if="useCookie('user').value.level == 1 || useCookie('user').value.level == 2">
                     <div
                       class="form-group row mt-10"
                       v-for="(at, idx) in attributes"

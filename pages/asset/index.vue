@@ -249,7 +249,7 @@
         <div class="col-lg-6">
           <button
             type="button"
-            v-if="useCookie('user').value.level == 1"
+            v-if="useCookie('user').value.level == 1 || useCookie('user').value.level == 2"
             class="btn btn-warning me-2 mt-2"
             @click="
               () => {
@@ -510,13 +510,14 @@
       </div>
 
       <div class="col-xxl-12">
-        <div class="tp-pagination mt-30">
+        <div class="tp-pagination mt-30 d-inline-block" >
           <blog-pagination
             :totalPage="totalPage"
             :currentPage="currentPage"
             @update:currentPage="currentPage = $event"
           />
         </div>
+        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
       </div>
     </div>
   </section>
@@ -711,53 +712,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Qr -->
-  <!-- 4/4 -->
-  <!-- <ClientOnly>
-    <div
-      :class="'printable ' + show44"
-      v-for="(it, idx) in qr_items"
-      :key="idx"
-      :style="'position: relative; left: 20px'"
-    >
-      <figure class="qrcode" style="margin-bottom: 9px !important">
-        <vue-qrcode
-          :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
-          tag="canvas"
-          :options="{
-            errorCorrectionLevel: 'Q',
-            width: 220,
-            margin: 2,
-          }"
-        ></vue-qrcode>
-
-        <img src="~/assets/img/logo/logo_cit.png" class="qrcode__image" />
-      </figure>
-      <div
-        style="
-          width: 220px;
-          position: absolute;
-          left: 18px;
-          top: 15px;
-          font-size: 0.7em;
-          font-weight: bold;
-          color: #000;
-          line-height: 1;
-        "
-      >
-        {{
-          it.input_year +
-          543 +
-          "-" +
-          it.asset_code +
-          " (" +
-          it.budget_type.category +
-          ")"
-        }}
-      </div>
-    </div>
-  </ClientOnly> -->
 
   <!-- 4/4 -->
   <ClientOnly>
@@ -1774,7 +1728,6 @@ const onGenerateQR1 = (it, size) => {
 
 const onExport = async () => {
   onGenerateQR1("ALL", 1);
-
   setTimeout(async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("รายการครุภัณฑ์", {
@@ -1906,13 +1859,11 @@ const onExport = async () => {
         extension: "png",
       });
 
-
-
       const image1 = worksheet.addImage(image, {
         tl: { col: 0.5, row: idx + 3.1 },
         // br: { col: 1, row: idx + 4 },
         ext: { width: 70, height: 70 },
-        editAs: 'oneCell',
+        editAs: "oneCell",
         hyperlinks: {
           hyperlink: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
           tooltip: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
