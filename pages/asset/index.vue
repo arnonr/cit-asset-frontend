@@ -662,7 +662,15 @@
               </div>
 
               <div class="table-responsive mt-4">
-                <h5 class="text-danger">รายการนำเข้าไม่สำเร็จ</h5>
+                <h5>
+                  <span class="text-success"
+                    >รายการนำเข้าสำเร็จ {{ count_success_import }} รายการ</span
+                  >
+                  <span>, </span>
+                  <span class="text-danger"
+                    >รายการนำเข้าไม่สำเร็จ {{ count_error_import }} รายการ</span
+                  >
+                </h5>
                 <table class="table table-bordered table-striped table-admin">
                   <thead>
                     <tr>
