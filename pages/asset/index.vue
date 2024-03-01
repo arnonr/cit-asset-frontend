@@ -1473,11 +1473,11 @@ const onImportSubmit = async (type) => {
         row_id: i + 1,
         asset_code:
           column_index_import.asset_code != undefined
-            ? result.result[i][column_index_import.asset_code].trim()
+            ? result?.result[i][column_index_import.asset_code]?.trim()
             : null,
         asset_name:
           column_index_import.asset_name != undefined
-            ? result.result[i][column_index_import.asset_name].trim()
+            ? result?.result[i][column_index_import.asset_name]?.trim()
             : null,
         input_year:
           column_index_import.input_year != undefined
@@ -1493,35 +1493,35 @@ const onImportSubmit = async (type) => {
             : null,
         vendor:
           column_index_import.vendor != undefined
-            ? result.result[i][column_index_import.vendor].trim()
+            ? result?.result[i][column_index_import.vendor]?.trim()
             : null,
         asset_detail:
           column_index_import.asset_detail != undefined
-            ? result.result[i][column_index_import.asset_detail]
+            ? result?.result[i][column_index_import.asset_detail]
             : null,
         install_location:
           column_index_import.install_location != undefined
-            ? result.result[i][column_index_import.install_location].trim()
+            ? result?.result[i][column_index_import.install_location]?.trim()
             : null,
         asset_type_code:
           column_index_import.asset_type_code != undefined
-            ? result.result[i][column_index_import.asset_type_code].trim()
+            ? result?.result[i][column_index_import.asset_type_code]?.trim()
             : null,
         brand:
           column_index_import.brand != undefined
-            ? result.result[i][column_index_import.brand]
+            ? result?.result[i][column_index_import.brand]
             : null,
         model:
           column_index_import.model != undefined
-            ? result.result[i][column_index_import.model]
+            ? result?.result[i][column_index_import.model]
             : null,
         serial_number:
           column_index_import.serial_number != undefined
-            ? result.result[i][column_index_import.serial_number]
+            ? result?.result[i][column_index_import.serial_number]
             : null,
         price:
           column_index_import.price != undefined
-            ? result.result[i][column_index_import.price].trim()
+            ? result?.result[i][column_index_import.price]?.trim()
             : null,
         budget_type_code:
           column_index_import.budget_type_code != undefined
@@ -1537,7 +1537,7 @@ const onImportSubmit = async (type) => {
             : null,
         location:
           column_index_import.location != undefined
-            ? result.result[i][column_index_import.location].trim()
+            ? result?.result[i][column_index_import.location]?.trim()
             : null,
         department_code:
           column_index_import.department_code != undefined
@@ -1549,52 +1549,52 @@ const onImportSubmit = async (type) => {
             : null,
         holder_name:
           column_index_import.holder_name != undefined
-            ? result.result[i][column_index_import.holder_name].trim()
+            ? result?.result[i][column_index_import.holder_name]?.trim()
             : null,
         warranty_type_1:
           column_index_import.warranty_type_1 != undefined
             ? result.result[i][column_index_import.warranty_type_1]
-              ? result.result[i][column_index_import.warranty_type_1].trim()
+              ? result?.result[i][column_index_import.warranty_type_1]?.trim()
               : null
             : null,
         warranty_day_1:
           column_index_import.warranty_day_1 != undefined
             ? result.result[i][column_index_import.warranty_day_1]
-              ? result.result[i][column_index_import.warranty_day_1].trim()
+              ? result?.result[i][column_index_import.warranty_day_1]?.trim()
               : null
             : null,
         warranty_type_2:
           column_index_import.warranty_type_2 != undefined
             ? result.result[i][column_index_import.warranty_type_2]
-              ? result.result[i][column_index_import.warranty_type_2].trim()
+              ? result?.result[i][column_index_import.warranty_type_2]?.trim()
               : null
             : null,
         warranty_day_2:
           column_index_import.warranty_day_2 != undefined
             ? result.result[i][column_index_import.warranty_day_2]
-              ? result.result[i][column_index_import.warranty_day_2].trim()
+              ? result?.result[i][column_index_import.warranty_day_2]?.trim()
               : null
             : null,
         warranty_type_3:
           column_index_import.warranty_type_3 != undefined
             ? result.result[i][column_index_import.warranty_type_3]
-              ? result.result[i][column_index_import.warranty_type_3].trim()
+              ? result?.result[i][column_index_import.warranty_type_3]?.trim()
               : null
             : null,
         warranty_day_3:
           column_index_import.warranty_day_3 != undefined
             ? result.result[i][column_index_import.warranty_day_3]
-              ? result.result[i][column_index_import.warranty_day_3].trim()
+              ? result?.result[i][column_index_import.warranty_day_3]?.trim()
               : null
             : null,
         asset_status:
           column_index_import.asset_status != undefined
-            ? result.result[i][column_index_import.asset_status].trim()
+            ? result?.result[i][column_index_import.asset_status]?.trim()
             : null,
         cancel_type:
           column_index_import.cancel_type != undefined
             ? result.result[i][column_index_import.cancel_type]
-              ? result.result[i][column_index_import.cancel_type].trim()
+              ? result?.result[i][column_index_import.cancel_type]?.trim()
               : null
             : null,
         cancel_date:
@@ -1606,26 +1606,26 @@ const onImportSubmit = async (type) => {
         cancel_comment:
           column_index_import.cancel_comment != undefined
             ? result.result[i][column_index_import.cancel_comment]
-              ? result.result[i][column_index_import.cancel_comment].trim()
+              ? result?.result[i][column_index_import.cancel_comment]?.trim()
               : null
             : null,
         transfer_to:
           column_index_import.transfer_to != undefined
             ? result.result[i][column_index_import.transfer_to]
-              ? result.result[i][column_index_import.transfer_to].trim()
+              ? result?.result[i][column_index_import.transfer_to]?.trim()
               : null
             : null,
         transfer_to_department:
           column_index_import.transfer_to_department != undefined
             ? result.result[i][column_index_import.transfer_to_department]
-              ? result.result[i][
+              ? result?.result[i][
                   column_index_import.transfer_to_department
-                ].trim()
+                ]?.trim()
               : null
             : null,
         comment:
           column_index_import.comment != undefined
-            ? result.result[i][column_index_import.comment].trim()
+            ? result?.result[i][column_index_import.comment]?.trim()
             : null,
       });
     }
