@@ -52,8 +52,8 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody v-if="fix_item.length != 0">
-                  <tr v-for="(it, idx) in fix_item" :key="idx">
+                <tbody v-if="items.length != 0">
+                  <tr v-for="(it, idx) in items" :key="idx">
                     <td>{{ it.description }}</td>
                     <td class="text-center">
                       {{
@@ -350,11 +350,11 @@ const fetchItems = async () => {
     params: params,
   }).catch((error) => error.data);
 
-  fix_item.value = data.data.map((e) => {
+  items.value = data.data.map((e) => {
     return e;
   });
 
-  console.log(fix_item.value)
+  console.log(items.value)
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
 };
