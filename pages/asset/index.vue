@@ -905,7 +905,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
-// import XLSX from "xlsx";
+import XLSX from "xlsx";
 import ExcelJS from "exceljs";
 // Variable
 
