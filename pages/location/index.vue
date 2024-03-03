@@ -240,7 +240,6 @@
         </button>
       </div>
 
-
       <div class="row gx-2 grid">
         <div class="col-12">
           <div class="table-responsive">
@@ -274,7 +273,7 @@
                     }}
                   </td>
 
-                  <td>{{ it.created_by }}</td>
+                  <td>{{ it.created_user?.name }}</td>
                   <td class="text-center">
                     {{
                       it.approved_at != null
@@ -351,7 +350,10 @@
             @update:currentPage="currentPage = $event"
           />
         </div>
-        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
+        <div class="d-inline-block float-end fw-bold">
+          รวมทั้งหมด {{ totalItems }} รายการ จำนวนหน้าทั้งหมด
+          {{ totalPage }} หน้า
+        </div>
       </div>
     </div>
   </section>
@@ -717,7 +719,7 @@ const fetchItemsExport = async () => {
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
           : "-",
-      ผู้แจ้ง: e.created_by,
+      ผู้แจ้ง: e.created_user?.name,
       สถานะ: selectOptions.value.location_statuses[e.status].name,
     };
   });
@@ -745,8 +747,6 @@ onMounted(() => {
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
 });
 
-
-
 const onGenerateQR1 = (it, size) => {
   qr_items.value = [];
   display_qr.value = "display:inline-block;";
@@ -768,13 +768,16 @@ const onExport = async () => {
   onGenerateQR1("ALL", 1);
   setTimeout(async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("รายการทะเบียนแจ้งขอย้ายสถานที่ใช้งานปัจจุบัน", {
-      pageSetup: { orientation: "landscape" },
-      headerFooter: {
-        firstHeader: "Hello Exceljs",
-        firstFooter: "Hello World",
-      },
-    });
+    const worksheet = workbook.addWorksheet(
+      "รายการทะเบียนแจ้งขอย้ายสถานที่ใช้งานปัจจุบัน",
+      {
+        pageSetup: { orientation: "landscape" },
+        headerFooter: {
+          firstHeader: "Hello Exceljs",
+          firstFooter: "Hello World",
+        },
+      }
+    );
 
     worksheet.columns = [
       { header: "QR Code", width: 10, outlineLevel: 1 },
@@ -856,7 +859,8 @@ const onExport = async () => {
 
     worksheet.insertRow(1, "รายการทะเบียนแจ้งขอย้ายสถานที่ใช้งานปัจจุบัน");
     worksheet.mergeCells("A1:K1");
-    worksheet.getCell("A1").value = "รายการทะเบียนแจ้งขอย้ายสถานที่ใช้งานปัจจุบัน";
+    worksheet.getCell("A1").value =
+      "รายการทะเบียนแจ้งขอย้ายสถานที่ใช้งานปัจจุบัน";
     worksheet.getCell("A1").alignment = {
       vertical: "middle",
       horizontal: "center",

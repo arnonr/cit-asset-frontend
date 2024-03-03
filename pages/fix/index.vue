@@ -309,7 +309,7 @@
                         : ""
                     }}
                   </td>
-                  <td>{{ it.created_by }}</td>
+                  <td>{{ it.created_user?.name }}</td>
                   <td>
                     {{
                       it.approved_at != null
@@ -892,7 +892,7 @@ const fetchItemsExport = async () => {
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           : "",
-      ผู้แจ้ง: e.created_by,
+      ผู้แจ้ง: e.created_user?.name,
       สถานะ: selectOptions.value.fix_statuses[e.status].name,
     };
   });

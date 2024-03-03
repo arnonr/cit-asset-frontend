@@ -274,7 +274,7 @@
                     }}
                   </td>
 
-                  <td>{{ it.created_by }}</td>
+                  <td>{{ it.created_user?.name }}</td>
                   <td class="text-center">
                     {{
                       it.approved_at != null
@@ -688,7 +688,7 @@ const fetchItemsExport = async () => {
         e.created_at != null
           ? dayjs(e.created_at).locale("th").format("DD MMM BBBB")
           : "-",
-      ผู้แจ้ง: e.created_by,
+      ผู้แจ้ง: e.created_user?.name,
       สถานะ: selectOptions.value.holder_statuses[e.status].name,
     };
   });
