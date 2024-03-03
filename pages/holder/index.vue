@@ -610,7 +610,7 @@ const fetchItems = async () => {
         : dayjs(search.value.created_at_to).format("YYYY-MM-DD"),
     status: search.value.status != null ? search.value.status.id : undefined,
     perPage: perPage.value,
-    currentPage: currentPage.value,
+    currentPage: 1,
     orderBy: "created_at",
     order: "desc",
   };
