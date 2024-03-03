@@ -250,7 +250,7 @@ const fetchItems = async () => {
 
       budget_type_report.push({
         budget_type_id: e.budget_type_id,
-        budget_type_name: c.name,
+        budget_type_name: c?.name,
         count: 1,
       });
     }
