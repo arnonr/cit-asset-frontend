@@ -49,6 +49,10 @@
 
                         <button
                           class="btn btn-danger ml-5"
+                          v-if="
+                            useCookie('user').value != undefined &&
+                            useCookie('user').value.level == 1
+                          "
                           @click="onConfirmDelete(item.id)"
                         >
                           Delete

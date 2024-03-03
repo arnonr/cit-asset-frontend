@@ -80,7 +80,12 @@
             >
               <div class="card" style="border: none">
                 <div class="card-body">
-                  <div v-if="useCookie('user').value.level == 1 || useCookie('user').value.level == 2">
+                  <div
+                    v-if="
+                      useCookie('user').value.level == 1 ||
+                      useCookie('user').value.level == 2
+                    "
+                  >
                     <div
                       class="form-group row mt-10"
                       v-for="(at, idx) in attributes"
@@ -492,6 +497,7 @@ const attributes = [
     name: "transfer_from",
     show_name: "ได้รับโอนจาก",
     input_type: "text",
+    disabled: false,
   },
   {
     name: "comment",
@@ -582,7 +588,7 @@ const item = ref({
     name: "ใช้งาน",
     color: "success",
   },
-  is_transfer: { title: "No", value: null },
+  is_transfer: { title: "ใช่", value: null },
   inspection_date: null,
 });
 const file = ref(null);
@@ -594,8 +600,8 @@ const selectOptions = ref({
   budget_types: [],
   departments: [],
   is_transfers: [
-    { title: "YES", value: 1 },
-    { title: "NO", value: null },
+    { title: "ใช่", value: 1 },
+    { title: "ไม่ใช่", value: null },
   ],
   cancel_types: [
     { title: "โอน", value: 1 },
@@ -888,6 +894,27 @@ watch(
 
       attributes_cancel.value = [...new_att];
     }
+  }
+);
+
+watch(
+  () => item.value.is_transfer,
+  (val) => {
+    let disabled = false;
+    if (val.value == 1) {
+      disabled = false;
+    } else {
+      disabled = true;
+    }
+
+    let new_att = attributes.map((x) => {
+      if (x.name == "transfer_from") {
+        x.disabled = disabled;
+      }
+      return x;
+    });
+
+    attributes.value = [...new_att];
   }
 );
 

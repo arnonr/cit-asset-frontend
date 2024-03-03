@@ -231,23 +231,13 @@
       </div>
 
       <div class="mb-30">
-        <json-excel
-          :fetch="fetchItemsExport"
-          :fields="json_fields"
-          :name="'holder_name'"
-          :header="[
-            'รายการประวัติการเปลี่ยนแปลงผู้ใช้งาน',
-            'ระหว่างวันที่ ' +
-              dayjs(search.created_at_from).locale('th').format('DD MMM BBBB') +
-              ' ถึง ' +
-              dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
-          ]"
-          class="d-inline ms-2"
+        <button
+          type="button"
+          class="btn btn-success mt-2 me-2"
+          @click="onExport()"
         >
-          <button type="button" class="btn btn-success">
-            <i class="fa-regular fa-file"></i> Export Excel
-          </button>
-        </json-excel>
+          <i class="fa-regular fa-file"></i> Export
+        </button>
       </div>
 
       <div class="row gx-2 grid">
@@ -357,7 +347,10 @@
             @update:currentPage="currentPage = $event"
           />
         </div>
-        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
+        <div class="d-inline-block float-end fw-bold">
+          รวมทั้งหมด {{ totalItems }} รายการ จำนวนหน้าทั้งหมด
+          {{ totalPage }} หน้า
+        </div>
       </div>
     </div>
   </section>
@@ -441,6 +434,34 @@
       </div>
     </div>
   </div>
+
+  <!-- 4/4 -->
+  <ClientOnly>
+    <div
+      :class="'printable ' + show44"
+      style="display: block; padding-left: 30px; padding-top: 41px"
+    >
+      <div
+        v-for="(it, idx) in qr_items"
+        :key="idx"
+        :style="'width: 170px;height: 170px;padding-left: 3px;' + display_qr"
+      >
+        <figure class="qrcode">
+          <vue-qrcode
+            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            :id="'qrcode-asset-' + it.id"
+            tag="img"
+            style="display: inline-block !important; vertical-align: top"
+            :options="{
+              errorCorrectionLevel: 'Q',
+              width: 150,
+              margin: 0,
+            }"
+          ></vue-qrcode>
+        </figure>
+      </div>
+    </div>
+  </ClientOnly>
 </template>
 
 <script setup>
@@ -452,12 +473,14 @@ import "vue-select/dist/vue-select.css";
 import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 // Import
 // import tableItem from "~/components/list/TableItem.vue";
 import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
 import JsonExcel from "vue-json-excel3";
 import XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 // Variable
@@ -476,6 +499,9 @@ const search = ref({});
 const json_data = ref([]);
 const type_submit = ref("");
 const update_location = ref(false);
+const show44 = ref("");
+const display_qr = ref("display: inline-block;");
+const qr_items = ref([]);
 let modalForm;
 
 const format = (date) => {
@@ -601,11 +627,10 @@ const fetchItems = async () => {
   items.value = data.data.map((e) => {
     return e;
   });
+  json_data.value = await fetchItemsExport();
 
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
-
-  fetchItemsExport();
 };
 
 const fetchItemsExport = async () => {
@@ -690,6 +715,177 @@ onMounted(() => {
   fetchItems();
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
 });
+
+const onGenerateQR1 = (it, size) => {
+  qr_items.value = [];
+  display_qr.value = "display:inline-block;";
+  if (size == 2) {
+    show44.value = "show-44-none";
+  } else {
+    show44.value = "";
+  }
+
+  if (it == "ALL") {
+    qr_items.value = [...json_data.value];
+  } else {
+    qr_items.value.push(it);
+  }
+  console.log(qr_items.value);
+};
+
+const onExport = async () => {
+  onGenerateQR1("ALL", 1);
+  setTimeout(async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์", {
+      pageSetup: { orientation: "landscape" },
+      headerFooter: {
+        firstHeader: "Hello Exceljs",
+        firstFooter: "Hello World",
+      },
+    });
+
+    worksheet.columns = [
+      { header: "QR Code", width: 10, outlineLevel: 1 },
+      {
+        header: "หมายเลขครุภัณฑ์",
+        key: "หมายเลขครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      {
+        header: "ชื่อครุภัณฑ์",
+        key: "ชื่อครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      { header: "รายละเอียด", key: "รายละเอียด", width: 30, outlineLevel: 1 },
+      {
+        header: "ประเภทครุภัณฑ์",
+        key: "ประเภทครุภัณฑ์",
+        width: 20,
+        outlineLevel: 1,
+      },
+      {
+        header: "ผู้ใช้งานเดิม",
+        key: "ผู้ใช้งานเดิม",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "ผู้ใช้งานใหม่",
+        key: "ผู้ใช้งานใหม่",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "วันที่ขอเปลี่ยน",
+        key: "วันที่ขอเปลี่ยน",
+        width: 20,
+        outlineLevel: 1,
+      },
+      {
+        header: "ผู้แจ้ง",
+        key: "ผู้แจ้ง",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "สถานะ",
+        key: "สถานะ",
+        width: 20,
+        outlineLevel: 1,
+      },
+    ];
+
+    worksheet.properties.defaultRowHeight = 45;
+
+    worksheet.addRows(json_data.value);
+
+    worksheet.eachRow((row) => {
+      row.height = 45;
+      row.eachCell(function (cell) {
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true,
+        };
+      });
+    });
+
+    const row = worksheet.getRow(1);
+    row.height = 20;
+
+    worksheet.insertRow(1, "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์");
+    worksheet.mergeCells("A1:K1");
+    worksheet.getCell("A1").value = "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์";
+    worksheet.getCell("A1").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font;
+
+    let start_date =
+      search.created_at_from != null
+        ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    let end_date =
+      search.created_at_to != null
+        ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    worksheet.insertRow(2);
+    worksheet.mergeCells("A2:K2");
+    worksheet.getCell("A2").value =
+      "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
+    worksheet.getCell("A2").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font1 = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font1;
+
+    // Images
+    let myBase64Image = "";
+    json_data.value.forEach((it, idx) => {
+      let canvas = document.getElementById("qrcode-asset-" + it.id);
+      myBase64Image = canvas.src;
+
+      console.log(canvas.src);
+
+      let image = workbook.addImage({
+        base64: myBase64Image,
+        extension: "png",
+      });
+
+      const image1 = worksheet.addImage(image, {
+        tl: { col: 0.5, row: idx + 3.1 },
+        // br: { col: 1, row: idx + 4 },
+        ext: { width: 70, height: 70 },
+        editAs: "oneCell",
+        hyperlinks: {
+          hyperlink: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+          tooltip: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+        },
+      });
+    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "รายการทะเบียนแจ้งขอเปลี่ยนผู้ใช้งานครุภัณฑ์.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    //   End Image
+
+    qr_items.value = [];
+  }, 3000);
+};
 
 const onConfirmDelete = async (id) => {
   Swal.fire({

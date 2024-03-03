@@ -725,12 +725,12 @@
   <ClientOnly>
     <div
       :class="'printable ' + show44"
-      style="display: block; padding-left: 40px; padding-top: 41px"
+      style="display: block; padding-left: 30px; padding-top: 41px"
     >
       <div
         v-for="(it, idx) in qr_items"
         :key="idx"
-        :style="'width: 220px;height: 220px;padding-left: 3px;' + display_qr"
+        :style="'width: 170px;height: 170px;padding-left: 3px;' + display_qr"
       >
         <figure class="qrcode">
           <vue-qrcode
@@ -740,7 +740,7 @@
             style="display: inline-block !important; vertical-align: top"
             :options="{
               errorCorrectionLevel: 'Q',
-              width: 200,
+              width: 150,
               margin: 0,
             }"
           ></vue-qrcode>
@@ -748,17 +748,17 @@
           <img
             src="~/assets/img/logo/logo_cit.png"
             class="qrcode__image"
-            style="width: 60px"
+            style="width: 43px"
           />
         </figure>
         <div
           style="
-            font-size: 1em;
-            width: 200px;
-            min-height: 200px;
+            font-size: 0.55em;
+            width: 150px;
+            min-height: 150px;
             word-wrap: break-word;
             margin-left: 2px;
-            margin-top: 10px;
+            margin-top: 5px;
             vertical-align: top;
             color: #000;
             line-height: 1;

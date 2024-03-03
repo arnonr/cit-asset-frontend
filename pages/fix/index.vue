@@ -34,7 +34,7 @@
             placeholder="หมายเลขครุภัณฑ์"
           />
         </div>
-        
+
         <div class="col-12 col-lg-4">
           <input
             class="form-control"
@@ -232,23 +232,13 @@
       </div>
 
       <div class="mb-30">
-        <json-excel
-          :fetch="fetchItemsExport"
-          :fields="json_fields"
-          :name="'repair'"
-          :header="[
-            'รายการประวัติการแจ้งซ่อม',
-            'ระหว่างวันที่ ' +
-              dayjs(search.created_at_from).locale('th').format('DD MMM BBBB') +
-              ' ถึง ' +
-              dayjs(search.created_at_to).locale('th').format('DD MMM BBBB'),
-          ]"
-          class="d-inline ms-2"
+        <button
+          type="button"
+          class="btn btn-success mt-2 me-2"
+          @click="onExport()"
         >
-          <button type="button" class="btn btn-success">
-            <i class="fa-regular fa-file"></i> Export Excel
-          </button>
-        </json-excel>
+          <i class="fa-regular fa-file"></i> Export
+        </button>
       </div>
 
       <div class="row gx-2 grid">
@@ -397,7 +387,10 @@
             @update:currentPage="currentPage = $event"
           />
         </div>
-        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
+        <div class="d-inline-block float-end fw-bold">
+          รวมทั้งหมด {{ totalItems }} รายการ จำนวนหน้าทั้งหมด
+          {{ totalPage }} หน้า
+        </div>
       </div>
     </div>
   </section>
@@ -601,6 +594,35 @@
       </div>
     </div>
   </div>
+
+  <!-- 4/4 -->
+  <ClientOnly>
+    <div
+      :class="'printable ' + show44"
+      style="display: block; padding-left: 30px; padding-top: 41px"
+    >
+      <div
+        v-for="(it, idx) in qr_items"
+        :key="idx"
+        :style="'width: 170px;height: 170px;padding-left: 3px;' + display_qr"
+      >
+        <figure class="qrcode">
+          <vue-qrcode
+            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            :id="'qrcode-asset-' + it.id"
+            tag="img"
+            style="display: inline-block !important; vertical-align: top"
+            :options="{
+              errorCorrectionLevel: 'Q',
+              width: 150,
+              margin: 0,
+            }"
+          ></vue-qrcode>
+        </figure>
+      </div>
+    </div>
+  </ClientOnly>
+
 </template>
 
 <script setup>
@@ -612,12 +634,14 @@ import "vue-select/dist/vue-select.css";
 import Swal from "sweetalert2";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 // Import
 // import tableItem from "~/components/list/TableItem.vue";
 import BlogPagination from "~/components/common/pagination/BlogPagination.vue";
 import asset_data from "~~/mixins/assetData";
-import JsonExcel from "vue-json-excel3";
-import XLSX from "xlsx";
+// import JsonExcel from "vue-json-excel3";
+// import XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -632,10 +656,14 @@ const perPage = ref(20);
 const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
+const show22 = ref("");
+const show44 = ref("");
+const display_qr = ref("display: inline-block;");
 const search = ref({});
 const json_data = ref([]);
 const type_submit = ref("");
 const update_location = ref(false);
+const qr_items = ref([]);
 let modalForm;
 
 const format = (date) => {
@@ -765,6 +793,7 @@ const fetchItems = async () => {
   items.value = data.data.map((e) => {
     return e;
   });
+  json_data.value = await fetchItemsExport();
 
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
@@ -890,6 +919,201 @@ onMounted(() => {
   fetchItems();
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
 });
+
+const onGenerateQR1 = (it, size) => {
+  qr_items.value = [];
+  display_qr.value = "display:inline-block;";
+  if (size == 2) {
+    show44.value = "show-44-none";
+    show22.value = "";
+  } else {
+    show22.value = "show-22-none";
+    show44.value = "";
+  }
+
+  if (it == "ALL") {
+    qr_items.value = [...json_data.value];
+  } else {
+    qr_items.value.push(it);
+  }
+  console.log(qr_items.value);  
+};
+
+const onExport = async () => {
+  onGenerateQR1("ALL", 1);
+  setTimeout(async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("รายการทะเบียนแจ้งซ่อมครุภัณฑ์", {
+      pageSetup: { orientation: "landscape" },
+      headerFooter: {
+        firstHeader: "Hello Exceljs",
+        firstFooter: "Hello World",
+      },
+    });
+
+    worksheet.columns = [
+      { header: "QR Code", width: 10, outlineLevel: 1 },
+      {
+        header: "หมายเลขครุภัณฑ์",
+        key: "หมายเลขครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      {
+        header: "ชื่อครุภัณฑ์",
+        key: "ชื่อครุภัณฑ์",
+        width: 25,
+        outlineLevel: 1,
+      },
+      { header: "รายละเอียด", key: "รายละเอียด", width: 30, outlineLevel: 1 },
+      {
+        header: "ประเภทครุภัณฑ์",
+        key: "ประเภทครุภัณฑ์",
+        width: 20,
+        outlineLevel: 1,
+      },
+      {
+        header: "วันที่ตรวจรับ",
+        key: "วันที่ตรวจรับ",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "มูลค่าครุภัณฑ์",
+        key: "มูลค่าครุภัณฑ์",
+        width: 15,
+        outlineLevel: 1,
+      },
+      {
+        header: "วันที่สิ้นสุดรับประกัน",
+        key: "วันที่สิ้นสุดรับประกัน",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "วันที่แจ้งซ่อม",
+        key: "วันที่แจ้งซ่อม",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "รายละเอียดการแจ้ง",
+        key: "รายละเอียดการแจ้ง",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "ราคา",
+        key: "ราคา",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "ผู้แจ้ง",
+        key: "ผู้แจ้ง",
+        width: 20,
+        outlineLevel: 1,
+      },
+
+      {
+        header: "สถานะ",
+        key: "สถานะ",
+        width: 20,
+        outlineLevel: 1,
+      },
+    ];
+
+    worksheet.properties.defaultRowHeight = 45;
+
+    worksheet.addRows(json_data.value);
+
+    worksheet.eachRow((row) => {
+      row.height = 45;
+      row.eachCell(function (cell) {
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true,
+        };
+      });
+    });
+
+    const row = worksheet.getRow(1);
+    row.height = 20;
+
+    worksheet.insertRow(1, "รายการทะเบียนแจ้งซ่อมครุภัณฑ์");
+    worksheet.mergeCells("A1:K1");
+    worksheet.getCell("A1").value = "รายการทะเบียนแจ้งซ่อมครุภัณฑ์";
+    worksheet.getCell("A1").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font;
+
+    let start_date =
+      search.created_at_from != null
+        ? dayjs(search.created_at_from).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    let end_date =
+      search.created_at_to != null
+        ? dayjs(search.created_at_to).locale("th").format("DD MMM BBBB")
+        : "-";
+
+    worksheet.insertRow(2);
+    worksheet.mergeCells("A2:K2");
+    worksheet.getCell("A2").value =
+      "ระหว่างวันที่ " + start_date + " ถึง " + end_date;
+    worksheet.getCell("A2").alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    const font1 = { name: "Arial", size: 18, bold: true };
+    worksheet.getCell("A1").font = font1;
+
+    // Images
+    let myBase64Image = "";
+    json_data.value.forEach((it, idx) => {
+      let canvas = document.getElementById("qrcode-asset-" + it.id);
+      myBase64Image = canvas.src;
+
+      console.log(canvas.src);
+
+        let image = workbook.addImage({
+          base64: myBase64Image,
+          extension: "png",
+        });
+
+        const image1 = worksheet.addImage(image, {
+          tl: { col: 0.5, row: idx + 3.1 },
+          // br: { col: 1, row: idx + 4 },
+          ext: { width: 70, height: 70 },
+          editAs: "oneCell",
+          hyperlinks: {
+            hyperlink: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+            tooltip: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+          },
+        });
+    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "รายการทะเบียนแจ้งซ่อมครุภัณฑ์.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    //   End Image
+
+    qr_items.value = [];
+  }, 3000);
+};
 
 const onConfirmDelete = async (id) => {
   Swal.fire({
@@ -1076,4 +1300,137 @@ useHead({
 // });
 </script>
 
-<style scoped></style>
+<style scoped>
+.qrcode {
+  display: inline-block;
+  font-size: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.qrcode__image {
+  background-color: #fff;
+  border: 0.25rem solid #fff;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+  height: 29%;
+  width: 20%;
+  left: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 40%;
+  transform: translate(-50%, -50%);
+}
+
+/* Spinner */
+/* .wrapper1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  text-align: center;
+  transform: translateX(-50%);
+} */
+
+.spanner {
+  position: fixed;
+  top: 0%;
+  left: 0;
+  background: #2a2a2a55;
+  width: 100%;
+  display: block;
+  text-align: center;
+  height: 150%;
+  color: #fff;
+  z-index: 20000;
+  visibility: hidden;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #2a2a2a55;
+  background: rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+}
+
+.loader,
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation: load7 1.8s infinite ease-in-out;
+  animation: load7 1.8s infinite ease-in-out;
+}
+.loader {
+  color: #ffffff;
+  font-size: 10px;
+  top: 30%;
+  left: 50%;
+  position: absolute;
+  text-indent: -9999em;
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+.text-loader {
+  position: absolute;
+  top: 35%;
+  left: 47.5%;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  top: 0;
+}
+.loader:before {
+  left: -3.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 3.5em;
+}
+@-webkit-keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+@keyframes load7 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
+  }
+  40% {
+    box-shadow: 0 2.5em 0 0;
+  }
+}
+
+.show {
+  visibility: visible;
+}
+
+.spanner,
+.overlay {
+  opacity: 0;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.spanner.show,
+.overlay.show {
+  opacity: 1;
+}
+</style>

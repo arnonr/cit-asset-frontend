@@ -111,7 +111,7 @@
                         :id="'txt-' + at.name"
                         v-model="item[at.name]"
                         :disabled="at.disabled == true ? true : false"
-                        style="height: 150px;"
+                        style="height: 150px"
                       />
 
                       <v-select
@@ -471,7 +471,7 @@ const attributes = [
     input_type: "text",
   },
   {
-    name: "is_transfer",
+    name: "is_transfer",    
     show_name: "ได้รับโอนมา",
     input_type: "select",
     label: "title",
@@ -482,6 +482,7 @@ const attributes = [
     name: "transfer_from",
     show_name: "ได้รับโอนจาก",
     input_type: "text",
+    disabled: true,
   },
   {
     name: "comment",
@@ -570,7 +571,7 @@ const item = ref({
     name: "ใช้งาน",
     color: "success",
   },
-  is_transfer: { title: "No", value: null },
+  is_transfer: { title: "ไม่ใช่", value: null },
   inspection_date: null,
 });
 const file = ref(null);
@@ -581,8 +582,8 @@ const selectOptions = ref({
   budget_types: [],
   departments: [],
   is_transfers: [
-    { title: "YES", value: 1 },
-    { title: "NO", value: null },
+    { title: "ใช่", value: 1 },
+    { title: "ไม่ใช่", value: null },
   ],
   cancel_types: [
     { title: "โอน", value: 1 },
@@ -780,6 +781,29 @@ watch(
 
       attributes_cancel.value = [...new_att];
     }
+  }
+);
+
+watch(
+  () => item.value.is_transfer,
+  (val) => {
+    let disabled = false;
+    if (val.value == 1) {
+      disabled = false;
+    } else {
+      disabled = true;
+    }
+
+    console.log(val.value, attributes, disabled);
+
+    let new_att = attributes.map((x) => {
+      if (x.name == "transfer_from") {
+        x.disabled = disabled;
+      }
+      return x;
+    });
+
+    attributes.value = [...new_att];
   }
 );
 </script>
