@@ -234,6 +234,11 @@
           ></v-select> -->
         </div>
       </div>
+      <div class="mt-20">
+        <button class="btn btn-success" @click="onSearch">
+          <i class="fa fa-search"></i> ค้นหา
+        </button>
+      </div>
     </div>
   </section>
 
@@ -249,7 +254,10 @@
         <div class="col-lg-6">
           <button
             type="button"
-            v-if="useCookie('user').value.level == 1 || useCookie('user').value.level == 2"
+            v-if="
+              useCookie('user').value.level == 1 ||
+              useCookie('user').value.level == 2
+            "
             class="btn btn-warning me-2 mt-2"
             @click="
               () => {
@@ -288,6 +296,54 @@
           >
             <i class="fa-regular fa-file"></i> Export with qr code
           </button>
+          <br />
+          <!-- <div class="dropdown d-inline">
+            <button
+              class="btn btn-primary dropdown-toggle me-2 mt-2"
+              type="button"
+              id="dropdownMenuButton2"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              v-if="
+                useCookie('user').value != undefined &&
+                (useCookie('user').value.level == 1 ||
+                  useCookie('user').value.level == 2)
+              "
+            >
+              <i class="fa-regular fa-file-text"></i> Import
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <a
+                  class="dropdown-item"
+                  @click="
+                    () => {
+                      modalForm.show();
+                    }
+                  "
+                  style="cursor: pointer"
+                  >นำเข้าข้อมูลครุภัณฑ์</a
+                >
+              </li>
+              <li
+                v-if="
+                  useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 1
+                "
+              >
+                <a
+                  class="dropdown-item"
+                  @click="
+                    () => {
+                      modalForm2.show();
+                    }
+                  "
+                  style="cursor: pointer"
+                  >นำเข้าข้อมูลการโอน/จำหน่าย</a
+                >
+              </li>
+            </ul>
+          </div> -->
 
           <div class="dropdown d-inline">
             <button
@@ -317,6 +373,7 @@
                   >นำเข้าข้อมูลครุภัณฑ์</a
                 >
               </li>
+
               <li
                 v-if="
                   useCookie('user').value != undefined &&
@@ -510,14 +567,17 @@
       </div>
 
       <div class="col-xxl-12">
-        <div class="tp-pagination mt-30 d-inline-block" >
+        <div class="tp-pagination mt-30 d-inline-block">
           <blog-pagination
             :totalPage="totalPage"
             :currentPage="currentPage"
             @update:currentPage="currentPage = $event"
           />
         </div>
-        <div class="d-inline-block float-end fw-bold">รวมทั้งหมด {{totalItems }} รายการ จำนวนหน้าทั้งหมด {{totalPage}} หน้า</div>
+        <div class="d-inline-block float-end fw-bold">
+          รวมทั้งหมด {{ totalItems }} รายการ จำนวนหน้าทั้งหมด
+          {{ totalPage }} หน้า
+        </div>
       </div>
     </div>
   </section>
@@ -1211,8 +1271,9 @@ const fetchItemsExport = async () => {
 };
 
 // Watch
+// , search
 watch(
-  [currentPage, search],
+  [currentPage],
   () => {
     fetchItems();
   },
@@ -1893,11 +1954,19 @@ const onExport = async () => {
   }, 3000);
 };
 
-onMounted(() => {
-  fetchAssetTypes();
-  fetchBudgetTypes();
-  fetchDepartments();
+const onSearch = () => {
   fetchItems();
+  console.log("FREEDOM");
+};
+
+onMounted(async () => {
+  await fetchAssetTypes();
+  await fetchBudgetTypes();
+  await fetchDepartments();
+  console.log(selectOptions.value.departments);
+  search.value.input_year = selectOptions.value.input_years[1];
+
+  await fetchItems();
   modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
   modalForm2 = new bootstrap.Modal(document.getElementById("modal-form-2"));
 });
