@@ -448,7 +448,7 @@
       >
         <figure class="qrcode">
           <vue-qrcode
-            :value="'http://citqresearch.cit.kmutnb.ac.th/asset/' + it.id"
+            :value="'http://citqr.cit.kmutnb.ac.th/asset/' + it.id"
             :id="'qrcode-asset-' + it.id"
             tag="img"
             style="display: inline-block !important; vertical-align: top"
@@ -867,8 +867,8 @@ const onExport = async () => {
         ext: { width: 70, height: 70 },
         editAs: "oneCell",
         hyperlinks: {
-          hyperlink: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
-          tooltip: "http://citqresearch.cit.kmutnb.ac.th/asset/" + it.id,
+          hyperlink: "http://citqr.cit.kmutnb.ac.th/asset/" + it.id,
+          tooltip: "http://citqr.cit.kmutnb.ac.th/asset/" + it.id,
         },
       });
     });
