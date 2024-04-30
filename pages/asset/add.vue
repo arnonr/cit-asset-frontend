@@ -434,6 +434,7 @@ const attributes = [
     input_type: "select",
     label: "title",
     options: "budget_types",
+    required: true,
   },
   {
     name: "asset_status",
@@ -459,6 +460,7 @@ const attributes = [
     input_type: "select",
     label: "title",
     options: "departments",
+    required: true,
   },
   {
     name: "drawer_name",
@@ -471,7 +473,7 @@ const attributes = [
     input_type: "text",
   },
   {
-    name: "is_transfer",    
+    name: "is_transfer",
     show_name: "ได้รับโอนมา",
     input_type: "select",
     label: "title",
@@ -668,7 +670,7 @@ const fetchBudgetTypes = async () => {
   }).catch((error) => error.data);
 
   selectOptions.value.budget_types = data.data.map((e) => {
-    return { title: e.name, value: e.id };
+    return { title: `(${e.code}) ${e.name}`, value: e.id };
   });
 };
 
@@ -691,7 +693,9 @@ const onSubmit = async () => {
     item.value.asset_type_id == null ||
     item.value.asset_type_id.value == null ||
     item.value.asset_name == "" ||
-    item.value.asset_name == null
+    item.value.asset_name == null ||
+    item.value.budget_type_id == null ||
+    item.value.department_id == null
   ) {
     useToast("โปรดระบุข้อมูลให้ครบถ้วน", "error");
     return;
