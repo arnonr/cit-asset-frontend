@@ -720,7 +720,7 @@ const uppy = new Uppy({
     },
     debug: true,
     restrictions: {
-        allowedFileTypes: ["image/*", "video/*"],
+        allowedFileTypes: null // อนุญาตทุกประเภทไฟล์
     },
 }).use(XHRUpload, {
     headers: {
@@ -819,7 +819,7 @@ const fetchGallery = async () => {
                         secret_key: gallery[i].secret_key,
                         isRemote: true,
                     },
-                    source: "Local",
+                    source: 'Local',
                     isRemote: false,
                 });
             });
@@ -863,7 +863,6 @@ const fetchItem = async () => {
     item.value.department_id = selectOptions.value.departments.find((x) => {
         return x.value == item.value.department_id;
     });
-
 
     item.value.is_transfer = selectOptions.value.is_transfers.find((x) => {
         return x.value == item.value.is_transfer;
