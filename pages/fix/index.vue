@@ -1175,7 +1175,7 @@ const onSubmit = async () => {
     if (item.value.status.id != find_item.status) {
       if (item.value.status != 0) {
         approved_date = dayjs().format("YYYY-MM-DD");
-        approved_by = useCookie("user").value.firstname;
+        approved_by = useCookie("user").value.username;
         update_location.value = true;
       } else {
         approved_date = null;
@@ -1187,7 +1187,7 @@ const onSubmit = async () => {
     if (item.value.status != null) {
       if (item.value.status.id != 0) {
         approved_date = dayjs().format("YYYY-MM-DD");
-        approved_by = useCookie("user").value.firstname;
+        approved_by = useCookie("user").value.username;
         update_location.value = true;
       }
     }
