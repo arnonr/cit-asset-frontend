@@ -216,6 +216,11 @@ export default {
             name: (Number(year)-i) + 543,
           });
         }
+        year_data.push({
+          id: "all",
+          value: "all",
+          name: "ทั้งหมด",
+        });
 
         return year_data;
       },
