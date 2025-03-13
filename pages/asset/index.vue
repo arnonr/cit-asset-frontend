@@ -2092,29 +2092,55 @@ const onImportSubmit = async (type) => {
         });
 };
 
-const onGenerateQR = (it, size) => {
-    qr_items.value = [];
-    display_qr.value = "display:inline-block;";
-    if (size == 2) {
-        show44.value = "show-44-none";
-        show22.value = "";
-    } else {
-        show22.value = "show-22-none";
-        show44.value = "";
-    }
+const quantity = ref(1);
 
-    if (it == "ALL") {
-        qr_items.value = [...json_data.value].filter((e) => {
-            return selectedItems.value.includes(e.id);
-        });
-        // qr_items.value = [...items.value];
-    } else {
-        qr_items.value.push(it);
-    }
-    setTimeout(() => {
-        window.print();
-        qr_items.value = [];
-    }, 1000);
+const onGenerateQR = (it, size) => {
+    // modal alert สำหรับกรอกจำนวน ใส่ css ที ่Input เป็น inline-block
+    Swal.fire({
+        title: "กรุณากรอกจำนวน",
+        input: "number",
+        inputAttributes: {
+            autocapitalize: "off",
+            style: "display: block;margin-right: auto;margin-left: auto; width: 200px;",
+        },
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            quantity.value = result.value;
+
+            qr_items.value = [];
+            display_qr.value = "display:inline-block;";
+            if (size == 2) {
+                show44.value = "show-44-none";
+                show22.value = "";
+            } else {
+                show22.value = "show-22-none";
+                show44.value = "";
+            }
+
+            if (it == "ALL") {
+                qr_items.value = [...json_data.value].filter((e) => {
+                    return selectedItems.value.includes(e.id);
+                });
+
+                // qr_items.value ต้องการให้เพิ่มจำนวนตาม quantity.value ต้องการให้ค่าด้านในเรียงซ้ำกันเช่น ช้างใน qr_items เป็น [1,2,3,4] ต้องการให้เป็น [1,1,2,2,3,3,4,4]
+                let new_qr_items = [];
+                for (let i = 0; i < qr_items.value.length; i++) {
+                    for (let j = 0; j < quantity.value; j++) {
+                        new_qr_items.push(qr_items.value[i]);
+                    }
+                }
+                qr_items.value = new_qr_items;
+            } else {
+                qr_items.value.push(it);
+            }
+            setTimeout(() => {
+                window.print();
+                qr_items.value = [];
+            }, 1000);
+        }
+    });
 };
 
 const onGenerateQR1 = (it, size) => {
@@ -2324,8 +2350,7 @@ const onSubmitAddImages = async () => {
                 ? add_images_file.value.files[0]
                 : null,
     };
--
-    console.log(data);
+    -console.log(data);
     var form_data = new FormData();
     for (var key in data) {
         form_data.append(key, data[key]);
