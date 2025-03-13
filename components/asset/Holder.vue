@@ -34,7 +34,7 @@
                     <th class="text-center">ผู้ใช้งาน</th>
                     <th class="text-center">สถานะ</th>
                     <th class="text-center">วันที่ขอเปลี่ยน</th>
-                    <th class="text-center">วันที่อนุมัติ</th>
+                    <th class="text-center">วันที่ตรวจสอบ</th>
                     <th
                       class="text-center"
                       v-if="
@@ -167,7 +167,7 @@
                     useCookie('user').value.level == 1
                   "
                   label="name"
-                  placeholder="สถานะการอนุมัติ"
+                  placeholder="สถานะการตรวจสอบ"
                   :options="selectOptions.holder_statuses"
                   id="slt-status"
                   v-model="holder_item.status"

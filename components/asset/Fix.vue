@@ -37,7 +37,7 @@
                     <th class="text-center">ราคา</th>
                     <th class="text-center">วันที่แจ้งซ่อม</th>
                     <!-- <th class="text-center">วันที่แจ้งซ่อม</th> -->
-                    <th class="text-center">วันที่อนุมัติ</th>
+                    <th class="text-center">วันที่ตรวจสอบ</th>
                     <th class="text-center">สถานะ</th>
                     <th class="text-center">หมายเหตุ</th>
                     <th
@@ -224,7 +224,7 @@
                     useCookie('user').value.level == 1
                   "
                   label="name"
-                  placeholder="สถานะการอนุมัติ"
+                  placeholder="สถานะการตรวจสอบ"
                   :options="selectOptions.fix_statuses"
                   id="slt-status"
                   v-model="fix_item.status"

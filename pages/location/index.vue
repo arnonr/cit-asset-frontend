@@ -411,7 +411,7 @@
                     useCookie('user').value.level == 1
                   "
                   label="name"
-                  placeholder="สถานะการอนุมัติ"
+                  placeholder="สถานะการตรวจสอบ"
                   :options="selectOptions.location_statuses"
                   id="slt-status"
                   v-model="item.status"
