@@ -436,6 +436,18 @@
                             </li>
                         </ul>
                     </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-danger mt-2 me-2"
+                        @click="onAddImages()"
+                        v-if="
+                            useCookie('user').value.level == 1 ||
+                            useCookie('user').value.level == 2
+                        "
+                    >
+                        <i class="fa-regular fa-image"></i> ADD Group Images
+                    </button>
                 </div>
                 <div class="col-lg-3">
                     <v-select
@@ -461,7 +473,9 @@
 
             <div class="row gx-2 grid">
                 <div class="col-12">
-                    <div class="d-flex fw-bold float-end mb-2 align-items-center">
+                    <div
+                        class="d-flex fw-bold float-end mb-2 align-items-center"
+                    >
                         <input
                             type="text"
                             class="form-control me-2"
@@ -1078,6 +1092,68 @@
         <div class="loader"></div>
         <div class="text-loader fw-bold">Importing Asset.</div>
     </div>
+
+    <!-- Modal Add Images -->
+    <!-- Modal -->
+    <div
+        class="modal fade"
+        data-bs-backdrop="static"
+        id="modal-form-add-images"
+        tabindex="-1"
+        aria-labelledby="modal-form-add-images"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal-form-label">
+                        แบบฟอร์มเพิ่มรูปภาพ
+                    </h1>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form ประเภทข่าว -->
+                    <form>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="code" class="col-form-label"
+                                    ><span class="text-danger">*</span>เลือกรูป
+                                    :</label
+                                >
+                                <input
+                                    ref="add_images_file"
+                                    class="form-control"
+                                    type="file"
+                                    id="formFile"
+                                />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-warning"
+                        @click="onSubmitAddImages()"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -1129,6 +1205,8 @@ const search = ref({
 });
 const selectAll = ref(false);
 const selectedItems = ref([]);
+
+let modalAddImagesForm;
 
 const format = (date) => {
     const day = dayjs(date).locale("th").format("DD");
@@ -1199,6 +1277,7 @@ const import_result = ref([]);
 const file = ref(null);
 const file2 = ref(null);
 const show_spinner = ref("");
+const add_images_file = ref(null);
 let modalForm;
 let modalForm2;
 
@@ -1452,6 +1531,16 @@ const handlerSelectItem = (item) => {
     } else {
         console.log("รายการนี้ถูกยกเลิกการเลือก");
     }
+};
+
+const onAddImages = () => {
+    modalAddImagesForm.show();
+
+    // show modal fom add imges
+    // fetch update asset group images
+    // show toast success
+    // close modal
+    // reload page
 };
 
 // เรียกใช้ checkSelectAll เมื่อรายการเปลี่ยน
@@ -2228,6 +2317,42 @@ const onSearch = () => {
     fetchItems();
 };
 
+const onSubmitAddImages = async () => {
+    let data = {
+        cover_photo:
+            add_images_file.value.files != null
+                ? add_images_file.value.files[0]
+                : null,
+    };
+-
+    console.log(data);
+    var form_data = new FormData();
+    for (var key in data) {
+        form_data.append(key, data[key]);
+    }
+
+    console.log(form_data);
+
+    // await $fetch(type_object.url, {
+    //     method: type_object.method,
+    //     body: form_data,
+    //     headers: {
+    //         Authorization: useCookie("token").value
+    //             ? `Bearer ${useCookie("token").value}`
+    //             : "",
+    //     },
+    // })
+    //     .then((res) => {
+    //         if (res.msg == "success") {
+    //             useToast(type_object.text_success, "success");
+    //             router.push({ path: "/asset/" + res.id });
+    //         } else {
+    //             throw new Error("ERROR");
+    //         }
+    //     })
+    //     .catch((error) => error.data);
+};
+
 onMounted(async () => {
     await fetchAssetTypes();
     await fetchBudgetTypes();
@@ -2238,6 +2363,9 @@ onMounted(async () => {
     //   await fetchItems();
     modalForm = new bootstrap.Modal(document.getElementById("modal-form"));
     modalForm2 = new bootstrap.Modal(document.getElementById("modal-form-2"));
+    modalAddImagesForm = new bootstrap.Modal(
+        document.getElementById("modal-form-add-images")
+    );
 });
 
 useHead({

@@ -967,7 +967,7 @@ const fetchItems = async () => {
     json_data.value.push({
       หมายเลขครุภัณฑ์: e.asset_code,
       ชื่อครุภัณฑ์: e.asset_name,
-      หมายเลขประจำเครื่อง: e.serial_number,
+      หมายเลขซีเรียล: e.serial_number,
       ผู้เบิก: e.drawer_name,
       ผู้ใช้งาน: e.holder_name,
       มูลค่าการได้มา: e.price,
@@ -1032,7 +1032,7 @@ const fetchItemsExport = async () => {
     return {
       หมายเลขครุภัณฑ์: e.asset_code,
       ชื่อครุภัณฑ์: e.asset_name,
-      หมายเลขประจำเครื่อง: e.serial_number,
+      หมายเลขซีเรียล (S/N): e.serial_number,
       ผู้เบิก: e.drawer_name,
       ผู้ใช้งาน: e.holder_name,
       มูลค่าการได้มา: e.price,

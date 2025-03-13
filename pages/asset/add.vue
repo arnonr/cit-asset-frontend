@@ -420,7 +420,7 @@ const attributes = [
   },
   {
     name: "serial_number",
-    show_name: "หมายเลขประจำเครื่อง",
+    show_name: "หมายเลขซีเรียล",
     input_type: "text",
   },
   {

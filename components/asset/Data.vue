@@ -113,7 +113,7 @@
         <hr class="hr-separator" />
       </div>
       <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
-        <span class="fw-bold">หมายเลขประจำเครื่อง : </span>
+        <span class="fw-bold">หมายเลขซีเรียล : </span>
         <span class="fw-bold text-primary">{{ item.serial_number }}</span>
         <hr class="hr-separator" />
       </div>
