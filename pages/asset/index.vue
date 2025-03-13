@@ -1693,7 +1693,7 @@ const onImportSubmit = async (type) => {
             name_en: "install_location",
         },
         {
-            name: "รหัสหมวดสินทรัพย์",
+            name: "รหัสประเภทครุภัณฑ์",
             name_en: "asset_type_code",
         },
         {
