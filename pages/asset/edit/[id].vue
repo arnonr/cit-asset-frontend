@@ -592,6 +592,12 @@ const attributes = [
         disabled: false,
     },
     {
+        name: "unit",
+        show_name: "หน่วยนับ",
+        input_type: "text",
+        disabled: false,
+    },
+    {
         name: "comment",
         show_name: "หมายเหตุ",
         input_type: "text",

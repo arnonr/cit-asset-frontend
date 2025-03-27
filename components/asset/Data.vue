@@ -117,6 +117,11 @@
         <span class="fw-bold text-primary">{{ item.serial_number }}</span>
         <hr class="hr-separator" />
       </div>
+      <div class="col-12 col-lg-6" v-if="useCookie('user').value != undefined">
+        <span class="fw-bold">หน่วยนับ : </span>
+        <span class="fw-bold text-primary">{{ item.unit }}</span>
+        <hr class="hr-separator" />
+      </div>
       <div class="col-12 col-lg-12">
         <span class="fw-bold">รายละเอียด : </span>
         <span class="fw-bold text-primary">{{ item.asset_detail }}</span>
