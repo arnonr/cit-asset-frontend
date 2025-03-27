@@ -2344,38 +2344,41 @@ const onSearch = () => {
 };
 
 const onSubmitAddImages = async () => {
+    // change selectedItems.value เป็น 1,2,3 string
+    let asset_id = selectedItems.value.join(",");
+
     let data = {
         cover_photo:
             add_images_file.value.files != null
                 ? add_images_file.value.files[0]
                 : null,
+        asset_id: asset_id,
     };
-    -console.log(data);
     var form_data = new FormData();
     for (var key in data) {
         form_data.append(key, data[key]);
     }
 
-    console.log(form_data);
-
-    // await $fetch(type_object.url, {
-    //     method: type_object.method,
-    //     body: form_data,
-    //     headers: {
-    //         Authorization: useCookie("token").value
-    //             ? `Bearer ${useCookie("token").value}`
-    //             : "",
-    //     },
-    // })
-    //     .then((res) => {
-    //         if (res.msg == "success") {
-    //             useToast(type_object.text_success, "success");
-    //             router.push({ path: "/asset/" + res.id });
-    //         } else {
-    //             throw new Error("ERROR");
-    //         }
-    //     })
-    //     .catch((error) => error.data);
+    await $fetch(`${runtimeConfig.public.apiBase}/asset/update-multiple-asset-cover-photo`, {
+        method: "POST",
+        body: form_data,
+        headers: {
+            Authorization: useCookie("token").value
+                ? `Bearer ${useCookie("token").value}`
+                : "",
+        },
+    })
+        .then((res) => {
+            if (res.msg == "success") {
+                useToast("Add Image success", "success");
+                fetchItems();
+                modalAddImagesForm.hide();
+                // refresh
+            } else {
+                throw new Error("ERROR");
+            }
+        })
+        .catch((error) => error.data);
 };
 
 onMounted(async () => {
