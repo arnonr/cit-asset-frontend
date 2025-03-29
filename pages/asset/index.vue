@@ -1633,6 +1633,7 @@ const onImportSubmit = async (type) => {
         asset_detail: null,
         install_location: null,
         asset_type_code: null,
+        asset_type_name: null,
         brand: null,
         model: null,
         serial_number: null,
@@ -1657,6 +1658,8 @@ const onImportSubmit = async (type) => {
         transfer_to: null,
         transfer_to_department: null,
         comment: null,
+        unit: null,
+        install_location: null,
     };
 
     let cl_import_header = [
@@ -1693,8 +1696,8 @@ const onImportSubmit = async (type) => {
             name_en: "install_location",
         },
         {
-            name: "รหัสประเภทครุภัณฑ์",
-            name_en: "asset_type_code",
+            name: "ประเภทครุภัณฑ์",
+            name_en: "asset_type_name",
         },
         {
             name: "ยี่ห้อ",
@@ -1789,6 +1792,10 @@ const onImportSubmit = async (type) => {
             name_en: "transfer_to_department",
         },
         {
+            name: "หน่วยนับ",
+            name_en: "unit",
+        },
+        {
             name: "หมายเหตุ",
             name_en: "comment",
         },
@@ -1803,13 +1810,13 @@ const onImportSubmit = async (type) => {
         }
     }
 
-    const convert_day = (day) => {
-        // console.log(day)
-        // let day_arr = day.split("/");
-        return day;
-        // (
-        //   day_arr[2] + "-" + day_arr[1] + "-" + day_arr[0]
-        // );
+    const convertImportDate = (date) => {
+        let date_format = date.split("/");
+        date_format[2] = Number(date_format[2]) - 543;
+        let new_date =
+            date_format[2] + "-" + date_format[1] + "-" + date_format[0];
+
+        return new_date;
     };
 
     for (var i = 0; i < result.result.length; i++) {
@@ -1849,7 +1856,7 @@ const onImportSubmit = async (type) => {
                         : null,
                 inspection_date:
                     column_index_import.inspection_date != undefined
-                        ? convert_day(
+                        ? convertImportDate(
                               result.result[i][
                                   column_index_import.inspection_date
                               ]
@@ -1857,7 +1864,7 @@ const onImportSubmit = async (type) => {
                         : null,
                 approved_date:
                     column_index_import.approved_date != undefined
-                        ? convert_day(
+                        ? convertImportDate(
                               result.result[i][
                                   column_index_import.approved_date
                               ]
@@ -1877,8 +1884,15 @@ const onImportSubmit = async (type) => {
                               column_index_import.install_location
                           ]?.trim()
                         : null,
+                asset_type_name:
+                    column_index_import.asset_type_name != undefined
+                        ? result?.result[i][
+                              column_index_import.asset_type_name
+                          ]?.trim()
+                        : null,
                 asset_type_code:
-                    column_index_import.asset_type_code != undefined
+                    column_index_import.asset_type_code != undefined &&
+                    asset_type_name == undefined
                         ? result?.result[i][
                               column_index_import.asset_type_code
                           ]?.trim()
@@ -2359,15 +2373,18 @@ const onSubmitAddImages = async () => {
         form_data.append(key, data[key]);
     }
 
-    await $fetch(`${runtimeConfig.public.apiBase}/asset/update-multiple-asset-cover-photo`, {
-        method: "POST",
-        body: form_data,
-        headers: {
-            Authorization: useCookie("token").value
-                ? `Bearer ${useCookie("token").value}`
-                : "",
-        },
-    })
+    await $fetch(
+        `${runtimeConfig.public.apiBase}/asset/update-multiple-asset-cover-photo`,
+        {
+            method: "POST",
+            body: form_data,
+            headers: {
+                Authorization: useCookie("token").value
+                    ? `Bearer ${useCookie("token").value}`
+                    : "",
+            },
+        }
+    )
         .then((res) => {
             if (res.msg == "success") {
                 useToast("Add Image success", "success");
