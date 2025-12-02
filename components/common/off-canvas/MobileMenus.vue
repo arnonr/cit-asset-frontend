@@ -21,9 +21,7 @@
             :href="menu.link"
             v-if="
               is_user_type == 'admin' ||
-              (is_user_type == 'staff' &&
-                menu.title != 'Manage' &&
-                menu.title != 'Request')
+              (is_user_type == 'staff' && menu.title != 'Manage')
             "
             >{{ $t(menu.title) }}</nuxt-link
           >
