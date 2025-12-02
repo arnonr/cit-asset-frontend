@@ -11,9 +11,7 @@
         :to="menu.link"
         v-if="
           is_user_type == 'admin' ||
-          (is_user_type == 'staff' &&
-            menu.title != 'Manage' &&
-            menu.title != 'Request') ||
+          (is_user_type == 'staff' && menu.title != 'Manage') ||
           (is_user_type == 'dep' && menu.title != 'Manage')
         "
       >
@@ -28,9 +26,11 @@
         <li v-for="(sub, i) in menu.submenus" :key="i" class="submenu-item">
           <NuxtLink :to="sub.link">
             {{ $t(sub.title) }}
-            <span class="badge bg-info" v-if="sub.noti && useCookie('user').value.level != 3">{{
-              useNotification().value[sub.noti]
-            }}</span>
+            <span
+              class="badge bg-info"
+              v-if="sub.noti && useCookie('user').value.level != 3"
+              >{{ useNotification().value[sub.noti] }}</span
+            >
             <hr style="width: 100%; color: #ddd; padding: 0px; margin: 0" />
           </NuxtLink>
         </li>
