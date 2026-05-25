@@ -18,7 +18,9 @@
               ((useCookie('user').value != undefined &&
                 useCookie('user').value.level == 1) ||
                 (useCookie('user').value != undefined &&
-                  useCookie('user').value.level == 3)) &&
+                  useCookie('user').value.level == 3) ||
+                (useCookie('user').value != undefined &&
+                  useCookie('user').value.level == 2)) &&
               type == 'edit'
             "
           >
@@ -122,7 +124,7 @@
                               fix_item.status = selectOptions.fix_statuses.find(
                                 (x) => {
                                   return x.id == it.status;
-                                }
+                                },
                               );
                               type_submit = 'edit';
                               modalForm.show();
@@ -354,7 +356,7 @@ const fetchItems = async () => {
     return e;
   });
 
-  console.log(items.value)
+  console.log(items.value);
   totalPage.value = data.totalPage;
   totalItems.value = data.totalData;
 };
@@ -445,7 +447,7 @@ const onSubmit = async () => {
 
 watch(props, async (newValue, oldValue) => {
   fetchItems();
-//   this.fullName = val + " " + this.lastName;
+  //   this.fullName = val + " " + this.lastName;
 });
 
 onMounted(() => {
